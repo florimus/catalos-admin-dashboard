@@ -10,6 +10,8 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const [formData, setFormData] = useState<ILoginFormProps>({
     email: '',
     password: '',
@@ -33,7 +35,9 @@ export default function SignInForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
     const response: IResponse<ILoginResponse> = await loginWithPassword(formData.email, formData.password);
+    setLoading(false);
     if (response.success) {
       router.push('/');
     } else {
@@ -51,6 +55,7 @@ export default function SignInForm() {
       handleInputChange={handleInputChange}
       handleSubmit={handleSubmit}
       message={message}
+      loading={loading}
     />
   );
 }

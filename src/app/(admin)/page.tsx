@@ -3,7 +3,7 @@ import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 import React from "react";
 import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
 import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
-import StatisticsChart from "@/components/ecommerce/StatisticsChart";
+// import StatisticsChart from "@/components/ecommerce/StatisticsChart";
 import RecentOrders from "@/components/ecommerce/RecentOrders";
 import DemographicCard from "@/components/ecommerce/DemographicCard";
 
@@ -26,9 +26,9 @@ export default function Ecommerce() {
         <MonthlyTarget />
       </div>
 
-      <div className="col-span-12">
+      {/* <div className="col-span-12">
         <StatisticsChart />
-      </div>
+      </div> */}
 
       <div className="col-span-12 xl:col-span-5">
         <DemographicCard />

@@ -6,13 +6,13 @@ import { ILoginFormProps } from '@/core/types';
 import { EyeCloseIcon, EyeIcon } from '@/icons';
 import Link from 'next/link';
 import { FC } from 'react';
-import ComponentCard from '../common/ComponentCard';
 import Alert from '../ui/alert/Alert';
 
 interface SignInFormViewProps {
   showPassword: boolean;
   setIsChecked: (value: boolean) => void;
   isChecked: boolean;
+  loading?: boolean;
   message?: string | null;
   formData: ILoginFormProps | undefined;
   setShowPassword: (value: boolean) => void;
@@ -26,6 +26,7 @@ const SignInFormView: FC<SignInFormViewProps> = ({
   isChecked,
   message,
   formData,
+  loading,
   setShowPassword,
   handleSubmit,
   handleInputChange,
@@ -110,7 +111,7 @@ const SignInFormView: FC<SignInFormViewProps> = ({
                   </Link>
                 </div>
                 <div>
-                  <Button type='submit' className='w-full' size='sm'>
+                  <Button type='submit' className='w-full' size='sm' disabled={loading}>
                     Sign in
                   </Button>
                 </div>
