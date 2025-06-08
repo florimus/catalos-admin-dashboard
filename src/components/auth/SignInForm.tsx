@@ -5,6 +5,7 @@ import SignInFormView from './SignInFormView';
 import { ILoginFormProps, ILoginResponse, IResponse } from '@/core/types';
 import { loginWithPassword } from '@/actions/login';
 import { useRouter } from 'next/navigation';
+import { fetchUserInfo } from '@/actions/user';
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,12 +38,13 @@ export default function SignInForm() {
     event.preventDefault();
     setLoading(true);
     const response: IResponse<ILoginResponse> = await loginWithPassword(formData.email, formData.password);
-    setLoading(false);
     if (response.success) {
+      await fetchUserInfo();
       router.push('/');
     } else {
       setMessage(response.message || 'Login failed');
     }
+    setLoading(false);
   };
 
   return (
