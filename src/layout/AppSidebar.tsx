@@ -16,6 +16,7 @@ import {
   PlugInIcon,
   TableIcon,
   UserCircleIcon,
+  ShootingStarIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
 
@@ -42,7 +43,6 @@ const navItems: NavItem[] = [
     name: "User Profile",
     path: "/profile",
   },
-
   {
     name: "Forms",
     icon: <ListIcon />,
@@ -64,6 +64,11 @@ const navItems: NavItem[] = [
 ];
 
 const othersItems: NavItem[] = [
+  {
+    icon: <ShootingStarIcon />,
+    name: "Channels",
+    path: "/channels",
+  },
   {
     icon: <PieChartIcon />,
     name: "Charts",
@@ -365,7 +370,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
+                  "Configurations"
                 ) : (
                   <HorizontaLDots />
                 )}
