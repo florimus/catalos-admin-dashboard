@@ -5,15 +5,13 @@ import Input from '../form/input/InputField';
 import Button from '../ui/button/Button';
 
 interface TableCardProps {
-  search: {
-    placeholder: string;
-  };
+  searchPlaceHolder: string;
   children: React.ReactNode;
   desc?: string;
 }
 
 const TableCard: React.FC<TableCardProps> = ({
-  search,
+  searchPlaceHolder,
   children,
   desc = '',
 }) => {
@@ -31,7 +29,7 @@ const TableCard: React.FC<TableCardProps> = ({
             type='text'
             name='search'
             id='search'
-            placeholder={search.placeholder}
+            placeholder={searchPlaceHolder}
           />
           <div className='flex items-center justify-between gap-2'>
             <Button size='sm' type='submit' variant='outline'>

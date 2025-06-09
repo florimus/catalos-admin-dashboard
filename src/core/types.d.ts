@@ -4,6 +4,16 @@ export interface IResponse<T> {
   data?: T;
 }
 
+export interface IPage<T> {
+  hits: T[];
+  totalHitsCount: number;
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+}
+
 export interface ILoginFormProps {
   email: string;
   password: string;
@@ -26,4 +36,37 @@ export interface IUserInfo {
   verified: boolean;
   active: boolean;
   permissions: string;
+}
+
+export interface ISearchParams {
+  query?: string;
+  page?: number;
+  size?: number;
+  sort?: string;
+  order?: 'asc' | 'desc';
+}
+
+export interface IAttributeOption {
+  label: string;
+  value: string;
+}
+
+export interface IAttributes {
+  [key: string]: {
+    type: 'Select' | 'Number' | 'Boolean';
+    options: IAttributeOption[] | null;
+    value: string | number | boolean | IAttributeOption;
+  };
+}
+
+export interface IProduct {
+  id: string;
+  name: string;
+  skuId: string;
+  categoryId: string | null;
+  brandId: string | null;
+  productTypeId: string;
+  publishedChannels: string[];
+  attributes: IAttributes;
+  active: boolean;
 }
