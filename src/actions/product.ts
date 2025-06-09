@@ -1,5 +1,6 @@
 'use server';
 
+import { handleError } from '@/client/httpClient';
 import { IPage, IProduct, IResponse } from '@/core/types';
 import { cookies } from 'next/headers';
 
@@ -32,6 +33,7 @@ export const getProducts = async (
   });
 
   return response.json().then((data) => {
+    handleError(data);
     if (data?.success) {
       return {
         success: true,

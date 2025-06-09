@@ -12,10 +12,7 @@ interface ProductListProps {
   hasPrevious?: boolean;
 }
 
-const ProductList: React.FC<ProductListProps> = ({
-  hits = [],
-  ...rest
-}) => {
+const ProductList: React.FC<ProductListProps> = ({ hits = [], ...rest }) => {
   const headingData: string[] = [
     'Product',
     'Category',
@@ -50,7 +47,14 @@ const ProductList: React.FC<ProductListProps> = ({
         text: product.publishedChannels?.length || 0,
       },
     ]) || [];
-  return <BasicTableOne headingData={headingData} tableData={tableData} pageProps={rest} />;
+
+  return (
+    <BasicTableOne
+      headingData={headingData}
+      tableData={tableData}
+      pageProps={rest}
+    />
+  );
 };
 
 export default ProductList;
