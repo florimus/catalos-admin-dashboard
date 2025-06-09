@@ -1,26 +1,8 @@
-// lib/axios.ts
-import axios from "axios";
-import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation'
 
-const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
 
-export async function httpClient() {
-    const token = await cookies()
-  
-    const instance = axios.create({
-      baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-    });
-  
-    if (token.get('accessToken')) {
-      instance.defaults.headers.common.Authorization = `Bearer ${token.get('accessToken')}`;
-    }
-  
-    return instance;
+export const handleError = (error: {status: number}) => {
+  if (error.status === 500 || error.status === 401) {
+    redirect('/signin')
   }
-
-export default axiosInstance;
+}
