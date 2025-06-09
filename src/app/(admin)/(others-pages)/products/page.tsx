@@ -18,14 +18,12 @@ export default async function BasicTables(ctx: { searchParams?: Promise<ISearchP
     console.error("Failed to fetch products:", response.message);
     return <div>Error fetching products: {response.message}</div>;
   }
-
-  console.log("Response from getProducts:", response);
   
   return (
     <div>
-      <PageBreadcrumb pageTitle="Channels" />
+      <PageBreadcrumb pageTitle="Products" />
       <div className="space-y-6">
-        <TableCard searchPlaceHolder={"Search channels"}>
+        <TableCard searchPlaceHolder={"Search products..."} searchParams={searchParams}>
           <ProductList {...response.data}/>
         </TableCard>
       </div>

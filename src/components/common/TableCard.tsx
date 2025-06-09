@@ -1,20 +1,38 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Input from '../form/input/InputField';
 import Button from '../ui/button/Button';
+import { useRouter } from 'next/navigation';
+import { ISearchParams } from '@/core/types';
 
 interface TableCardProps {
   searchPlaceHolder: string;
+  searchParams: ISearchParams | null;
   children: React.ReactNode;
   desc?: string;
 }
 
 const TableCard: React.FC<TableCardProps> = ({
   searchPlaceHolder,
+  searchParams,
   children,
   desc = '',
 }) => {
+  const router = useRouter();
+
+  const [searchQuery, setSearchQuery] = useState<string | null>(
+    searchParams?.query || null
+  );
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', (0).toString());
+    url.searchParams.set('query', searchQuery || '');
+    router.push(url.toString());
+  };
+
   return (
     <div
       className={`rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]`}
@@ -22,6 +40,7 @@ const TableCard: React.FC<TableCardProps> = ({
       {/* Card Header */}
       <div className='px-6 py-5'>
         <form
+          onSubmitCapture={handleSearchSubmit}
           className='grid grid-cols-1 sm:grid-cols-2 items-center gap-4'
           onSubmit={(e) => e.preventDefault()}
         >
@@ -29,7 +48,9 @@ const TableCard: React.FC<TableCardProps> = ({
             type='text'
             name='search'
             id='search'
+            defaultValue={searchParams?.query || ''}
             placeholder={searchPlaceHolder}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           <div className='flex items-center justify-between gap-2'>
             <Button size='sm' type='submit' variant='outline'>
