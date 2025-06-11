@@ -18,12 +18,17 @@ export default async function BasicTables(ctx: { searchParams?: Promise<ISearchP
     console.error("Failed to fetch products:", response.message);
     return <div>Error fetching products: {response.message}</div>;
   }
+
+  const cta = {
+    label: "Add Product",
+    href: "/products/create",
+  }
   
   return (
     <div>
       <PageBreadcrumb pageTitle="Products" />
       <div className="space-y-6">
-        <TableCard searchPlaceHolder={"Search products..."} searchParams={searchParams}>
+        <TableCard searchPlaceHolder={"Search products..."} searchParams={searchParams} cta={cta}>
           <ProductList {...response.data}/>
         </TableCard>
       </div>

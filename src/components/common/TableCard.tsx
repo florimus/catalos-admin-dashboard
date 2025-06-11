@@ -11,12 +11,17 @@ interface TableCardProps {
   searchParams: ISearchParams | null;
   children: React.ReactNode;
   desc?: string;
+  cta: {
+    label: string;
+    href: string;
+  };
 }
 
 const TableCard: React.FC<TableCardProps> = ({
   searchPlaceHolder,
   searchParams,
   children,
+  cta,
   desc = '',
 }) => {
   const router = useRouter();
@@ -33,11 +38,14 @@ const TableCard: React.FC<TableCardProps> = ({
     router.push(url.toString());
   };
 
+  const handleCtaClick = () => {
+    router.push(cta.href);
+  };
+
   return (
     <div
       className={`rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]`}
     >
-      {/* Card Header */}
       <div className='px-6 py-5'>
         <form
           onSubmitCapture={handleSearchSubmit}
@@ -57,8 +65,13 @@ const TableCard: React.FC<TableCardProps> = ({
               Search
             </Button>
 
-            <Button size='sm' type='button' className='ml-2'>
-              Create New Channel
+            <Button
+              size='sm'
+              type='button'
+              className='ml-2'
+              onClick={handleCtaClick}
+            >
+              {cta.label}
             </Button>
           </div>
         </form>
