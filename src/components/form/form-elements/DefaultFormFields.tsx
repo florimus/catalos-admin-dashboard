@@ -32,6 +32,7 @@ export const TextFormField: FC<ITextFormFieldProps> = ({
   placeholder = '',
   required = false,
 }) => {
+  console.log({ name, value, onChange });
   return (
     <div>
       <Label>{label}</Label>

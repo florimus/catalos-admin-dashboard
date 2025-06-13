@@ -4,6 +4,7 @@ import FormCard from '@/components/common/FormCard';
 import {
   FormFields,
   FormFieldType,
+  IDropDownFormFieldProps,
   IMultiSelectFormFieldProps,
   ITextFormFieldProps,
 } from './DefaultFormFields';
@@ -14,78 +15,11 @@ interface IDefaultInputsProps {
     label: string;
     onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   };
-  fields?: unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fields: any[];
 }
 
-const DefaultInputs: FC<IDefaultInputsProps> = ({ heading, cta }) => {
-  const fields = [
-    {
-      fieldType: FormFieldType.Text,
-      name: 'name',
-      label: 'Enter product name',
-      onchange: (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.value);
-      },
-      value: '',
-      placeholder: 'Lucci vasqqi...',
-      id: 'name',
-      required: true,
-      disabled: false,
-      error: false,
-      hint: 'Please enter valid product name',
-    },
-    {
-      fieldType: FormFieldType.Text,
-      name: 'skuId',
-      label: 'Enter Sku Id',
-      onchange: (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.value);
-      },
-      value: '',
-      placeholder: 'SKU00000',
-      id: 'skuId',
-      required: true,
-      disabled: false,
-      error: false,
-      hint: 'Please enter valid skuId',
-    },
-    {
-      fieldType: FormFieldType.Text,
-      name: 'productTypeId',
-      label: 'Enter Product Type',
-      onchange: (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.value);
-      },
-      value: '',
-      placeholder: 'Cabaras',
-      id: 'productTypeId',
-      required: true,
-      disabled: true,
-      error: false,
-      hint: 'Please enter valid product type',
-    },
-    {
-      fieldType: FormFieldType.MultiSelect,
-      name: 'publishedChannels',
-      label: 'Select Published Channels',
-      options: [
-        {
-          value: 'channel 1',
-          text: 'channel_1',
-          selected: true,
-        },
-        {
-          value: 'channel 2',
-          text: 'channel_2',
-          selected: true,
-        },
-      ],
-      defaultSelected: [],
-      onchange: (selected: string[]) => {
-        console.log(selected);
-      },
-    },
-  ];
+const DefaultInputs: FC<IDefaultInputsProps> = ({ heading, cta, fields }) => {
   return (
     <FormCard
       title={heading || 'Default Inputs'}
@@ -104,7 +38,16 @@ const DefaultInputs: FC<IDefaultInputsProps> = ({ heading, cta }) => {
               key={field.name}
               {...(field as unknown as IMultiSelectFormFieldProps)}
             />
-          ) : null;
+          ) : field.fieldType === FormFieldType.DropDown ? (
+            <FormFields.DropDownFormField
+              key={field.name}
+              {...(field as unknown as IDropDownFormFieldProps)}
+            />
+          ) : (
+            <div key={field.name}>
+              Unsupported field type: {field.fieldType}
+            </div>
+          );
         })}
     </FormCard>
   );

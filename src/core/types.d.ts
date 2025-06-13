@@ -70,3 +70,10 @@ export interface IProduct {
   attributes: IAttributes;
   active: boolean;
 }
+
+export interface IProductCreateFormInputs {
+  name: string;
+  skuId: string;
+  productTypeId: string;
+  publishedChannels: string[];
+}
