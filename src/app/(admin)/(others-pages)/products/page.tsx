@@ -25,13 +25,13 @@ export default async function BasicTables(ctx: { searchParams?: Promise<ISearchP
   }
   
   return (
-    <div>
-      <PageBreadcrumb pageTitle="Products" />
+    <>
+      <PageBreadcrumb pageTitle="Products" items={[{label: "Products", href: "/products"}]}/>
       <div className="space-y-6">
         <TableCard searchPlaceHolder={"Search products..."} searchParams={searchParams} cta={cta}>
           <ProductList {...response.data}/>
         </TableCard>
       </div>
-    </div>
+    </>
   );
 }

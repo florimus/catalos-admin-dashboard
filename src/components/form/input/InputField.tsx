@@ -14,6 +14,7 @@ export interface InputProps {
   disabled?: boolean;
   success?: boolean;
   error?: boolean;
+  required?: boolean; // Optional, to indicate if the field is required
   value?: string | number;
   hint?: string; // Optional hint text
 }
@@ -30,6 +31,7 @@ const Input: FC<InputProps> = ({
   min,
   max,
   step,
+  required,
   disabled = false,
   success = false,
   error = false,
@@ -64,10 +66,11 @@ const Input: FC<InputProps> = ({
         step={step}
         disabled={disabled}
         className={inputClasses}
+        required={required}
       />
 
       {/* Optional Hint Text */}
-      {hint && (
+      {error && hint && (
         <p
           className={`mt-1.5 text-xs ${
             error

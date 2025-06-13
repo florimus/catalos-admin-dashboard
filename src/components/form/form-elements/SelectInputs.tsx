@@ -13,7 +13,7 @@ export default function SelectInputs() {
     { value: "development", label: "Development" },
   ];
 
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [selectedValues, setSelectedValues] = useState<string[]>(["4"]);
 
   const handleSelectChange = (value: string) => {
     console.log("Selected value:", value);
@@ -34,6 +34,7 @@ export default function SelectInputs() {
           <Label>Select Input</Label>
          <div className="relative">
            <Select
+            name="select-input"
             options={options}
             placeholder="Select Option"
             onChange={handleSelectChange}
