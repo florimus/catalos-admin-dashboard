@@ -2,6 +2,9 @@
 
 import Link from 'next/link';
 import React from 'react';
+import Button from '../ui/button/Button';
+import { ChevronLeftIcon } from '@/icons';
+import { useRouter } from 'next/navigation';
 
 interface IBreadcrumbItem {
   label: string;
@@ -14,13 +17,17 @@ interface IBreadcrumbProps {
 }
 
 const PageBreadcrumb: React.FC<IBreadcrumbProps> = ({ pageTitle, items }) => {
+  const router = useRouter();
   return (
     <div className='flex flex-wrap items-center justify-between gap-3 mb-6'>
       <h2
-        className='text-xl font-semibold text-gray-800 dark:text-white/90'
+        className='text-xl font-semibold text-gray-800 dark:text-white/90 flex justify-center'
         x-text='pageName'
       >
-        {pageTitle}
+        <Button type='button' size='xm' variant='outline' onClick={() => router.back()}>
+          <ChevronLeftIcon />
+        </Button>
+        <span className='mx-5 mt-1'>{pageTitle}</span>
       </h2>
       <nav>
         <ol className='flex items-center gap-1.5'>

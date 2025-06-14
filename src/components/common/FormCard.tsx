@@ -9,6 +9,7 @@ interface FormCardProps {
   children: React.ReactNode;
   className?: string;
   ctaLabel?: string;
+  loading?: boolean;
   onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
 }
 
@@ -17,11 +18,12 @@ const FormCard: React.FC<FormCardProps> = ({
   children,
   ctaLabel,
   className = '',
+  loading = false,
   onSubmit = () => {},
 }) => {
   return (
     <div
-      className={`rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] ${className}`}
+      className={`rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] ${className} mb-5`}
     >
       <Form onSubmit={onSubmit}>
         <div className='px-6 py-5 flex items-center justify-between border-b border-gray-100 dark:border-gray-800 sm:px-8'>
@@ -30,7 +32,7 @@ const FormCard: React.FC<FormCardProps> = ({
           </h3>
           {ctaLabel && (
             <Button size='sm' type='submit'>
-              {ctaLabel}
+              {ctaLabel }{loading && <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />}
             </Button>
           )}
         </div>

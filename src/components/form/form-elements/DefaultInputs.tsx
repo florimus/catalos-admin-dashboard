@@ -15,6 +15,7 @@ interface IDefaultInputsProps {
   heading?: string;
   cta?: {
     label: string;
+    loading?: boolean;
     onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,6 +27,7 @@ const DefaultInputs: FC<IDefaultInputsProps> = ({ heading, cta, fields }) => {
     <FormCard
       title={heading || 'Default Inputs'}
       ctaLabel={cta?.label}
+      loading={cta?.loading}
       onSubmit={cta?.onSubmit}
     >
       {Array.isArray(fields) &&

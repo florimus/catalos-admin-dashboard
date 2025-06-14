@@ -23,6 +23,7 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
   productTypeOptions,
 }) => {
   const { isOpen, openModal, closeModal } = useModal();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [createProductForm, setCreateProductForm] =
     useState<IProductCreateFormInputs>({
@@ -39,6 +40,7 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
   >(productTypeOptions || []);
 
   const handleSave = () => {
+    setLoading(true);
     console.log('Form submitted', { ...createProductForm, productAttributes });
   };
 
@@ -47,6 +49,7 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
       ...prev,
       productTypeId: value,
     }));
+    setProductAttributes({});
     closeModal();
   };
 
@@ -132,55 +135,54 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
     <>
       <div className='grid grid-cols-1 gap-6 xl:grid-cols-3'>
         <div className='grid col-span-1 xl:col-span-2'>
-          <DefaultInputs
-            cta={{
-              label: 'Save Product',
-              onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-                event.preventDefault();
-                handleSave();
-              },
-            }}
-            heading='Product Form'
-            fields={fields}
-          />
-          {isOpen && (
-            <FormInModal
-              title='Select Product Type'
-              isOpen={isOpen}
-              closeModal={closeModal}
-            >
-              <Input
-                type='text'
-                placeholder='Select ProductType'
-                name='productTypeId'
-                onChange={handleProductTypeSearch}
+          <>
+            <DefaultInputs
+              cta={{
+                label: 'Save Product',
+                loading: loading,
+                onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+                  event.preventDefault();
+                  handleSave();
+                },
+              }}
+              heading='Product Form'
+              fields={fields}
+            />
+            {createProductForm.productTypeId && (
+              <AttributeForm
+                title='Product Attributes'
+                productTypeId={createProductForm.productTypeId}
+                attributes={productAttributes}
+                setAttributes={setProductAttributes}
               />
-              <ul>
-                {productTypes.map((type) => (
-                  <li
-                    key={type.value}
-                    className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
-                    onClick={() => handleProductTypeSelect(type.value)}
-                  >
-                    {type.label}
-                  </li>
-                ))}
-              </ul>
-            </FormInModal>
-          )}
+            )}
+          </>
         </div>
       </div>
-      {createProductForm.productTypeId && (
-        <div className='grid grid-cols-1 gap-6 xl:grid-cols-3 my-5'>
-          <div className='grid col-span-1 xl:col-span-2'>
-            <AttributeForm
-              title='Product Attributes'
-              productTypeId={createProductForm.productTypeId}
-              attributes={productAttributes}
-              setAttributes={setProductAttributes}
-            />
-          </div>
-        </div>
+      {isOpen && (
+        <FormInModal
+          title='Select Product Type'
+          isOpen={isOpen}
+          closeModal={closeModal}
+        >
+          <Input
+            type='text'
+            placeholder='Select ProductType'
+            name='productTypeId'
+            onChange={handleProductTypeSearch}
+          />
+          <ul>
+            {productTypes.map((type) => (
+              <li
+                key={type.value}
+                className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
+                onClick={() => handleProductTypeSelect(type.value)}
+              >
+                {type.label}
+              </li>
+            ))}
+          </ul>
+        </FormInModal>
       )}
     </>
   );
