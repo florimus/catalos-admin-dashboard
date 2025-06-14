@@ -5,8 +5,10 @@ import {
   IPage,
   IProduct,
   IProductCreateFormInputsWithAttributes,
+  IProductUpdateFormInputs,
   IResponse,
 } from '@/core/types';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 export const createProductAPI = async (
@@ -14,10 +16,6 @@ export const createProductAPI = async (
 ): Promise<IResponse<IProduct>> => {
   const cookieStore = await cookies();
   const url = new URL('/products', process.env.NEXT_PUBLIC_API_BASE_URL);
-
-  console.log('Creating product with payload:', payload);
-  
-
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -29,7 +27,7 @@ export const createProductAPI = async (
 
   return response.json().then((data) => {
     console.log('Response from createProductAPI:', data);
-    
+
     handleError(data);
     if (data?.success) {
       return {
@@ -85,6 +83,71 @@ export const getProducts = async (
     return {
       success: false,
       message: data?.message || 'Failed to fetch products',
+    };
+  });
+};
+
+export const getProductById = async (
+  id: string
+): Promise<IResponse<IProduct>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/products/id/${id}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Product fetched successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to fetch product',
+    };
+  });
+};
+
+export const updateProductApi = async (payload: IProductUpdateFormInputs) => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/products/id/${payload.id}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath(`/products/${payload.id}`);
+      revalidatePath('/products');
+      return {
+        success: true,
+        data: data.data,
+        message: 'Product updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to update product',
     };
   });
 };

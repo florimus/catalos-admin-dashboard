@@ -1,6 +1,6 @@
 'use client';
 
-import { IAttributes, IProductCreateFormInputs } from '@/core/types';
+import { IAttributes, IProduct, IProductCreateFormInputs } from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useState } from 'react';
@@ -14,35 +14,41 @@ import { useModal } from '@/hooks/useModal';
 import Input from '../form/input/InputField';
 import { getProductTypeList } from '@/actions/product-type';
 import AttributeForm from '../attributes/AttributeForm';
-import { createProductAPI } from '@/actions/product';
+import { createProductAPI, updateProductApi } from '@/actions/product';
 
 interface CreateProductFormProps {
   productTypeOptions?: { value: string; label: string }[];
+  product?: IProduct;
 }
 
 const CreateProductForm: FC<CreateProductFormProps> = ({
   productTypeOptions,
+  product,
 }) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [loading, setLoading] = useState<boolean>(false);
 
   const [createProductForm, setCreateProductForm] =
     useState<IProductCreateFormInputs>({
-      name: '',
-      skuId: '',
-      productTypeId: '',
-      publishedChannels: [],
+      name: product?.name || '',
+      skuId: product?.skuId || '',
+      productTypeId: product?.productTypeId || '',
+      publishedChannels: product?.publishedChannels || [],
     });
 
-  const [productAttributes, setProductAttributes] = useState<IAttributes>({});
+  const [productAttributes, setProductAttributes] = useState<IAttributes>(product?.attributes || {});
 
   const [productTypes, setProductTypes] = useState<
     { value: string; label: string }[]
   >(productTypeOptions || []);
 
   const handleSave = async () => {
-    setLoading(true);
-    const response = await createProductAPI({
+    setLoading(true); 
+
+    const method = product?.id ? updateProductApi : createProductAPI;
+
+    const response =  await method({
+      id: product?.id || '',
       ...createProductForm,
       attributes: productAttributes,
     });
@@ -106,7 +112,7 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
       placeholder: 'SKU00000',
       id: 'skuId',
       required: true,
-      disabled: false,
+      disabled: product?.id ? true : false,
       error: false,
       hint: 'Please enter valid skuId',
     },
@@ -128,7 +134,7 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
       name: 'productTypeId',
       label: 'Select Product Type',
       required: true,
-      disabled: false,
+      disabled: product?.id ? true : false,
       value:
         productTypes.find(
           (type) => type.value === createProductForm.productTypeId
