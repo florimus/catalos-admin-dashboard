@@ -1,6 +1,6 @@
 'use client';
 
-import { IProductCreateFormInputs } from '@/core/types';
+import { IAttributes, IProductCreateFormInputs } from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useState } from 'react';
@@ -13,6 +13,7 @@ import FormInModal from '../modals/FormInModal';
 import { useModal } from '@/hooks/useModal';
 import Input from '../form/input/InputField';
 import { getProductTypeList } from '@/actions/product-type';
+import AttributeForm from '../attributes/AttributeForm';
 
 interface CreateProductFormProps {
   productTypeOptions?: { value: string; label: string }[];
@@ -30,12 +31,15 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
       productTypeId: '',
       publishedChannels: [],
     });
+
+  const [productAttributes, setProductAttributes] = useState<IAttributes>({});
+
   const [productTypes, setProductTypes] = useState<
     { value: string; label: string }[]
   >(productTypeOptions || []);
 
   const handleSave = () => {
-    console.log('Form submitted', createProductForm);
+    console.log('Form submitted', { ...createProductForm, productAttributes });
   };
 
   const handleProductTypeSelect = (value: string) => {
@@ -125,46 +129,60 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
   ];
 
   return (
-    <div className='grid grid-cols-1 gap-6 xl:grid-cols-3'>
-      <div className='grid col-span-1 xl:col-span-2'>
-        <DefaultInputs
-          cta={{
-            label: 'Save Product',
-            onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-              event.preventDefault();
-              handleSave();
-            },
-          }}
-          heading='Product Form'
-          fields={fields}
-        />
-        {isOpen && (
-          <FormInModal
-            title='Select Product Type'
-            isOpen={isOpen}
-            closeModal={closeModal}
-          >
-            <Input
-              type='text'
-              placeholder='Select ProductType'
-              name='productTypeId'
-              onChange={handleProductTypeSearch}
-            />
-            <ul>
-              {productTypes.map((type) => (
-                <li
-                  key={type.value}
-                  className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
-                  onClick={() => handleProductTypeSelect(type.value)}
-                >
-                  {type.label}
-                </li>
-              ))}
-            </ul>
-          </FormInModal>
-        )}
+    <>
+      <div className='grid grid-cols-1 gap-6 xl:grid-cols-3'>
+        <div className='grid col-span-1 xl:col-span-2'>
+          <DefaultInputs
+            cta={{
+              label: 'Save Product',
+              onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+                event.preventDefault();
+                handleSave();
+              },
+            }}
+            heading='Product Form'
+            fields={fields}
+          />
+          {isOpen && (
+            <FormInModal
+              title='Select Product Type'
+              isOpen={isOpen}
+              closeModal={closeModal}
+            >
+              <Input
+                type='text'
+                placeholder='Select ProductType'
+                name='productTypeId'
+                onChange={handleProductTypeSearch}
+              />
+              <ul>
+                {productTypes.map((type) => (
+                  <li
+                    key={type.value}
+                    className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
+                    onClick={() => handleProductTypeSelect(type.value)}
+                  >
+                    {type.label}
+                  </li>
+                ))}
+              </ul>
+            </FormInModal>
+          )}
+        </div>
       </div>
-    </div>
+      {createProductForm.productTypeId && (
+        <div className='grid grid-cols-1 gap-6 xl:grid-cols-3 my-5'>
+          <div className='grid col-span-1 xl:col-span-2'>
+            <AttributeForm
+              title='Product Attributes'
+              productTypeId={createProductForm.productTypeId}
+              attributes={productAttributes}
+              setAttributes={setProductAttributes}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

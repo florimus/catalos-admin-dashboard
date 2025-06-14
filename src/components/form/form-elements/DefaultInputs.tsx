@@ -7,6 +7,7 @@ import {
   IDisplayFieldProps,
   IDropDownFormFieldProps,
   IMultiSelectFormFieldProps,
+  ISwitchFieldProps,
   ITextFormFieldProps,
 } from './DefaultFormFields';
 
@@ -48,6 +49,11 @@ const DefaultInputs: FC<IDefaultInputsProps> = ({ heading, cta, fields }) => {
             <FormFields.DisplayField
               key={field.name}
               {...(field as unknown as IDisplayFieldProps)}
+            />
+          ) : field.fieldType === FormFieldType.Switch ? (
+            <FormFields.SwitchField
+              key={field.name}
+              {...(field as unknown as ISwitchFieldProps)}
             />
           ) : null;
         })}

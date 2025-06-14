@@ -28,7 +28,11 @@ const FormCard: React.FC<FormCardProps> = ({
           <h3 className='text-base font-medium text-gray-800 dark:text-white/90'>
             {title}
           </h3>
-          <Button size='sm' type="submit">{ctaLabel}</Button>
+          {ctaLabel && (
+            <Button size='sm' type='submit'>
+              {ctaLabel}
+            </Button>
+          )}
         </div>
 
         <div className='p-4 border-t border-gray-100 dark:border-gray-800 sm:p-6'>

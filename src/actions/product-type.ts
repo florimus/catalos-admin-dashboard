@@ -47,3 +47,34 @@ export const getProductTypeList = async (
     };
   });
 };
+
+export const getProductTypeById = async (
+  id: string
+): Promise<IResponse<IProductType>> => {
+  const cookieStore = await cookies();
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/product-types/id/${id}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+      },
+    }
+  );
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Product-type fetched successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to fetch product-type',
+    };
+  });
+}

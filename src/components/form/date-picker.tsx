@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect } from 'react';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.css';

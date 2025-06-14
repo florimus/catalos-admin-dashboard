@@ -53,7 +53,7 @@ export interface IAttributeOption {
 
 export interface IAttributes {
   [key: string]: {
-    type: 'Select' | 'Number' | 'Boolean';
+    type: 'Select' | 'Number' | 'Boolean' | 'Text';
     options: IAttributeOption[] | null;
     value: string | number | boolean | IAttributeOption;
   };
@@ -76,6 +76,7 @@ export interface IProductType {
   name: string;
   slug: string;
   active: boolean;
+  productAttributes?: IAttributes;
 }
 
 export interface IProductCreateFormInputs {

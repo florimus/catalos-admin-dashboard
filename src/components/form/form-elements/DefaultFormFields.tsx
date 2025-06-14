@@ -6,6 +6,7 @@ import { ChevronDownIcon, TimeIcon } from '@/icons';
 import DatePicker from '../date-picker';
 import { DateOption } from 'flatpickr/dist/types/options';
 import MultiSelect, { Option } from '../MultiSelect';
+import Switch from '../switch/Switch';
 
 export interface ITextFormFieldProps {
   name: string;
@@ -32,7 +33,6 @@ export const TextFormField: FC<ITextFormFieldProps> = ({
   placeholder = '',
   required = false,
 }) => {
-  console.log({ name, value, onChange });
   return (
     <div>
       <Label>{label}</Label>
@@ -248,6 +248,24 @@ export const MultiSelectFormField: FC<IMultiSelectFormFieldProps> = ({
   );
 };
 
+export interface ISwitchFieldProps {
+  label: string;
+  checked?: boolean;
+  onChange: (checked: boolean) => void;
+}
+
+export const SwitchField: FC<ISwitchFieldProps> = ({
+  label,
+  checked = false,
+  onChange,
+}) => {
+  return (
+    <div className='relative'>
+      <Switch label={label} defaultChecked={checked} onChange={onChange} />
+    </div>
+  );
+};
+
 export enum FormFieldType {
   Text = 'text',
   DropDown = 'dropdown',
@@ -255,6 +273,7 @@ export enum FormFieldType {
   TimePicker = 'timepicker',
   MultiSelect = 'multiselect',
   Display = 'display',
+  Switch = 'switch',
 }
 
 export const FormFields = {
@@ -264,4 +283,5 @@ export const FormFields = {
   TimePicker,
   MultiSelectFormField,
   DisplayField,
+  SwitchField,
 };
