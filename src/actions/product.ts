@@ -27,8 +27,6 @@ export const createProductAPI = async (
   });
 
   return response.json().then((data) => {
-    console.log('Response from createProductAPI:', data);
-
     handleError(data);
     if (data?.success) {
       return {
@@ -39,7 +37,7 @@ export const createProductAPI = async (
     }
     return {
       success: false,
-      message: data?.message || 'Failed to create product',
+      message: data?.message?.[0] || 'Failed to create product',
     };
   });
 };

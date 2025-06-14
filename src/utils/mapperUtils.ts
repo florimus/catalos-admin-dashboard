@@ -34,7 +34,6 @@ export const attributesToFormFieldMapper = (
       const attribute = attributes[key];
 
       console.log(`Processing attribute: ${key}`, attribute);
-      
 
       if (attribute.type === 'Text' || attribute.type === 'Number') {
         formFields.push({
@@ -46,7 +45,10 @@ export const attributesToFormFieldMapper = (
               ...attributeStates,
               [key]: {
                 ...attributes[key],
-                value: event.target.value,
+                value:
+                  attribute.type === 'Number'
+                    ? Number(event.target.value)
+                    : event.target.value,
               },
             });
           },
@@ -74,7 +76,7 @@ export const attributesToFormFieldMapper = (
           defaultValue: attributeStates?.[key]?.value || '',
           placeholder: `Select ${key}`,
           id: key,
-          required: false
+          required: false,
         });
       } else if (attribute.type === 'Boolean') {
         formFields.push({

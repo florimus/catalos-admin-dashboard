@@ -12,11 +12,6 @@ export default async function EditProduct({
 }: {
   params: { id: string };
 }) {
-  const breadCrumbItems = [
-    { label: 'Products', href: '/products' },
-    { label: 'Edit Product', href: '#' },
-  ];
-
   const awaitedParams = await params;
 
   const product: IResponse<IProduct> = await getProductById(awaitedParams.id);
@@ -25,11 +20,19 @@ export default async function EditProduct({
     return <div>Error fetching product details.</div>;
   }
 
+  const breadCrumbItems = [
+    { label: 'Products', href: '/products' },
+    { label: product?.data?.name, href: '#' },
+  ];
+
   const productTypes: IResponse<IPage<IProductType>> =
     await getProductTypeList();
   return (
     <>
-      <PageBreadcrumb pageTitle='Edit Product' items={breadCrumbItems} />
+      <PageBreadcrumb
+        pageTitle={product?.data?.name || 'Edit Product'}
+        items={breadCrumbItems}
+      />
       <ProductForm
         productTypeOptions={productTypesToSingleSelectMapper(
           productTypes?.data?.hits

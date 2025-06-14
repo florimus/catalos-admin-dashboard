@@ -3,7 +3,7 @@
 import { IAttributes, IProduct, IProductCreateFormInputs } from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   channelToMultiSelectMapper,
   productTypesToSingleSelectMapper,
@@ -19,6 +19,8 @@ import {
   productStatusUpdateApi,
   updateProductApi,
 } from '@/actions/product';
+import Alert from '../ui/alert/Alert';
+import { useRouter } from 'next/navigation';
 
 interface ProductFormProps {
   productTypeOptions?: { value: string; label: string }[];
@@ -29,6 +31,19 @@ const ProductForm: FC<ProductFormProps> = ({ productTypeOptions, product }) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
+
+  const router = useRouter();
+
+  const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
+    []
+  );
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAlerts([]);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [alerts]);
 
   const [createProductForm, setCreateProductForm] =
     useState<IProductCreateFormInputs>({
@@ -56,7 +71,18 @@ const ProductForm: FC<ProductFormProps> = ({ productTypeOptions, product }) => {
       attributes: productAttributes,
     });
     setLoading(false);
-    if (response.success) {
+    setAlerts([
+      {
+        message:
+          response.message ||
+          (response.success
+            ? 'Product saved successfully'
+            : 'Failed to save product'),
+        variant: response.success ? 'success' : 'error',
+      },
+    ]);
+    if (!product?.id && response.success) {
+      router.push(`/products/${response.data?.id}`);
     }
   };
 
@@ -65,6 +91,12 @@ const ProductForm: FC<ProductFormProps> = ({ productTypeOptions, product }) => {
     const response = await productStatusUpdateApi(product?.id || '', active);
     setStatusLoading(false);
     if (response.success) {
+      setAlerts([
+        {
+          message: response.message || 'Product status updated successfully',
+          variant: 'success',
+        },
+      ]);
       setCreateProductForm((prev) => ({
         ...prev,
         active,
@@ -159,11 +191,17 @@ const ProductForm: FC<ProductFormProps> = ({ productTypeOptions, product }) => {
     },
   ];
 
-  const statusLoader = <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />;
+  const statusLoader = (
+    <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
+  );
 
   const productStatusFields = {
     fieldType: FormFieldType.Switch,
-    label: statusLoading ? statusLoader : createProductForm.active ? 'Online' : 'Offline',
+    label: statusLoading
+      ? statusLoader
+      : createProductForm.active
+      ? 'Online'
+      : 'Offline',
     name: 'product-status',
     disabled: product?.id ? false : true,
     checked: createProductForm.active || false,
@@ -172,7 +210,17 @@ const ProductForm: FC<ProductFormProps> = ({ productTypeOptions, product }) => {
 
   return (
     <>
-      <div className='grid grid-cols-1 gap-6 xl:grid-cols-3'>
+      {Array.isArray(alerts) &&
+        alerts.length > 0 &&
+        alerts.map((alert) => (
+          <Alert
+            key={alert.message}
+            message=''
+            variant={alert.variant as 'success' | 'error' | 'warning' | 'info'}
+            title={alert.message}
+          />
+        ))}
+      <div className='grid grid-cols-1 gap-6 xl:grid-cols-3 my-6'>
         <div className='grid col-span-1 xl:col-span-2'>
           <DefaultInputs
             cta={{
