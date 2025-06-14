@@ -71,6 +71,13 @@ export interface IProduct {
   active: boolean;
 }
 
+export interface IProductType {
+  id: string;
+  name: string;
+  slug: string;
+  active: boolean;
+}
+
 export interface IProductCreateFormInputs {
   name: string;
   skuId: string;

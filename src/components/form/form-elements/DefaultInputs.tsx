@@ -4,6 +4,7 @@ import FormCard from '@/components/common/FormCard';
 import {
   FormFields,
   FormFieldType,
+  IDisplayFieldProps,
   IDropDownFormFieldProps,
   IMultiSelectFormFieldProps,
   ITextFormFieldProps,
@@ -43,11 +44,12 @@ const DefaultInputs: FC<IDefaultInputsProps> = ({ heading, cta, fields }) => {
               key={field.name}
               {...(field as unknown as IDropDownFormFieldProps)}
             />
-          ) : (
-            <div key={field.name}>
-              Unsupported field type: {field.fieldType}
-            </div>
-          );
+          ) : field.fieldType === FormFieldType.Display ? (
+            <FormFields.DisplayField
+              key={field.name}
+              {...(field as unknown as IDisplayFieldProps)}
+            />
+          ) : null;
         })}
     </FormCard>
   );

@@ -52,6 +52,48 @@ export const TextFormField: FC<ITextFormFieldProps> = ({
   );
 };
 
+export interface IDisplayFieldProps {
+  label: string;
+  value: string;
+  id?: string;
+  hint?: string;
+  name: string;
+  disabled?: boolean;
+  placeholder?: string;
+  required?: boolean;
+  onClick?: () => void;
+}
+
+export const DisplayField: FC<IDisplayFieldProps> = ({
+  label,
+  value,
+  id,
+  hint,
+  name,
+  onClick,
+  disabled = false,
+  placeholder = '',
+  required = false,
+}) => {
+  return (
+    <div>
+      <Label>{label}</Label>
+      <Input
+        type='text'
+        name={name}
+        id={id || name}
+        value={value}
+        onChange={() => {}}
+        onClick={onClick}
+        required={required}
+        disabled={disabled}
+        placeholder={placeholder}
+        hint={hint}
+      />
+    </div>
+  );
+};
+
 export interface IDropDownFormFieldProps {
   name: string;
   label: string;
@@ -212,6 +254,7 @@ export enum FormFieldType {
   DatePicker = 'datepicker',
   TimePicker = 'timepicker',
   MultiSelect = 'multiselect',
+  Display = 'display',
 }
 
 export const FormFields = {
@@ -220,4 +263,5 @@ export const FormFields = {
   DatePickerFormField,
   TimePicker,
   MultiSelectFormField,
+  DisplayField,
 };

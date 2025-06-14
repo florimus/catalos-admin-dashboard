@@ -3,11 +3,26 @@
 import { IProductCreateFormInputs } from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
-import { useState } from 'react';
-import { channelToMultiSelectMapper } from '@/utils/mapperUtils';
+import { FC, useState } from 'react';
+import {
+  channelToMultiSelectMapper,
+  productTypesToSingleSelectMapper,
+} from '@/utils/mapperUtils';
 import { CHANNELS } from '@/core/constants';
+import FormInModal from '../modals/FormInModal';
+import { useModal } from '@/hooks/useModal';
+import Input from '../form/input/InputField';
+import { getProductTypeList } from '@/actions/product-type';
 
-const CreateProductForm = () => {
+interface CreateProductFormProps {
+  productTypeOptions?: { value: string; label: string }[];
+}
+
+const CreateProductForm: FC<CreateProductFormProps> = ({
+  productTypeOptions,
+}) => {
+  const { isOpen, openModal, closeModal } = useModal();
+
   const [createProductForm, setCreateProductForm] =
     useState<IProductCreateFormInputs>({
       name: '',
@@ -15,9 +30,33 @@ const CreateProductForm = () => {
       productTypeId: '',
       publishedChannels: [],
     });
+  const [productTypes, setProductTypes] = useState<
+    { value: string; label: string }[]
+  >(productTypeOptions || []);
 
   const handleSave = () => {
     console.log('Form submitted', createProductForm);
+  };
+
+  const handleProductTypeSelect = (value: string) => {
+    setCreateProductForm((prev) => ({
+      ...prev,
+      productTypeId: value,
+    }));
+    closeModal();
+  };
+
+  const handleProductTypeSearch = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.value.trim() === '') {
+      setProductTypes(productTypeOptions || []);
+      return;
+    }
+    const response = await getProductTypeList(event.target.value);
+    if (response.success && response.data?.hits) {
+      setProductTypes(productTypesToSingleSelectMapper(response.data.hits));
+    }
   };
 
   const fields = [
@@ -71,22 +110,17 @@ const CreateProductForm = () => {
       },
     },
     {
-      fieldType: FormFieldType.DropDown,
+      fieldType: FormFieldType.Display,
       name: 'productTypeId',
       label: 'Select Product Type',
       required: true,
       disabled: false,
-      onChange: (value: string) => {
-        setCreateProductForm((prev) => ({
-          ...prev,
-          productTypeId: value,
-        }));
-      },
-      options: [
-        { value: 'electronics', label: 'Electronics' },
-        { value: 'clothing', label: 'Clothing' },
-        { value: 'furniture', label: 'Furniture' },
-      ],
+      value:
+        productTypes.find(
+          (type) => type.value === createProductForm.productTypeId
+        )?.label || 'Select Product Type',
+      id: 'productTypeId',
+      onClick: openModal,
     },
   ];
 
@@ -104,6 +138,31 @@ const CreateProductForm = () => {
           heading='Product Form'
           fields={fields}
         />
+        {isOpen && (
+          <FormInModal
+            title='Select Product Type'
+            isOpen={isOpen}
+            closeModal={closeModal}
+          >
+            <Input
+              type='text'
+              placeholder='Select ProductType'
+              name='productTypeId'
+              onChange={handleProductTypeSearch}
+            />
+            <ul>
+              {productTypes.map((type) => (
+                <li
+                  key={type.value}
+                  className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
+                  onClick={() => handleProductTypeSelect(type.value)}
+                >
+                  {type.label}
+                </li>
+              ))}
+            </ul>
+          </FormInModal>
+        )}
       </div>
     </div>
   );

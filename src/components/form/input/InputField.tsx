@@ -7,6 +7,7 @@ export interface InputProps {
   placeholder?: string;
   defaultValue?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick?: () => void;
   className?: string;
   min?: string;
   max?: string;
@@ -27,6 +28,7 @@ const Input: FC<InputProps> = ({
   defaultValue,
   value,
   onChange,
+  onClick,
   className = "",
   min,
   max,
@@ -61,6 +63,7 @@ const Input: FC<InputProps> = ({
         defaultValue={defaultValue}
         value={value}
         onChange={onChange}
+        onClick={() => onClick && onClick()}
         min={min}
         max={max}
         step={step}
