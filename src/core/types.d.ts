@@ -84,6 +84,7 @@ export interface IProductCreateFormInputs {
   skuId: string;
   productTypeId: string;
   publishedChannels: string[];
+  active?: boolean;
 }
 
 export interface IProductUpdateFormInputs {
@@ -96,4 +97,9 @@ export interface IProductUpdateFormInputs {
 export interface IProductCreateFormInputsWithAttributes
   extends IProductCreateFormInputs {
   attributes: IAttributes;
+}
+
+export interface IProductStatusUpdate {
+  id: string;
+  active: boolean;
 }

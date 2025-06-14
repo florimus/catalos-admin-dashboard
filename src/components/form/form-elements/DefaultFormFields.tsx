@@ -252,16 +252,18 @@ export interface ISwitchFieldProps {
   label: string;
   checked?: boolean;
   onChange: (checked: boolean) => void;
+  disabled: boolean;
 }
 
 export const SwitchField: FC<ISwitchFieldProps> = ({
   label,
   checked = false,
   onChange,
+  disabled = false,
 }) => {
   return (
     <div className='relative'>
-      <Switch label={label} defaultChecked={checked} onChange={onChange} />
+      <Switch label={label} defaultChecked={checked} onChange={onChange} disabled={disabled} />
     </div>
   );
 };

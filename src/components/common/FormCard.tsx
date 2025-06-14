@@ -31,7 +31,7 @@ const FormCard: React.FC<FormCardProps> = ({
             {title}
           </h3>
           {ctaLabel && (
-            <Button size='sm' type='submit'>
+            <Button size='xm' type='submit'>
               {ctaLabel }{loading && <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />}
             </Button>
           )}

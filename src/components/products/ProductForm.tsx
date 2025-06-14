@@ -14,47 +14,62 @@ import { useModal } from '@/hooks/useModal';
 import Input from '../form/input/InputField';
 import { getProductTypeList } from '@/actions/product-type';
 import AttributeForm from '../attributes/AttributeForm';
-import { createProductAPI, updateProductApi } from '@/actions/product';
+import {
+  createProductAPI,
+  productStatusUpdateApi,
+  updateProductApi,
+} from '@/actions/product';
 
-interface CreateProductFormProps {
+interface ProductFormProps {
   productTypeOptions?: { value: string; label: string }[];
   product?: IProduct;
 }
 
-const CreateProductForm: FC<CreateProductFormProps> = ({
-  productTypeOptions,
-  product,
-}) => {
+const ProductForm: FC<ProductFormProps> = ({ productTypeOptions, product }) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [loading, setLoading] = useState<boolean>(false);
+  const [statusLoading, setStatusLoading] = useState<boolean>(false);
 
   const [createProductForm, setCreateProductForm] =
     useState<IProductCreateFormInputs>({
       name: product?.name || '',
       skuId: product?.skuId || '',
       productTypeId: product?.productTypeId || '',
+      active: product?.active || false,
       publishedChannels: product?.publishedChannels || [],
     });
 
-  const [productAttributes, setProductAttributes] = useState<IAttributes>(product?.attributes || {});
+  const [productAttributes, setProductAttributes] = useState<IAttributes>(
+    product?.attributes || {}
+  );
 
   const [productTypes, setProductTypes] = useState<
     { value: string; label: string }[]
   >(productTypeOptions || []);
 
   const handleSave = async () => {
-    setLoading(true); 
-
+    setLoading(true);
     const method = product?.id ? updateProductApi : createProductAPI;
-
-    const response =  await method({
+    const response = await method({
       id: product?.id || '',
       ...createProductForm,
       attributes: productAttributes,
     });
     setLoading(false);
-    if (response.success) {}
+    if (response.success) {
+    }
+  };
 
+  const handleProductStatusUpdate = async (active: boolean) => {
+    setStatusLoading(true);
+    const response = await productStatusUpdateApi(product?.id || '', active);
+    setStatusLoading(false);
+    if (response.success) {
+      setCreateProductForm((prev) => ({
+        ...prev,
+        active,
+      }));
+    }
   };
 
   const handleProductTypeSelect = (value: string) => {
@@ -144,6 +159,17 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
     },
   ];
 
+  const statusLoader = <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />;
+
+  const productStatusFields = {
+    fieldType: FormFieldType.Switch,
+    label: statusLoading ? statusLoader : createProductForm.active ? 'Online' : 'Offline',
+    name: 'product-status',
+    disabled: product?.id ? false : true,
+    checked: createProductForm.active || false,
+    onChange: (checked: boolean) => handleProductStatusUpdate(checked),
+  };
+
   return (
     <>
       <div className='grid grid-cols-1 gap-6 xl:grid-cols-3'>
@@ -168,6 +194,14 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
               setAttributes={setProductAttributes}
             />
           )}
+        </div>
+        <div className='grid col-span-1'>
+          <div>
+            <DefaultInputs
+              heading='Product Status'
+              fields={[productStatusFields]}
+            />
+          </div>
         </div>
       </div>
       {isOpen && (
@@ -199,4 +233,4 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
   );
 };
 
-export default CreateProductForm;
+export default ProductForm;

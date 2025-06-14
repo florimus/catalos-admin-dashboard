@@ -5,6 +5,7 @@ import {
   IPage,
   IProduct,
   IProductCreateFormInputsWithAttributes,
+  IProductStatusUpdate,
   IProductUpdateFormInputs,
   IResponse,
 } from '@/core/types';
@@ -148,6 +149,41 @@ export const updateProductApi = async (payload: IProductUpdateFormInputs) => {
     return {
       success: false,
       message: data?.message || 'Failed to update product',
+    };
+  });
+};
+
+export const productStatusUpdateApi = async (
+  id: string,
+  active: boolean
+): Promise<IResponse<IProductStatusUpdate>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/products/id/${id}/status/${active}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath(`/products/${id}`);
+      revalidatePath('/products');
+      return {
+        success: true,
+        data: data.data,
+        message: 'Product status updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to update product status',
     };
   });
 };

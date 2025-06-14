@@ -3,7 +3,7 @@
 import { getProductById } from '@/actions/product';
 import { getProductTypeList } from '@/actions/product-type';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
-import CreateProductForm from '@/components/products/CreateProduct';
+import ProductForm from '@/components/products/ProductForm';
 import { IPage, IProduct, IProductType, IResponse } from '@/core/types';
 import { productTypesToSingleSelectMapper } from '@/utils/mapperUtils';
 
@@ -30,7 +30,7 @@ export default async function EditProduct({
   return (
     <>
       <PageBreadcrumb pageTitle='Edit Product' items={breadCrumbItems} />
-      <CreateProductForm
+      <ProductForm
         productTypeOptions={productTypesToSingleSelectMapper(
           productTypes?.data?.hits
         )}
