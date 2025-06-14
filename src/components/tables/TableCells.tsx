@@ -8,16 +8,18 @@ const ProfileCell = ({
   alt = '',
   primaryText,
   secondaryText,
+  onclick,
 }: {
   hasAvatar?: boolean;
   src?: string;
   alt?: string;
   primaryText?: string;
   secondaryText?: string;
+  onclick?: () => void;
 }) => {
   return (
     <TableCell className='px-5 py-4 sm:px-6 text-start'>
-      <div className='flex items-center gap-3'>
+      <div className={`flex items-center gap-3${onclick ? ' cursor-pointer' : ''}`}  onClick={onclick}>
         {hasAvatar && (
           <div className='w-10 h-10 overflow-hidden rounded-full'>
             <Image width={40} height={40} src={src} alt={alt} />

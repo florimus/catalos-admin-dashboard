@@ -1,6 +1,8 @@
+'use client';
 import { IProduct } from '@/core/types';
 import BasicTableOne from '../tables/BasicTableOne';
 import { TableCellTypes } from '../tables/TableCells';
+import { useRouter } from 'next/navigation';
 
 interface ProductListProps {
   hits?: IProduct[];
@@ -21,6 +23,11 @@ const ProductList: React.FC<ProductListProps> = ({ hits = [], ...rest }) => {
     'Channels',
   ];
 
+  const router = useRouter();
+
+  const goToProductDetails = (productId: string) =>
+    router.push(`/products/${productId}`);
+
   const tableData =
     hits?.map((product) => [
       {
@@ -28,6 +35,7 @@ const ProductList: React.FC<ProductListProps> = ({ hits = [], ...rest }) => {
         hasAvatar: false,
         primaryText: product.name,
         secondaryText: product.skuId,
+        onclick: () => goToProductDetails(product.id),
       },
       {
         type: TableCellTypes.TextCell,

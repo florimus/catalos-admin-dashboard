@@ -19,6 +19,7 @@ interface TableProps {
         text?: undefined;
         status?: undefined;
         color?: undefined;
+        onclick?: () => void;
       }
     | {
         type: TableCellTypes;
@@ -28,6 +29,7 @@ interface TableProps {
         secondaryText?: undefined;
         status?: undefined;
         color?: undefined;
+        onclick?: () => void;
       }
     | {
         type: TableCellTypes;
@@ -37,6 +39,7 @@ interface TableProps {
         primaryText?: undefined;
         secondaryText?: undefined;
         text?: undefined;
+        onclick?: () => void;
       }
   )[][];
   headingData: string[];
@@ -65,7 +68,7 @@ const BasicTableView: FC<TableProps> = ({ tableData, headingData }) => {
 
             {/* Table Body */}
             <TableBody className='divide-y divide-gray-100 dark:divide-white/[0.05]'>
-              {tableData.map((order, index) => (
+              {Array.isArray(tableData) && tableData.map((order, index) => (
                 <TableRow key={index}>
                   {order.map((cell, cellIndex) => {
                     return cell.type === TableCellTypes.ProfileCell ? (
@@ -73,7 +76,11 @@ const BasicTableView: FC<TableProps> = ({ tableData, headingData }) => {
                     ) : cell.type === TableCellTypes.TextCell ? (
                       <TableCells.TextCell {...cell} key={cellIndex} />
                     ) : cell.type === TableCellTypes.StatusCell ? (
-                      <TableCells.StatusCell color={cell.color as BadgeColor} status={cell.status} key={cellIndex} />
+                      <TableCells.StatusCell
+                        color={cell.color as BadgeColor}
+                        status={cell.status}
+                        key={cellIndex}
+                      />
                     ) : null;
                   })}
                 </TableRow>

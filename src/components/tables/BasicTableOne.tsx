@@ -16,6 +16,7 @@ interface BasicTableOneProps {
         text?: undefined;
         status?: undefined;
         color?: undefined;
+        onclick?: () => void;
       }
     | {
         type: TableCellTypes;
@@ -25,6 +26,7 @@ interface BasicTableOneProps {
         secondaryText?: undefined;
         status?: undefined;
         color?: undefined;
+        onclick?: () => void;
       }
     | {
         type: TableCellTypes;
@@ -34,6 +36,7 @@ interface BasicTableOneProps {
         primaryText?: undefined;
         secondaryText?: undefined;
         text?: undefined;
+        onclick?: () => void;
       }
   )[][];
   headingData: string[];
