@@ -1,8 +1,49 @@
 'use server';
 
 import { handleError } from '@/client/httpClient';
-import { IPage, IProduct, IResponse } from '@/core/types';
+import {
+  IPage,
+  IProduct,
+  IProductCreateFormInputsWithAttributes,
+  IResponse,
+} from '@/core/types';
 import { cookies } from 'next/headers';
+
+export const createProductAPI = async (
+  payload: IProductCreateFormInputsWithAttributes
+): Promise<IResponse<IProduct>> => {
+  const cookieStore = await cookies();
+  const url = new URL('/products', process.env.NEXT_PUBLIC_API_BASE_URL);
+
+  console.log('Creating product with payload:', payload);
+  
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  return response.json().then((data) => {
+    console.log('Response from createProductAPI:', data);
+    
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Product created successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to create product',
+    };
+  });
+};
 
 export const getProducts = async (
   query: string = '',

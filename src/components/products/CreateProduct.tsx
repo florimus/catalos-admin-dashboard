@@ -14,6 +14,7 @@ import { useModal } from '@/hooks/useModal';
 import Input from '../form/input/InputField';
 import { getProductTypeList } from '@/actions/product-type';
 import AttributeForm from '../attributes/AttributeForm';
+import { createProductAPI } from '@/actions/product';
 
 interface CreateProductFormProps {
   productTypeOptions?: { value: string; label: string }[];
@@ -39,9 +40,15 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
     { value: string; label: string }[]
   >(productTypeOptions || []);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setLoading(true);
-    console.log('Form submitted', { ...createProductForm, productAttributes });
+    const response = await createProductAPI({
+      ...createProductForm,
+      attributes: productAttributes,
+    });
+    setLoading(false);
+    if (response.success) {}
+
   };
 
   const handleProductTypeSelect = (value: string) => {
@@ -135,28 +142,26 @@ const CreateProductForm: FC<CreateProductFormProps> = ({
     <>
       <div className='grid grid-cols-1 gap-6 xl:grid-cols-3'>
         <div className='grid col-span-1 xl:col-span-2'>
-          <>
-            <DefaultInputs
-              cta={{
-                label: 'Save Product',
-                loading: loading,
-                onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-                  event.preventDefault();
-                  handleSave();
-                },
-              }}
-              heading='Product Form'
-              fields={fields}
+          <DefaultInputs
+            cta={{
+              label: 'Save Product',
+              loading: loading,
+              onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+                event.preventDefault();
+                handleSave();
+              },
+            }}
+            heading='Product Form'
+            fields={fields}
+          />
+          {createProductForm.productTypeId && (
+            <AttributeForm
+              title='Product Attributes'
+              productTypeId={createProductForm.productTypeId}
+              attributes={productAttributes}
+              setAttributes={setProductAttributes}
             />
-            {createProductForm.productTypeId && (
-              <AttributeForm
-                title='Product Attributes'
-                productTypeId={createProductForm.productTypeId}
-                attributes={productAttributes}
-                setAttributes={setProductAttributes}
-              />
-            )}
-          </>
+          )}
         </div>
       </div>
       {isOpen && (

@@ -85,3 +85,8 @@ export interface IProductCreateFormInputs {
   productTypeId: string;
   publishedChannels: string[];
 }
+
+export interface IProductCreateFormInputsWithAttributes
+  extends IProductCreateFormInputs {
+  attributes: IAttributes;
+}
