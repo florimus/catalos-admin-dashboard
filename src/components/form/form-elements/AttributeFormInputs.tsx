@@ -8,10 +8,7 @@ import Label from '../Label';
 import Radio from '../input/Radio';
 import { ATTRIBUTE_TYPES } from '@/core/constants';
 import { formatSlug } from '@/utils/stringUtils';
-import {
-  IAttributeListItem,
-  IAttributeOption,
-} from '@/core/types';
+import { IAttributeListItem, IAttributeOption } from '@/core/types';
 
 interface AttributeFormInputsProps {
   heading?: string;
@@ -23,6 +20,7 @@ interface AttributeFormInputsProps {
   allAttributes: IAttributeListItem[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setAllAttributes: any;
+  disabled: boolean;
 }
 
 const AttributeFormInputs: FC<AttributeFormInputsProps> = ({
@@ -30,6 +28,7 @@ const AttributeFormInputs: FC<AttributeFormInputsProps> = ({
   cta,
   allAttributes,
   setAllAttributes,
+  disabled,
 }) => {
   const { isOpen, openModal, closeModal } = useModal();
 
@@ -75,7 +74,7 @@ const AttributeFormInputs: FC<AttributeFormInputsProps> = ({
     options: IAttributeOption[] | null
   ) => {
     console.log(options);
-    
+
     return (
       <>
         <div className='my-3'>
@@ -84,6 +83,7 @@ const AttributeFormInputs: FC<AttributeFormInputsProps> = ({
             type='text'
             placeholder='slilicana..'
             name='productTypeId'
+            disabled={disabled}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               handleEditAttribute(key, e.target.value);
             }}
@@ -99,6 +99,7 @@ const AttributeFormInputs: FC<AttributeFormInputsProps> = ({
               id={`type_editor_${key}_${type}`}
               name={`type_editor_${key}_${type}`}
               value={type}
+              disabled={disabled}
               checked={selectedType === type}
               onChange={(newType) =>
                 handleEditAttributeType(
@@ -123,7 +124,7 @@ const AttributeFormInputs: FC<AttributeFormInputsProps> = ({
 
   const handleTypeChange = (type: string) => {
     console.log({ type });
-    
+
     setAttribute((prev) => ({
       ...prev,
       type,
@@ -148,7 +149,7 @@ const AttributeFormInputs: FC<AttributeFormInputsProps> = ({
     <>
       <ButtonCard
         title={heading || 'Default Inputs'}
-        ctaLabel={cta?.label}
+        ctaLabel={disabled ? '' : cta?.label}
         loading={cta?.loading}
         onSubmit={openModal}
       >

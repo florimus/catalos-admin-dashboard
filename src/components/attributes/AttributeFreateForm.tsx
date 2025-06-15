@@ -5,11 +5,13 @@ import { IAttributeListItem } from '@/core/types';
 interface AttributeCreateFormProps {
   allAttributes: IAttributeListItem[];
   setAllAttributes: (attributes: IAttributeListItem[]) => void;
+  disabled: boolean;
 }
 
 const AttributeCreateForm: FC<AttributeCreateFormProps> = ({
   allAttributes,
   setAllAttributes,
+  disabled,
 }) => {
   const attributeCta = {
     label: 'New Attribute',
@@ -20,6 +22,7 @@ const AttributeCreateForm: FC<AttributeCreateFormProps> = ({
     <AttributeFormInputs
       heading='Attributes'
       cta={attributeCta}
+      disabled={disabled}
       allAttributes={allAttributes}
       setAllAttributes={setAllAttributes}
     />

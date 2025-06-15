@@ -194,6 +194,7 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
           <AttributeCreateForm
             allAttributes={allAttributes}
             setAllAttributes={setAllAttributes}
+            disabled={Boolean(productType?.id)}
           />
         </div>
         <div className='grid col-span-1'>
