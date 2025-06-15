@@ -3,17 +3,23 @@
 import { getProductById } from '@/actions/product';
 import { getProductTypeList } from '@/actions/product-type';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
+import TableCard from '@/components/common/TableCard';
 import ProductForm from '@/components/products/ProductForm';
-import { IPage, IProduct, IProductType, IResponse } from '@/core/types';
+import {
+  IPage,
+  IProduct,
+  IProductType,
+  IResponse,
+  ISearchParams,
+} from '@/core/types';
 import { productTypesToSingleSelectMapper } from '@/utils/mapperUtils';
 
-export default async function EditProduct({
-  params,
-}: {
+export default async function EditProduct(ctx: {
   params: { id: string };
+  searchParams?: Promise<ISearchParams | null>;
 }) {
-  const awaitedParams = await params;
-
+  const awaitedParams = await ctx.params;
+  const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
   const product: IResponse<IProduct> = await getProductById(awaitedParams.id);
 
   if (!product?.success || !product?.data) {
@@ -24,6 +30,11 @@ export default async function EditProduct({
     { label: 'Products', href: '/products' },
     { label: product?.data?.name, href: '#' },
   ];
+
+  const newVariantCta = {
+    label: 'New Product',
+    href: '/products/create',
+  };
 
   const productTypes: IResponse<IPage<IProductType>> =
     await getProductTypeList();
@@ -40,6 +51,13 @@ export default async function EditProduct({
         )}
         product={product.data}
       />
+      <TableCard
+        searchPlaceHolder={'Search products...'}
+        searchParams={searchParams}
+        cta={newVariantCta}
+      >
+        pp
+      </TableCard>
     </>
   );
 }

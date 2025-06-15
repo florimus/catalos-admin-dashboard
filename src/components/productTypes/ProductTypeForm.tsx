@@ -47,8 +47,16 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
       productAttributes: productType?.productAttributes || {},
       variantAttributes: productType?.variantAttributes || {},
     });
-  const [allAttributes, setAllAttributes] = useState<IAttributeListItem[]>(
+  const [allProductAttributes, setAllProductAttributes] = useState<
+    IAttributeListItem[]
+  >(
     attributesToAttributeListMapper(productType?.productAttributes || {}) || []
+  );
+
+  const [allVariantAttributes, setAllVariantAttributes] = useState<
+    IAttributeListItem[]
+  >(
+    attributesToAttributeListMapper(productType?.variantAttributes || {}) || []
   );
 
   useEffect(() => {
@@ -60,8 +68,10 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
 
   const handleSave = async () => {
     setLoading(true);
-    const productAttributes: IAttributes = attributeListToMapper(allAttributes);
-    console.log({ ...createProductTypeForm, productAttributes });
+    const productAttributes: IAttributes =
+      attributeListToMapper(allProductAttributes);
+    const variantAttributes: IAttributes =
+      attributeListToMapper(allVariantAttributes);
 
     const method = productType?.id
       ? updateProductTypeAPI
@@ -69,7 +79,8 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
     const response = await method({
       ...createProductTypeForm,
       id: productType?.id || '',
-      productAttributes: productAttributes,
+      productAttributes,
+      variantAttributes,
     });
     setLoading(false);
     setAlerts([
@@ -192,8 +203,15 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
             fields={fields}
           />
           <AttributeCreateForm
-            allAttributes={allAttributes}
-            setAllAttributes={setAllAttributes}
+            heading='Product Attributes'
+            allAttributes={allProductAttributes}
+            setAllAttributes={setAllProductAttributes}
+            disabled={Boolean(productType?.id)}
+          />
+          <AttributeCreateForm
+            heading='Variant Attributes'
+            allAttributes={allVariantAttributes}
+            setAllAttributes={setAllVariantAttributes}
             disabled={Boolean(productType?.id)}
           />
         </div>
