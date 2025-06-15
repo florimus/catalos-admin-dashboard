@@ -38,8 +38,6 @@ export const attributesToFormFieldMapper = (
     if (attributes.hasOwnProperty(key)) {
       const attribute = attributes[key];
 
-      console.log(`Processing attribute: ${key}`, attribute);
-
       if (attribute.type === 'Text' || attribute.type === 'Number') {
         formFields.push({
           fieldType: FormFieldType.Text,
@@ -115,9 +113,13 @@ export const formatAttributeValues = (attributes: IAttributes) => {
   let list = attributesToAttributeListMapper(attributes);
   list = list.map((attribute) => {
     if (attribute.type === 'Select') {
-      attribute.value = attribute.options?.find(
-        (option) => option.value === attribute.value
-      ) || { value: '', label: '' };
+      attribute.value =
+        (attribute.options?.find(
+          (option) => option.value === attribute.value
+        ) as IAttributeOption) ||
+        attribute.options?.find(
+          (option) => option.value === (attribute.value as IAttributeOption)?.value
+        );
     }
     return attribute;
   });
