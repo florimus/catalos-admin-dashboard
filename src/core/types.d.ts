@@ -143,6 +143,19 @@ export interface IVariant {
   skuId: string;
   productTypeId: string;
   url: string;
-  medias: IImage[];
+  medias: IImage[] | [];
   active: boolean;
+}
+
+export interface IVariantFormInputs {
+  id: string;
+  name: string;
+  slug: string;
+  productId: string | null;
+  skuId: string;
+  seoTitle: string;
+  seoDescription: string;
+  medias: IImage[] | [];
+  attributes: IAttributes;
+  active?: boolean;
 }

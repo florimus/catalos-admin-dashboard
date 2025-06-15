@@ -42,7 +42,7 @@ export default async function EditProduct(ctx: {
 
   const newVariantCta = {
     label: 'New Variant',
-    href: '/variants/create',
+    href: `/variants/create/${awaitedParams.id}`,
   };
 
   const productTypes: IResponse<IPage<IProductType>> =
