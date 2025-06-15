@@ -22,7 +22,7 @@ export default async function ProductTypePage({
 
   const breadCrumbItems = [
     { label: 'Product Types', href: '/product-types' },
-    { label: productType?.data?.name, href: '/product-types/create' },
+    { label: productType?.data?.name, href: '#' },
   ];
   return (
     <>

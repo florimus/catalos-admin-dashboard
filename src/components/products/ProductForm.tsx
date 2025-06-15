@@ -6,6 +6,7 @@ import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useEffect, useState } from 'react';
 import {
   channelToMultiSelectMapper,
+  formatAttributeValues,
   productTypesToSingleSelectMapper,
 } from '@/utils/mapperUtils';
 import { CHANNELS } from '@/core/constants';
@@ -68,7 +69,7 @@ const ProductForm: FC<ProductFormProps> = ({ productTypeOptions, product }) => {
     const response = await method({
       id: product?.id || '',
       ...createProductForm,
-      attributes: productAttributes,
+      attributes: formatAttributeValues(productAttributes),
     });
     setLoading(false);
     setAlerts([

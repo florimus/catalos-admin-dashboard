@@ -31,7 +31,7 @@ const ProductTypeListPage = async (ctx: {
     <>
       <PageBreadcrumb
         pageTitle='Product Types'
-        items={[{ label: 'Products-types', href: '/products' }]}
+        items={[{ label: 'Products Types', href: '/product-types' }]}
       />
       <div className='space-y-6'>
         <TableCard

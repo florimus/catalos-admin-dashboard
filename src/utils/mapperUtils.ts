@@ -1,5 +1,10 @@
 import { FormFieldType } from '@/components/form/form-elements/DefaultFormFields';
-import { IAttributeListItem, IAttributes, IProductType } from '@/core/types';
+import {
+  IAttributeListItem,
+  IAttributeOption,
+  IAttributes,
+  IProductType,
+} from '@/core/types';
 
 export const channelToMultiSelectMapper = (
   channels: { id: string; name: string }[]
@@ -73,7 +78,11 @@ export const attributesToFormFieldMapper = (
             });
           },
           options: attribute?.options || [],
-          defaultValue: attributeStates?.[key]?.value || '',
+          defaultValue:
+            typeof attributeStates?.[key]?.value === 'object' &&
+            'value' in attributeStates?.[key]?.value
+              ? (attributeStates[key]?.value as IAttributeOption).value
+              : '',
           placeholder: `Select ${key}`,
           id: key,
           required: false,
@@ -100,6 +109,19 @@ export const attributesToFormFieldMapper = (
   }
 
   return formFields;
+};
+
+export const formatAttributeValues = (attributes: IAttributes) => {
+  let list = attributesToAttributeListMapper(attributes);
+  list = list.map((attribute) => {
+    if (attribute.type === 'Select') {
+      attribute.value = attribute.options?.find(
+        (option) => option.value === attribute.value
+      ) || { value: '', label: '' };
+    }
+    return attribute;
+  });
+  return attributeListToMapper(list);
 };
 
 export const attributeListToMapper = (attributes: IAttributeListItem[]) => {

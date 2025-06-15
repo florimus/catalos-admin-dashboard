@@ -133,6 +133,7 @@ export const updateProductApi = async (payload: IProductUpdateFormInputs) => {
     },
     body: JSON.stringify(payload),
   });
+
   return response.json().then((data) => {
     handleError(data);
     if (data?.success) {
