@@ -3,7 +3,7 @@
 import { getProductTypeList } from '@/actions/product-type';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
-import ProductTypeList from '@/components/productTypes/ProductList';
+import ProductTypeList from '@/components/productTypes/ProductTypeList';
 import { IPage, IProductType, IResponse, ISearchParams } from '@/core/types';
 
 const ProductTypeListPage = async (ctx: {

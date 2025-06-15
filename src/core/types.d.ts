@@ -103,3 +103,10 @@ export interface IProductStatusUpdate {
   id: string;
   active: boolean;
 }
+
+export interface IProductTypeCreateFormInputs {
+  name: string;
+  slug: string;
+  productAttributes: IAttributes;
+  active?: boolean;
+}
