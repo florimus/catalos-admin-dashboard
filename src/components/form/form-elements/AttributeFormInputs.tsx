@@ -96,8 +96,8 @@ const AttributeFormInputs: FC<AttributeFormInputsProps> = ({
           {ATTRIBUTE_TYPES.map((type) => (
             <Radio
               key={type}
-              id={type}
-              name='group1'
+              id={`type_editor_${key}_${type}`}
+              name={`type_editor_${key}_${type}`}
               value={type}
               checked={selectedType === type}
               onChange={(newType) =>
@@ -122,6 +122,8 @@ const AttributeFormInputs: FC<AttributeFormInputsProps> = ({
   };
 
   const handleTypeChange = (type: string) => {
+    console.log({ type });
+    
     setAttribute((prev) => ({
       ...prev,
       type,
@@ -188,8 +190,8 @@ const AttributeFormInputs: FC<AttributeFormInputsProps> = ({
             {ATTRIBUTE_TYPES.map((type) => (
               <Radio
                 key={type}
-                id={type}
-                name='group1'
+                id={`model_type_${type}`}
+                name={`model_type_${type}`}
                 value={type}
                 checked={attribute.type === type}
                 onChange={handleTypeChange}
