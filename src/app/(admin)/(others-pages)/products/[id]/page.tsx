@@ -32,6 +32,7 @@ export default async function EditProduct({
       <PageBreadcrumb
         pageTitle={product?.data?.name || 'Edit Product'}
         items={breadCrumbItems}
+        backUrl='/products'
       />
       <ProductForm
         productTypeOptions={productTypesToSingleSelectMapper(

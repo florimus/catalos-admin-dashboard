@@ -13,10 +13,15 @@ interface IBreadcrumbItem {
 
 interface IBreadcrumbProps {
   pageTitle: string;
+  backUrl?: string;
   items?: IBreadcrumbItem[];
 }
 
-const PageBreadcrumb: React.FC<IBreadcrumbProps> = ({ pageTitle, items }) => {
+const PageBreadcrumb: React.FC<IBreadcrumbProps> = ({
+  pageTitle,
+  items,
+  backUrl,
+}) => {
   const router = useRouter();
   return (
     <div className='flex flex-wrap items-center justify-between gap-3 mb-6'>
@@ -24,7 +29,12 @@ const PageBreadcrumb: React.FC<IBreadcrumbProps> = ({ pageTitle, items }) => {
         className='text-xl font-semibold text-gray-800 dark:text-white/90 flex justify-center'
         x-text='pageName'
       >
-        <Button type='button' size='xm' variant='outline' onClick={() => router.back()}>
+        <Button
+          type='button'
+          size='xm'
+          variant='outline'
+          onClick={() => (backUrl ? router.push(backUrl) : router.back())}
+        >
           <ChevronLeftIcon />
         </Button>
         <span className='mx-5 mt-1'>{pageTitle}</span>
