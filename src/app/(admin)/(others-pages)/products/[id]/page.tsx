@@ -2,15 +2,18 @@
 
 import { getProductById } from '@/actions/product';
 import { getProductTypeList } from '@/actions/product-type';
+import { getVariantsByProductId } from '@/actions/variant';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
 import ProductForm from '@/components/products/ProductForm';
+import VariantList from '@/components/variants/VariantList';
 import {
   IPage,
   IProduct,
   IProductType,
   IResponse,
   ISearchParams,
+  IVariant,
 } from '@/core/types';
 import { productTypesToSingleSelectMapper } from '@/utils/mapperUtils';
 
@@ -21,6 +24,12 @@ export default async function EditProduct(ctx: {
   const awaitedParams = await ctx.params;
   const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
   const product: IResponse<IProduct> = await getProductById(awaitedParams.id);
+  const variants: IResponse<IPage<IVariant>> = (await getVariantsByProductId(
+    awaitedParams.id,
+    searchParams?.query,
+    searchParams?.page,
+    searchParams?.size
+  )) || { data: [] };
 
   if (!product?.success || !product?.data) {
     return <div>Error fetching product details.</div>;
@@ -32,8 +41,8 @@ export default async function EditProduct(ctx: {
   ];
 
   const newVariantCta = {
-    label: 'New Product',
-    href: '/products/create',
+    label: 'New Variant',
+    href: '/variants/create',
   };
 
   const productTypes: IResponse<IPage<IProductType>> =
@@ -52,11 +61,11 @@ export default async function EditProduct(ctx: {
         product={product.data}
       />
       <TableCard
-        searchPlaceHolder={'Search products...'}
+        searchPlaceHolder={'Search variants...'}
         searchParams={searchParams}
         cta={newVariantCta}
       >
-        pp
+        <VariantList {...variants?.data} />
       </TableCard>
     </>
   );

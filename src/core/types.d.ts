@@ -125,3 +125,24 @@ export interface IProductTypeFormInputs {
   variantAttributes: IAttributes;
   active?: boolean;
 }
+
+export interface IImage {
+  type: string;
+  defaultSrc: string;
+  lg: string | null;
+  md: string | null;
+  sm: string | null;
+  alt: string | null;
+}
+
+export interface IVariant {
+  id: string;
+  name: string;
+  slug: string;
+  parentId: string | null;
+  skuId: string;
+  productTypeId: string;
+  url: string;
+  medias: IImage[];
+  active: boolean;
+}

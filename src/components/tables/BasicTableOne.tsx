@@ -40,6 +40,7 @@ interface BasicTableOneProps {
       }
   )[][];
   headingData: string[];
+  isEmpty?: boolean;
   pageProps?: {
     totalHitsCount?: number;
     currentPage?: number;
@@ -54,9 +55,9 @@ const BasicTableOne: FC<BasicTableOneProps> = ({
   tableData,
   headingData,
   pageProps,
+  isEmpty,
 }) => {
-
-  const router = useRouter(); 
+  const router = useRouter();
 
   const handlePageChange = (page: number) => {
     const url = new URL(window.location.href);
@@ -64,17 +65,22 @@ const BasicTableOne: FC<BasicTableOneProps> = ({
     router.push(url.toString());
   };
 
-
   return (
     <>
-      <BasicTableView tableData={tableData} headingData={headingData} />
-      <Pagination
-        currentPage={(pageProps?.currentPage || 0) + 1}
-        totalPages={pageProps?.totalPages || 0}
-        hasNext={pageProps?.hasNext || false}
-        hasPrevious={pageProps?.hasPrevious || false}
-        handlePageChange={handlePageChange}
+      <BasicTableView
+        tableData={tableData}
+        headingData={headingData}
+        isEmpty={isEmpty}
       />
+      {!isEmpty && (
+        <Pagination
+          currentPage={(pageProps?.currentPage || 0) + 1}
+          totalPages={pageProps?.totalPages || 0}
+          hasNext={pageProps?.hasNext || false}
+          hasPrevious={pageProps?.hasPrevious || false}
+          handlePageChange={handlePageChange}
+        />
+      )}
     </>
   );
 };

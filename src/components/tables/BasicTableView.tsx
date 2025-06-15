@@ -8,6 +8,7 @@ import {
 } from '../ui/table';
 import { TableCells, TableCellTypes } from './TableCells';
 import { BadgeColor } from '../ui/badge/Badge';
+import EmptySection from '../example/EmptySection';
 
 interface TableProps {
   tableData: (
@@ -42,10 +43,15 @@ interface TableProps {
         onclick?: () => void;
       }
   )[][];
+  isEmpty?: boolean;
   headingData: string[];
 }
 
-const BasicTableView: FC<TableProps> = ({ tableData, headingData }) => {
+const BasicTableView: FC<TableProps> = ({
+  tableData,
+  headingData,
+  isEmpty,
+}) => {
   return (
     <div className='overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]'>
       <div className='max-w-full overflow-x-auto'>
@@ -67,26 +73,34 @@ const BasicTableView: FC<TableProps> = ({ tableData, headingData }) => {
             </TableHeader>
 
             {/* Table Body */}
-            <TableBody className='divide-y divide-gray-100 dark:divide-white/[0.05]'>
-              {Array.isArray(tableData) && tableData.map((order, index) => (
-                <TableRow key={index}>
-                  {order.map((cell, cellIndex) => {
-                    return cell.type === TableCellTypes.ProfileCell ? (
-                      <TableCells.ProfileCell {...cell} key={cellIndex} />
-                    ) : cell.type === TableCellTypes.TextCell ? (
-                      <TableCells.TextCell {...cell} key={cellIndex} />
-                    ) : cell.type === TableCellTypes.StatusCell ? (
-                      <TableCells.StatusCell
-                        color={cell.color as BadgeColor}
-                        status={cell.status}
-                        key={cellIndex}
-                      />
-                    ) : null;
-                  })}
-                </TableRow>
-              ))}
-            </TableBody>
+
+            {!isEmpty && (
+              <TableBody className='divide-y divide-gray-100 dark:divide-white/[0.05]'>
+                {Array.isArray(tableData) &&
+                  tableData.map((order, index) => (
+                    <TableRow key={index}>
+                      {order.map((cell, cellIndex) => {
+                        return cell.type === TableCellTypes.ProfileCell ? (
+                          <TableCells.ProfileCell {...cell} key={cellIndex} />
+                        ) : cell.type === TableCellTypes.TextCell ? (
+                          <TableCells.TextCell {...cell} key={cellIndex} />
+                        ) : cell.type === TableCellTypes.StatusCell ? (
+                          <TableCells.StatusCell
+                            color={cell.color as BadgeColor}
+                            status={cell.status}
+                            key={cellIndex}
+                          />
+                        ) : null;
+                      })}
+                    </TableRow>
+                  ))}
+              </TableBody>
+            )}
           </Table>
+          { isEmpty && <EmptySection
+            heading='No Variants'
+            description='No variants created yet.'
+          />}
         </div>
       </div>
     </div>

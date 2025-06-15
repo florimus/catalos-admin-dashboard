@@ -24,9 +24,14 @@ const ProfileCell = ({
         onClick={onclick}
       >
         {hasAvatar && (
-          <div className='w-10 h-10 overflow-hidden rounded-full'>
-            <Image width={40} height={40} src={src} alt={alt} />
-          </div>
+          <div className="w-10 h-10 relative overflow-hidden rounded">
+          <Image
+            src={src}
+            alt={alt || "default"}
+            fill
+            className="object-cover"
+          />
+        </div>
         )}
         <div>
           <span className='block font-medium text-gray-800 text-theme-sm dark:text-white/90'>

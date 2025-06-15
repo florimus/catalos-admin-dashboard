@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
+  images: {
+    domains: ['4kwallpapers.com', 'static8.depositphotos.com'],
+  },
 };
 
 export default nextConfig;
