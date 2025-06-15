@@ -4,7 +4,7 @@ import {
   IAttributeListItem,
   IAttributes,
   IProductType,
-  IProductTypeCreateFormInputs,
+  IProductTypeFormInputs,
 } from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
@@ -13,9 +13,15 @@ import { FC, useEffect, useState } from 'react';
 import Alert from '../ui/alert/Alert';
 import { useRouter } from 'next/navigation';
 import AttributeCreateForm from '../attributes/AttributeFreateForm';
-import { attributeListToMapper } from '@/utils/mapperUtils';
+import {
+  attributeListToMapper,
+  attributesToAttributeListMapper,
+} from '@/utils/mapperUtils';
 import { formatSlug } from '@/utils/stringUtils';
-import { createProductTypeAPI } from '@/actions/product-type';
+import {
+  createProductTypeAPI,
+  updateProductTypeAPI,
+} from '@/actions/product-type';
 
 interface ProductTypeFormProps {
   productType?: IProductType;
@@ -32,13 +38,16 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
   );
 
   const [createProductTypeForm, setCreateProductTypeForm] =
-    useState<IProductTypeCreateFormInputs>({
+    useState<IProductTypeFormInputs>({
       id: productType?.id || '',
       name: productType?.name || '',
       slug: productType?.slug || '',
       productAttributes: productType?.productAttributes || {},
+      variantAttributes: productType?.variantAttributes || {},
     });
-  const [allAttributes, setAllAttributes] = useState<IAttributeListItem[]>([]);
+  const [allAttributes, setAllAttributes] = useState<IAttributeListItem[]>(
+    attributesToAttributeListMapper(productType?.productAttributes || {}) || []
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -52,7 +61,9 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
     const productAttributes: IAttributes = attributeListToMapper(allAttributes);
     console.log({ ...createProductTypeForm, productAttributes });
 
-    const method = createProductTypeAPI;
+    const method = productType?.id
+      ? updateProductTypeAPI
+      : createProductTypeAPI;
     const response = await method({
       ...createProductTypeForm,
       id: productType?.id || '',

@@ -4,9 +4,10 @@ import { handleError } from '@/client/httpClient';
 import {
   IPage,
   IProductType,
-  IProductTypeCreateFormInputs,
+  IProductTypeFormInputs,
   IResponse,
 } from '@/core/types';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 export const getProductTypeList = async (
@@ -88,7 +89,7 @@ export const getProductTypeById = async (
 };
 
 export const createProductTypeAPI = async (
-  payload: IProductTypeCreateFormInputs
+  payload: IProductTypeFormInputs
 ): Promise<IResponse<IProductType>> => {
   const cookieStore = await cookies();
   const url = new URL('/product-types', process.env.NEXT_PUBLIC_API_BASE_URL);
@@ -113,6 +114,38 @@ export const createProductTypeAPI = async (
     return {
       success: false,
       message: data?.message?.[0] || 'Failed to create product-type',
+    };
+  });
+};
+
+export const updateProductTypeAPI = async (
+  payload: IProductTypeFormInputs
+): Promise<IResponse<IProductType>> => {
+  const cookieStore = await cookies();
+  const url = new URL('/product-types', process.env.NEXT_PUBLIC_API_BASE_URL);
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  return response.json().then((data) => {    
+    handleError(data);
+    if (data?.success) {
+      revalidatePath('/product-types');
+      revalidatePath(`/product-types/${data.data.id}`);
+      return {
+        success: true,
+        data: data.data,
+        message: 'Product-type updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to update product-type',
     };
   });
 };

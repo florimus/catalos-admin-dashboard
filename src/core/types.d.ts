@@ -84,6 +84,7 @@ export interface IProductType {
   slug: string;
   active: boolean;
   productAttributes?: IAttributes;
+  variantAttributes?: IAttributes;
 }
 
 export interface IProductCreateFormInputs {
@@ -111,10 +112,11 @@ export interface IProductStatusUpdate {
   active: boolean;
 }
 
-export interface IProductTypeCreateFormInputs {
+export interface IProductTypeFormInputs {
   id: string;
   name: string;
   slug: string;
   productAttributes: IAttributes;
+  variantAttributes: IAttributes;
   active?: boolean;
 }

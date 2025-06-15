@@ -10,7 +10,7 @@ export default async function CreateProductType() {
   ];
   return (
     <>
-      <PageBreadcrumb pageTitle='Create Product Type' items={breadCrumbItems} />
+      <PageBreadcrumb pageTitle='Create Product Type' items={breadCrumbItems} backUrl='/product-types' />
       <ProductTypeForm />
     </>
   );

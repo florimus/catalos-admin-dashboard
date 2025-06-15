@@ -112,3 +112,12 @@ export const attributeListToMapper = (attributes: IAttributeListItem[]) => {
     return acc;
   }, {} as IAttributes);
 };
+
+export const attributesToAttributeListMapper = (attributes: IAttributes) => {
+  return Object.keys(attributes).map((key) => ({
+    key,
+    type: attributes[key].type,
+    options: attributes[key].options,
+    value: attributes[key].value,
+  }));
+};
