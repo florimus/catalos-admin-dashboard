@@ -2,6 +2,7 @@
 
 import {
   IAttributeListItem,
+  IAttributes,
   IProductType,
   IProductTypeCreateFormInputs,
 } from '@/core/types';
@@ -12,6 +13,9 @@ import { FC, useEffect, useState } from 'react';
 import Alert from '../ui/alert/Alert';
 import { useRouter } from 'next/navigation';
 import AttributeCreateForm from '../attributes/AttributeFreateForm';
+import { attributeListToMapper } from '@/utils/mapperUtils';
+import { formatSlug } from '@/utils/stringUtils';
+import { createProductTypeAPI } from '@/actions/product-type';
 
 interface ProductTypeFormProps {
   productType?: IProductType;
@@ -27,6 +31,15 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
     []
   );
 
+  const [createProductTypeForm, setCreateProductTypeForm] =
+    useState<IProductTypeCreateFormInputs>({
+      id: productType?.id || '',
+      name: productType?.name || '',
+      slug: productType?.slug || '',
+      productAttributes: productType?.productAttributes || {},
+    });
+  const [allAttributes, setAllAttributes] = useState<IAttributeListItem[]>([]);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setAlerts([]);
@@ -34,37 +47,31 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
     return () => clearTimeout(timer);
   }, [alerts]);
 
-  const [createProductTypeForm, setCreateProductTypeForm] =
-    useState<IProductTypeCreateFormInputs>({
-      name: productType?.name || '',
-      slug: productType?.slug || '',
-      productAttributes: productType?.productAttributes || {},
-    });
-
-  const [allAttributes, setAllAttributes] = useState<IAttributeListItem[]>([]);
-
   const handleSave = async () => {
     setLoading(true);
-    // const method = product?.id ? updateProductApi : createProductAPI;
-    // const response = await method({
-    //   id: product?.id || '',
-    //   ...createProductForm,
-    //   attributes: productAttributes,
-    // });
-    // setLoading(false);
-    // setAlerts([
-    //   {
-    //     message:
-    //       response.message ||
-    //       (response.success
-    //         ? 'Product saved successfully'
-    //         : 'Failed to save product'),
-    //     variant: response.success ? 'success' : 'error',
-    //   },
-    // ]);
-    // if (!product?.id && response.success) {
-    //   router.push(`/products/${response.data?.id}`);
-    // }
+    const productAttributes: IAttributes = attributeListToMapper(allAttributes);
+    console.log({ ...createProductTypeForm, productAttributes });
+
+    const method = createProductTypeAPI;
+    const response = await method({
+      ...createProductTypeForm,
+      id: productType?.id || '',
+      productAttributes: productAttributes,
+    });
+    setLoading(false);
+    setAlerts([
+      {
+        message:
+          response.message ||
+          (response.success
+            ? 'Product saved successfully'
+            : 'Failed to save product'),
+        variant: response.success ? 'success' : 'error',
+      },
+    ]);
+    if (!productType?.id && response.success) {
+      router.push(`/product-types/${response.data?.id}`);
+    }
   };
 
   const handleProductStatusUpdate = async (active: boolean) => {
@@ -111,7 +118,7 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
         setCreateProductTypeForm((prev) => ({
           ...prev,
-          skuId: event.target.value,
+          slug: formatSlug(event.target.value),
         }));
       },
       value: createProductTypeForm.slug,

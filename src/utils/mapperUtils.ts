@@ -1,5 +1,5 @@
 import { FormFieldType } from '@/components/form/form-elements/DefaultFormFields';
-import { IAttributes, IProductType } from '@/core/types';
+import { IAttributeListItem, IAttributes, IProductType } from '@/core/types';
 
 export const channelToMultiSelectMapper = (
   channels: { id: string; name: string }[]
@@ -100,4 +100,15 @@ export const attributesToFormFieldMapper = (
   }
 
   return formFields;
+};
+
+export const attributeListToMapper = (attributes: IAttributeListItem[]) => {
+  return attributes.reduce((acc, attribute) => {
+    acc[attribute?.key] = {
+      type: attribute.type,
+      options: attribute.options,
+      value: attribute.value,
+    };
+    return acc;
+  }, {} as IAttributes);
 };

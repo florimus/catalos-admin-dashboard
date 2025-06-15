@@ -112,6 +112,7 @@ export interface IProductStatusUpdate {
 }
 
 export interface IProductTypeCreateFormInputs {
+  id: string;
   name: string;
   slug: string;
   productAttributes: IAttributes;
