@@ -59,6 +59,13 @@ export interface IAttributes {
   };
 }
 
+export interface IAttributeListItem {
+  key: string;
+  type: 'Select' | 'Number' | 'Boolean' | 'Text';
+  options: IAttributeOption[] | null;
+  value: string | number | boolean | IAttributeOption;
+}
+
 export interface IProduct {
   id: string;
   name: string;

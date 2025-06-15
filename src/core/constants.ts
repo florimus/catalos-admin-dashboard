@@ -6,3 +6,5 @@ export const CHANNELS = [
     currency: '₹',
   },
 ];
+
+export const ATTRIBUTE_TYPES = ['Text', 'Number', 'Select', 'Boolean'];

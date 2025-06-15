@@ -13,6 +13,7 @@ interface FormInModalProps {
   hasCloseButton?: boolean;
   hasSaveButton?: boolean;
   children: React.ReactNode;
+  saveButtonText?: string;
   handleSave?: () => void;
 }
 
@@ -21,6 +22,7 @@ const FormInModal: React.FC<FormInModalProps> = ({
   isOpen,
   hasCloseButton,
   hasSaveButton,
+  saveButtonText,
   closeModal,
   children,
   handleSave,
@@ -44,7 +46,9 @@ const FormInModal: React.FC<FormInModalProps> = ({
                 Close
               </Button>
             )}
-            {hasSaveButton && <Button size='sm'>Save Changes</Button>}
+            {hasSaveButton && (
+              <Button size='sm' type='submit'>{saveButtonText || 'Save'}</Button>
+            )}
           </div>
         </Form>
       </Modal>

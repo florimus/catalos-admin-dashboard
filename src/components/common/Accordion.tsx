@@ -1,10 +1,10 @@
 'use client';
 import { ChevronDownIcon } from '@/icons';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 interface AccordionProps {
   title: string;
-  content: string;
+  content: React.ReactNode;
 }
 
 const Accordion: React.FC<AccordionProps> = ({ title, content }) => {

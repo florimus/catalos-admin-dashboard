@@ -1,11 +1,14 @@
 'use client';
 
-import { IAttributes, IProductType, IProductTypeCreateFormInputs } from '@/core/types';
+import {
+  IAttributeListItem,
+  IProductType,
+  IProductTypeCreateFormInputs,
+} from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useEffect, useState } from 'react';
 
-import { useModal } from '@/hooks/useModal';
 import Alert from '../ui/alert/Alert';
 import { useRouter } from 'next/navigation';
 import AttributeCreateForm from '../attributes/AttributeFreateForm';
@@ -14,8 +17,7 @@ interface ProductTypeFormProps {
   productType?: IProductType;
 }
 
-const ProductTypeForm: FC<ProductTypeFormProps> = ({productType }) => {
-  const { isOpen, openModal, closeModal } = useModal();
+const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
 
@@ -39,9 +41,7 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({productType }) => {
       productAttributes: productType?.productAttributes || {},
     });
 
-  const [productTypeAttributes, setProductTypeAttributes] = useState<IAttributes>(
-    productType?.productAttributes || {}
-  );
+  const [allAttributes, setAllAttributes] = useState<IAttributeListItem[]>([]);
 
   const handleSave = async () => {
     setLoading(true);
@@ -121,14 +121,14 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({productType }) => {
       disabled: productType?.id ? true : false,
       error: false,
       hint: 'Please enter valid slug',
-    }
+    },
   ];
 
   const statusLoader = (
     <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
   );
 
-  const productStatusFields = {
+  const productTypeStatusFields = {
     fieldType: FormFieldType.Switch,
     label: statusLoading
       ? statusLoader
@@ -137,7 +137,7 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({productType }) => {
       : 'Offline',
     name: 'product-status',
     disabled: productType?.id ? false : true,
-    checked: createProductTypeForm.active ?? true,
+    checked: createProductTypeForm.active || false,
     onChange: (checked: boolean) => handleProductStatusUpdate(checked),
   };
 
@@ -167,50 +167,20 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({productType }) => {
             heading='Product Type Form'
             fields={fields}
           />
-          <AttributeCreateForm/>
-          {/* {createProductTypeForm.productTypeId && (
-            <AttributeForm
-              title='Product Attributes'
-              productTypeId={createProductTypeForm.productTypeId}
-              attributes={productAttributes}
-              setAttributes={setProductAttributes}
-            />
-          )} */}
+          <AttributeCreateForm
+            allAttributes={allAttributes}
+            setAllAttributes={setAllAttributes}
+          />
         </div>
         <div className='grid col-span-1'>
           <div>
             <DefaultInputs
               heading='Product Type Status'
-              fields={[productStatusFields]}
+              fields={[productTypeStatusFields]}
             />
           </div>
         </div>
       </div>
-      {/* {isOpen && (
-        <FormInModal
-          title='Select Product Type'
-          isOpen={isOpen}
-          closeModal={closeModal}
-        >
-          <Input
-            type='text'
-            placeholder='Select ProductType'
-            name='productTypeId'
-            onChange={handleProductTypeSearch}
-          />
-          <ul>
-            {productTypes.map((type) => (
-              <li
-                key={type.value}
-                className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
-                onClick={() => handleProductTypeSelect(type.value)}
-              >
-                {type.label}
-              </li>
-            ))}
-          </ul>
-        </FormInModal>
-      )} */}
     </>
   );
 };
