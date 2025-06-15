@@ -19,7 +19,10 @@ const ProfileCell = ({
 }) => {
   return (
     <TableCell className='px-5 py-4 sm:px-6 text-start'>
-      <div className={`flex items-center gap-3${onclick ? ' cursor-pointer' : ''}`}  onClick={onclick}>
+      <div
+        className={`flex items-center gap-3${onclick ? ' cursor-pointer' : ''}`}
+        onClick={onclick}
+      >
         {hasAvatar && (
           <div className='w-10 h-10 overflow-hidden rounded-full'>
             <Image width={40} height={40} src={src} alt={alt} />
@@ -38,12 +41,18 @@ const ProfileCell = ({
   );
 };
 
-const TextCell = ({ text }: { text?: string | number }) => {
+const TextCell = ({
+  text,
+  onclick,
+}: {
+  text?: string | number;
+  onclick?: () => void;
+}) => {
   return (
     <TableCell
       className={`px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400`}
     >
-      {text}
+      <span onClick={onclick} className={onclick ? 'cursor-pointer' : ''} >{text}</span>
     </TableCell>
   );
 };
@@ -92,7 +101,7 @@ export enum TableCellTypes {
   TextCell,
   TeamCell,
   StatusCell,
-};
+}
 
 export const TableCells = {
   ProfileCell,

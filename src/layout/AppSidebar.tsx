@@ -75,6 +75,11 @@ const othersItems: NavItem[] = [
     path: "/channels",
   },
   {
+    icon: <ListIcon />,
+    name: "Product Types",
+    path: "/product-types",
+  },
+  {
     icon: <PieChartIcon />,
     name: "Charts",
     subItems: [
