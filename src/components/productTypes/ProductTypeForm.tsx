@@ -21,6 +21,7 @@ import { formatSlug } from '@/utils/stringUtils';
 import {
   createProductTypeAPI,
   updateProductTypeAPI,
+  updateProductTypeStatusAPI,
 } from '@/actions/product-type';
 
 interface ProductTypeFormProps {
@@ -42,6 +43,7 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
       id: productType?.id || '',
       name: productType?.name || '',
       slug: productType?.slug || '',
+      active: productType?.active || false,
       productAttributes: productType?.productAttributes || {},
       variantAttributes: productType?.variantAttributes || {},
     });
@@ -87,20 +89,24 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
 
   const handleProductStatusUpdate = async (active: boolean) => {
     setStatusLoading(true);
-    // const response = await productStatusUpdateApi(product?.id || '', active);
-    // setStatusLoading(false);
-    // if (response.success) {
-    //   setAlerts([
-    //     {
-    //       message: response.message || 'Product status updated successfully',
-    //       variant: 'success',
-    //     },
-    //   ]);
-    //   setCreateProductTypeForm((prev) => ({
-    //     ...prev,
-    //     active,
-    //   }));
-    // }
+    const response = await updateProductTypeStatusAPI(
+      productType?.id || '',
+      active
+    );
+    setStatusLoading(false);
+    if (response.success) {
+      setAlerts([
+        {
+          message:
+            response.message || 'Product type status updated successfully',
+          variant: 'success',
+        },
+      ]);
+      setCreateProductTypeForm((prev) => ({
+        ...prev,
+        active,
+      }));
+    }
   };
 
   const fields = [
@@ -153,7 +159,7 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
       : createProductTypeForm.active
       ? 'Online'
       : 'Offline',
-    name: 'product-status',
+    name: 'product-type-status',
     disabled: productType?.id ? false : true,
     checked: createProductTypeForm.active || false,
     onChange: (checked: boolean) => handleProductStatusUpdate(checked),

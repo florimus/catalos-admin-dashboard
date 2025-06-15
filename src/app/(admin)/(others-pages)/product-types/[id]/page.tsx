@@ -26,7 +26,7 @@ export default async function ProductTypePage({
   ];
   return (
     <>
-      <PageBreadcrumb pageTitle={productType?.data?.name} items={breadCrumbItems} />
+      <PageBreadcrumb pageTitle={productType?.data?.name} items={breadCrumbItems} backUrl='/product-types' />
       <ProductTypeForm productType={productType?.data} />
     </>
   );
