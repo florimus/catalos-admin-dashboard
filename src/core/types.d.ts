@@ -117,6 +117,11 @@ export interface IProductTypeStatusUpdate {
   active: boolean;
 }
 
+export interface IVariantStatusUpdate {
+  id: string;
+  active: boolean;
+}
+
 export interface IProductTypeFormInputs {
   id: string;
   name: string;

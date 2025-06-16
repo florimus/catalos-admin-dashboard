@@ -1,7 +1,13 @@
 'use server';
 
 import { handleError } from '@/client/httpClient';
-import { IPage, IResponse, IVariant, IVariantFormInputs } from '@/core/types';
+import {
+  IPage,
+  IResponse,
+  IVariant,
+  IVariantFormInputs,
+  IVariantStatusUpdate,
+} from '@/core/types';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
@@ -58,7 +64,7 @@ export const createVariantAPI = async (
   payload: IVariantFormInputs
 ): Promise<IResponse<IVariant>> => {
   const cookieStore = await cookies();
-  
+
   const url = new URL('/variants', process.env.NEXT_PUBLIC_API_BASE_URL);
   const response = await fetch(url, {
     method: 'POST',
@@ -82,6 +88,40 @@ export const createVariantAPI = async (
     return {
       success: false,
       message: data?.message?.[0] || 'Failed to create variant',
+    };
+  });
+};
+
+export const updateVariantStatusAPI = async (
+  id: string,
+  status: boolean
+): Promise<IResponse<IVariantStatusUpdate>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/variants/id/${id}/status/${status}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath(`/variants/${id}`);
+      return {
+        success: true,
+        data: data.data,
+        message: 'Variant status updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to update variant status',
     };
   });
 };

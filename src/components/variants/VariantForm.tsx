@@ -10,20 +10,26 @@ import {
   IResponse,
   IVariant,
   IVariantFormInputs,
+  IVariantStatusUpdate,
 } from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import AttributeForm from '../attributes/AttributeForm';
 import { AttributeTypes } from '@/core/enums';
-import { createVariantAPI } from '@/actions/variant';
+import { createVariantAPI, updateVariantStatusAPI } from '@/actions/variant';
 import { formatAttributeValues } from '@/utils/mapperUtils';
 import { useRouter } from 'next/navigation';
 
 interface VariantFormProps {
   productType: IProductType;
   product: IProduct;
+  variant?: IVariant;
 }
 
-const VariantForm: FC<VariantFormProps> = ({ productType, product }) => {
+const VariantForm: FC<VariantFormProps> = ({
+  productType,
+  product,
+  variant,
+}) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
 
@@ -56,7 +62,30 @@ const VariantForm: FC<VariantFormProps> = ({ productType, product }) => {
     return () => clearTimeout(timer);
   }, [alerts]);
 
-  const handleProductStatusUpdate = async (active: boolean) => {};
+  const handleProductStatusUpdate = async (active: boolean) => {
+    setStatusLoading(true);
+    const response: IResponse<IVariantStatusUpdate> = await updateVariantStatusAPI(
+      variant?.id || '',
+      active
+    );
+    setStatusLoading(false);
+    setAlerts([
+      {
+        message:
+          response.message ||
+          (response.success
+            ? 'Variant status updated successfully'
+            : 'Failed to update Variant status'),
+        variant: response.success ? 'success' : 'error',
+      },
+    ]);
+    if (response.success) {
+      setVariantFormFields((prev) => ({
+        ...prev,
+        active,
+      }));
+    }
+  };
 
   const handleSaveVariant = async () => {
     setLoading(true);
