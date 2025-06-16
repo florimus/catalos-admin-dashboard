@@ -1,4 +1,12 @@
-export const uploadImage = async (file: File) => {
+export interface IUploadedImage {
+  success: boolean;
+  url: string;
+  thumbUrl: string;
+  name: string;
+  message: string;
+}
+
+export const uploadImage = async (file: File): Promise<IUploadedImage> => {
   const formdata = new FormData();
   formdata.append('image', file, 'Linux Logo iPhone Wallpapers.jpeg');
 
@@ -31,11 +39,40 @@ export const uploadImage = async (file: File) => {
     return {
       success: false,
       message: data?.message || 'Failed to upload image',
+      url: '',
+      thumbUrl: '',
+      name: '',
     };
   });
 };
 
-export const uploadImages = async (files: File[]) => {
-  const uploadPromises = files.map((file) => uploadImage(file));
-  return await Promise.all(uploadPromises);
+export const uploadImages = async (
+  files: File[]
+): Promise<IUploadedImage[]> => {
+  try {
+    const uploadPromises = files.map((file) => uploadImage(file));
+    return (await Promise.all(uploadPromises)) || [];
+  } catch (error) {
+    console.error('Error uploading images:', error);
+    return [];
+  }
+};
+
+export const convertToIImage = (images: IUploadedImage[]) => {
+  return Array.isArray(images)
+    ? images
+        .map((image) =>
+          image.success
+            ? {
+                type: 'Image',
+                defaultSrc: image.url,
+                lg: image.url,
+                md: image.url,
+                sm: image.url,
+                alt: image.name,
+              }
+            : null
+        )
+        .filter((image) => image !== null)
+    : [];
 };

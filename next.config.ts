@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
     return config;
   },
   images: {
-    domains: ['4kwallpapers.com', 'static8.depositphotos.com'],
+    domains: ['4kwallpapers.com', 'static8.depositphotos.com', 'i.ibb.co'],
   },
 };
 

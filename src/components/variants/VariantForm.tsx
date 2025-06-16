@@ -15,9 +15,19 @@ import {
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import AttributeForm from '../attributes/AttributeForm';
 import { AttributeTypes } from '@/core/enums';
-import { createVariantAPI, updateVariantAPI, updateVariantStatusAPI } from '@/actions/variant';
+import {
+  createVariantAPI,
+  updateVariantAPI,
+  updateVariantStatusAPI,
+} from '@/actions/variant';
 import { formatAttributeValues } from '@/utils/mapperUtils';
 import { useRouter } from 'next/navigation';
+import DropzoneComponent from '../form/form-elements/DropZone';
+import {
+  convertToIImage,
+  IUploadedImage,
+  uploadImages,
+} from '@/utils/imageUtils';
 
 interface VariantFormProps {
   productType: IProductType;
@@ -85,6 +95,14 @@ const VariantForm: FC<VariantFormProps> = ({
         active,
       }));
     }
+  };
+
+  const handleImageDrop = async (files: File[]) => {
+    const uploadedImages: IUploadedImage[] = await uploadImages(files);
+    setVariantFormFields((prev) => ({
+      ...prev,
+      medias: convertToIImage(uploadedImages),
+    }));
   };
 
   const handleSaveVariant = async () => {
@@ -288,6 +306,7 @@ const VariantForm: FC<VariantFormProps> = ({
               heading='Variant Status'
               fields={[variantStatusFields]}
             />
+            <DropzoneComponent onDrop={handleImageDrop} />
           </div>
         </div>
       </div>
