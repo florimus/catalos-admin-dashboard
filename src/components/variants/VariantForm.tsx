@@ -15,7 +15,7 @@ import {
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import AttributeForm from '../attributes/AttributeForm';
 import { AttributeTypes } from '@/core/enums';
-import { createVariantAPI, updateVariantStatusAPI } from '@/actions/variant';
+import { createVariantAPI, updateVariantAPI, updateVariantStatusAPI } from '@/actions/variant';
 import { formatAttributeValues } from '@/utils/mapperUtils';
 import { useRouter } from 'next/navigation';
 
@@ -39,20 +39,22 @@ const VariantForm: FC<VariantFormProps> = ({
     []
   );
 
-  const [attributes, setAttributes] = useState<IAttributes>({});
+  const [attributes, setAttributes] = useState<IAttributes>(
+    variant?.attributes || {}
+  );
 
   const [variantFormFields, setVariantFormFields] =
     useState<IVariantFormInputs>({
-      id: '',
-      name: '',
-      slug: '',
+      id: variant?.id || '',
+      name: variant?.name || '',
+      slug: variant?.slug || '',
       productId: product.id,
-      skuId: '',
-      medias: [],
-      seoTitle: '',
-      seoDescription: '',
-      attributes: {},
-      active: true,
+      skuId: variant?.skuId || '',
+      medias: variant?.medias || [],
+      seoTitle: variant?.seoTitle || '',
+      seoDescription: variant?.seoDescription || '',
+      attributes: variant?.attributes || {},
+      active: variant?.active || false,
     });
 
   useEffect(() => {
@@ -64,10 +66,8 @@ const VariantForm: FC<VariantFormProps> = ({
 
   const handleProductStatusUpdate = async (active: boolean) => {
     setStatusLoading(true);
-    const response: IResponse<IVariantStatusUpdate> = await updateVariantStatusAPI(
-      variant?.id || '',
-      active
-    );
+    const response: IResponse<IVariantStatusUpdate> =
+      await updateVariantStatusAPI(variant?.id || '', active);
     setStatusLoading(false);
     setAlerts([
       {
@@ -89,7 +89,8 @@ const VariantForm: FC<VariantFormProps> = ({
 
   const handleSaveVariant = async () => {
     setLoading(true);
-    const response: IResponse<IVariant> = await createVariantAPI({
+    const method = variant?.id ? updateVariantAPI : createVariantAPI;
+    const response: IResponse<IVariant> = await method({
       ...variantFormFields,
       attributes: formatAttributeValues(attributes),
     });
@@ -142,7 +143,7 @@ const VariantForm: FC<VariantFormProps> = ({
       placeholder: 'pro-plus',
       id: 'slug',
       required: true,
-      disabled: false,
+      disabled: variant?.id ? true : false,
       error: false,
       hint: 'Please enter valid variant slug',
     },
@@ -173,7 +174,7 @@ const VariantForm: FC<VariantFormProps> = ({
       placeholder: `${product.skuId}-1`,
       id: 'skuId',
       required: true,
-      disabled: false,
+      disabled: variant?.id ? true : false,
       error: false,
       hint: 'Please enter valid variant skuId',
     },
@@ -240,7 +241,7 @@ const VariantForm: FC<VariantFormProps> = ({
       ? 'Online'
       : 'Offline',
     name: 'product-status',
-    disabled: product?.id ? false : true,
+    disabled: variant?.id ? false : true,
     checked: variantFormFields.active || false,
     onChange: (checked: boolean) => handleProductStatusUpdate(checked),
   };

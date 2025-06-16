@@ -144,12 +144,14 @@ export interface IVariant {
   id: string;
   name: string;
   slug: string;
-  parentId: string | null;
+  productId: string | null;
   skuId: string;
   productTypeId: string;
   url: string;
   medias: IImage[] | [];
   attributes?: IAttributes;
+  seoTitle?: string;
+  seoDescription?: string;
   active: boolean;
 }
 
