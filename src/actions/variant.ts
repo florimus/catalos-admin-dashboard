@@ -179,7 +179,6 @@ export const getVariantById = async (
 
   return response.json().then((data) => {
     handleError(data);
-    revalidatePath(`/variants/${id}`);
     if (data?.success) {
       return {
         success: true,
