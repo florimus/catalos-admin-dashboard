@@ -49,7 +49,7 @@ export default async function EditVariant(ctx: { params: { id: string } }) {
   return (
     <>
       <PageBreadcrumb
-        pageTitle={`Create Variant - ${product.name}`}
+        pageTitle={`${variant.name} | ${product.name}`}
         items={breadCrumbItems}
       />
       <VariantForm

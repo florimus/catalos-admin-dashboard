@@ -47,6 +47,7 @@ const VariantForm: FC<VariantFormProps> = ({
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
+  const [imageUploading, setImageUploading] = useState<boolean>(false);
   const {
     isOpen: isCropModalOpen,
     openModal: openFullscreenModal,
@@ -134,11 +135,13 @@ const VariantForm: FC<VariantFormProps> = ({
   };
 
   const handleImageDrop = async (files: File[]) => {
+    setImageUploading(true);
     const uploadedImages: IUploadedImage[] = await uploadImages(files);
     setVariantFormFields((prev) => ({
       ...prev,
       medias: [...convertToIImage(uploadedImages), ...prev.medias],
     }));
+    setImageUploading(false);
   };
 
   const handleSaveVariant = async () => {
@@ -342,7 +345,7 @@ const VariantForm: FC<VariantFormProps> = ({
               heading='Variant Status'
               fields={[variantStatusFields]}
             />
-            <DropzoneComponent onDrop={handleImageDrop} />
+            <DropzoneComponent loading={imageUploading} onDrop={handleImageDrop} />
             <ImageGallery
               images={variantFormFields.medias}
               showOverlay={true}
