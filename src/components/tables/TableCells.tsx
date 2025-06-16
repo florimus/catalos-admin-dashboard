@@ -24,14 +24,14 @@ const ProfileCell = ({
         onClick={onclick}
       >
         {hasAvatar && (
-          <div className="w-10 h-10 relative overflow-hidden rounded">
-          <Image
-            src={src}
-            alt={alt || "default"}
-            fill
-            className="object-cover"
-          />
-        </div>
+          <div className='w-10 h-10 relative overflow-hidden rounded'>
+            <Image
+              src={src || '/images/product/no-image.jpg'}
+              alt={alt || primaryText || 'default'}
+              fill
+              className='object-cover'
+            />
+          </div>
         )}
         <div>
           <span className='block font-medium text-gray-800 text-theme-sm dark:text-white/90'>
@@ -57,7 +57,9 @@ const TextCell = ({
     <TableCell
       className={`px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400`}
     >
-      <span onClick={onclick} className={onclick ? 'cursor-pointer' : ''} >{text}</span>
+      <span onClick={onclick} className={onclick ? 'cursor-pointer' : ''}>
+        {text}
+      </span>
     </TableCell>
   );
 };

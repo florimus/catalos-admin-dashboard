@@ -30,7 +30,7 @@ const VariantList: FC<VariantListProps> = ({ hits = [], ...rest }) => {
         type: TableCellTypes.ProfileCell,
         hasAvatar: true,
         primaryText: variant.name,
-        src: variant.medias?.[0]?.defaultSrc || '',
+        src: variant.medias?.[0]?.defaultSrc,
         secondaryText: variant.skuId,
         onclick: () => goToVariantDetails(variant.id),
       },
