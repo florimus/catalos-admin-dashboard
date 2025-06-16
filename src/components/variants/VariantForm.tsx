@@ -28,6 +28,7 @@ import {
   IUploadedImage,
   uploadImages,
 } from '@/utils/imageUtils';
+import ImageGallery from '../form/form-elements/ImageGalery';
 
 interface VariantFormProps {
   productType: IProductType;
@@ -101,7 +102,7 @@ const VariantForm: FC<VariantFormProps> = ({
     const uploadedImages: IUploadedImage[] = await uploadImages(files);
     setVariantFormFields((prev) => ({
       ...prev,
-      medias: convertToIImage(uploadedImages),
+      medias: [...convertToIImage(uploadedImages), ...prev.medias],
     }));
   };
 
@@ -307,6 +308,7 @@ const VariantForm: FC<VariantFormProps> = ({
               fields={[variantStatusFields]}
             />
             <DropzoneComponent onDrop={handleImageDrop} />
+            <ImageGallery images={variantFormFields.medias} showOverlay={true} />
           </div>
         </div>
       </div>
