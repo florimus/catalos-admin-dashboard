@@ -1,7 +1,8 @@
 'use server';
 
 import { handleError } from '@/client/httpClient';
-import { IPage, IResponse, IVariant } from '@/core/types';
+import { IPage, IResponse, IVariant, IVariantFormInputs } from '@/core/types';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 export const getVariantsByProductId = async (
@@ -49,6 +50,38 @@ export const getVariantsByProductId = async (
     return {
       success: false,
       message: data?.message || 'Failed to fetch product variants',
+    };
+  });
+};
+
+export const createVariantAPI = async (
+  payload: IVariantFormInputs
+): Promise<IResponse<IVariant>> => {
+  const cookieStore = await cookies();
+  
+  const url = new URL('/variants', process.env.NEXT_PUBLIC_API_BASE_URL);
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath(`/products/${payload.productId}`);
+      return {
+        success: true,
+        data: data.data,
+        message: 'Variant created successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to create variant',
     };
   });
 };

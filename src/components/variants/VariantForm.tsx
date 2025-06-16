@@ -7,11 +7,16 @@ import {
   IAttributes,
   IProduct,
   IProductType,
+  IResponse,
+  IVariant,
   IVariantFormInputs,
 } from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import AttributeForm from '../attributes/AttributeForm';
 import { AttributeTypes } from '@/core/enums';
+import { createVariantAPI } from '@/actions/variant';
+import { formatAttributeValues } from '@/utils/mapperUtils';
+import { useRouter } from 'next/navigation';
 
 interface VariantFormProps {
   productType: IProductType;
@@ -21,6 +26,8 @@ interface VariantFormProps {
 const VariantForm: FC<VariantFormProps> = ({ productType, product }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
+
+  const router = useRouter();
 
   const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
     []
@@ -50,6 +57,28 @@ const VariantForm: FC<VariantFormProps> = ({ productType, product }) => {
   }, [alerts]);
 
   const handleProductStatusUpdate = async (active: boolean) => {};
+
+  const handleSaveVariant = async () => {
+    setLoading(true);
+    const response: IResponse<IVariant> = await createVariantAPI({
+      ...variantFormFields,
+      attributes: formatAttributeValues(attributes),
+    });
+    setLoading(false);
+    setAlerts([
+      {
+        message:
+          response.message ||
+          (response.success
+            ? 'Variant saved successfully'
+            : 'Failed to save Variant'),
+        variant: response.success ? 'success' : 'error',
+      },
+    ]);
+    if (!product?.id && response.success) {
+      router.push(`/variants/${response.data?.id}`);
+    }
+  };
 
   const fields = [
     {
@@ -207,6 +236,7 @@ const VariantForm: FC<VariantFormProps> = ({ productType, product }) => {
               loading: loading,
               onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
                 event.preventDefault();
+                handleSaveVariant();
               },
             }}
             heading='Variant Form'

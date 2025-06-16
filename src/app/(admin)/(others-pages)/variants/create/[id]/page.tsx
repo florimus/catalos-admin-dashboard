@@ -37,13 +37,11 @@ export default async function CreateVariant(ctx: { params: { id: string } }) {
 
   return (
     <>
-      <PageBreadcrumb pageTitle={`Create Variant - ${product.name}`} items={breadCrumbItems} />
+      <PageBreadcrumb
+        pageTitle={`Create Variant - ${product.name}`}
+        items={breadCrumbItems}
+      />
       <VariantForm product={product} productType={productType} />
-      {/* <ProductForm
-        productTypeOptions={productTypesToSingleSelectMapper(
-          productTypes?.data?.hits
-        )}
-      /> */}
     </>
   );
 }

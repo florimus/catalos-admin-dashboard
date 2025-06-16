@@ -144,6 +144,7 @@ export interface IVariant {
   productTypeId: string;
   url: string;
   medias: IImage[] | [];
+  attributes?: IAttributes;
   active: boolean;
 }
 
