@@ -138,6 +138,7 @@ export interface IImage {
   md: string | null;
   sm: string | null;
   alt: string | null;
+  index?: number;
 }
 
 export interface IVariant {

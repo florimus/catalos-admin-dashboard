@@ -8,3 +8,7 @@ export const CHANNELS = [
 ];
 
 export const ATTRIBUTE_TYPES = ['Text', 'Number', 'Select', 'Boolean'];
+
+export const ASPECT_RATIOS = {
+  variantImage: 1/1
+};

@@ -5,6 +5,7 @@ import Alert from '../ui/alert/Alert';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import {
   IAttributes,
+  IImage,
   IProduct,
   IProductType,
   IResponse,
@@ -29,6 +30,9 @@ import {
   uploadImages,
 } from '@/utils/imageUtils';
 import ImageGallery from '../form/form-elements/ImageGalery';
+import { useModal } from '@/hooks/useModal';
+import CropModal from '../common/CropModal';
+import { ASPECT_RATIOS } from '@/core/constants';
 
 interface VariantFormProps {
   productType: IProductType;
@@ -43,12 +47,19 @@ const VariantForm: FC<VariantFormProps> = ({
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
+  const {
+    isOpen: isCropModalOpen,
+    openModal: openFullscreenModal,
+    closeModal: closeCropModal,
+  } = useModal();
 
   const router = useRouter();
 
   const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
     []
   );
+
+  const [editingImage, setEditingImage] = useState<IImage | null>(null);
 
   const [attributes, setAttributes] = useState<IAttributes>(
     variant?.attributes || {}
@@ -68,12 +79,36 @@ const VariantForm: FC<VariantFormProps> = ({
       active: variant?.active || false,
     });
 
+  const handleUpdateMedia = async (image: IImage) => {
+    const currentImages = variantFormFields.medias;
+    const newImages = currentImages.map((img, index) => {
+      if (index === image.index) {
+        return image;
+      }
+      return img;
+    });
+    setVariantFormFields((prev) => ({
+      ...prev,
+      medias: newImages,
+    }));
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setAlerts([]);
     }, 3000);
     return () => clearTimeout(timer);
   }, [alerts]);
+
+  const handleOpenImageCropEditor = (index: number, image: IImage) => {
+    setEditingImage({ ...image, index });
+    openFullscreenModal();
+  };
+
+  const handleCloseImageCropEditor = () => {
+    setEditingImage(null);
+    closeCropModal();
+  };
 
   const handleProductStatusUpdate = async (active: boolean) => {
     setStatusLoading(true);
@@ -308,10 +343,24 @@ const VariantForm: FC<VariantFormProps> = ({
               fields={[variantStatusFields]}
             />
             <DropzoneComponent onDrop={handleImageDrop} />
-            <ImageGallery images={variantFormFields.medias} showOverlay={true} />
+            <ImageGallery
+              images={variantFormFields.medias}
+              showOverlay={true}
+              handleEdit={handleOpenImageCropEditor}
+            />
           </div>
         </div>
       </div>
+      {editingImage && (
+        <CropModal
+          isOpen={isCropModalOpen}
+          closeModal={handleCloseImageCropEditor}
+          image={editingImage}
+          aspectRatio={ASPECT_RATIOS.variantImage}
+          handleUpdateMedia={handleUpdateMedia}
+          setAlerts={setAlerts}
+        />
+      )}
     </>
   );
 };

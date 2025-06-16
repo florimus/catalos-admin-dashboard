@@ -6,7 +6,7 @@ import React, { FC } from 'react';
 
 interface ImageGalleryProps {
   images: IImage[];
-  handleEdit?: (index: number, image: IImage) => void;
+  handleEdit?: (index: number, image: IImage) => void
   handleDelete?: (index: number, image: IImage) => void;
   showOverlay?: boolean;
 }
