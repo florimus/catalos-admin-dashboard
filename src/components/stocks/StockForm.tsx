@@ -1,19 +1,35 @@
 'use client';
 
-import { IStock, IStockInfo } from '@/core/types';
+import { IResponse, IStock, IStockInfo } from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import GridFormInputs from '../form/form-elements/GridFormInputs';
-import { ChangeEvent, FC, useCallback, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { CHANNELS } from '@/core/constants';
+import { updateStockAPI } from '@/actions/stock';
+import Alert from '../ui/alert/Alert';
 
 interface IStockFormProps {
   stockInfo: IStock | undefined;
+  variantId: string;
 }
 
-const StockForm: FC<IStockFormProps> = ({ stockInfo }) => {
+const StockForm: FC<IStockFormProps> = ({ stockInfo, variantId }) => {
   const [stockData, setStockData] = useState<IStockInfo>(
     stockInfo?.stockInfo || {}
   );
+
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
+    []
+  );
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAlerts([]);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [alerts]);
 
   const handleStockInfoChange = useCallback(
     (channel: string, name: string, value: string) => {
@@ -21,8 +37,10 @@ const StockForm: FC<IStockFormProps> = ({ stockInfo }) => {
         return {
           ...prev,
           [channel]: {
-            ...prev?.[channel],
-            [name]: value,
+            reservedStocks: Number(prev?.[channel]?.reservedStocks || 0),
+            safetyStocks: Number(prev?.[channel]?.safetyStocks || 0),
+            totalStocks: Number(prev?.[channel]?.totalStocks || 0),
+            [name]: Number(value),
           },
         };
       });
@@ -91,11 +109,49 @@ const StockForm: FC<IStockFormProps> = ({ stockInfo }) => {
     );
   }, [stockData, handleStockInfoChange]);
 
+  const handleSaveStock = async () => {
+    setLoading(true);
+    const response: IResponse<IStock> = await updateStockAPI({
+      ...stockInfo,
+      stockInfo: stockData,
+      variantId: variantId,
+    });
+    setAlerts([
+      {
+        message:
+          response.message ||
+          (response.success
+            ? 'Variant saved successfully'
+            : 'Failed to save Variant'),
+        variant: response.success ? 'success' : 'error',
+      },
+    ]);
+    setLoading(false);
+  };
+
   return (
     <div className='grid grid-cols-1 gap-6 xl:grid-cols-3'>
       <div className='grid col-span-1 xl:col-span-2'>
+        {Array.isArray(alerts) &&
+          alerts.length > 0 &&
+          alerts.map((alert) => (
+            <div className='mb-5' key={alert.message}>
+              <Alert
+                message=''
+                variant={
+                  alert.variant as 'success' | 'error' | 'warning' | 'info'
+                }
+                title={alert.message}
+              />
+            </div>
+          ))}
         <GridFormInputs
           heading='Stocks Details'
+          cta={{
+            label: 'Save',
+            onSubmit: handleSaveStock,
+            loading: loading,
+          }}
           gridFields={[...createStockGridForm()]}
         />
       </div>

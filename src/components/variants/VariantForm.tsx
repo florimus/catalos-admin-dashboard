@@ -330,6 +330,7 @@ const VariantForm: FC<VariantFormProps> = ({
             fields={fields}
           />
           {productType.id && (
+            <div>
             <AttributeForm
               title='Attributes'
               productTypeId={productType.id}
@@ -337,6 +338,7 @@ const VariantForm: FC<VariantFormProps> = ({
               setAttributes={setAttributes}
               attributeType={AttributeTypes.Variant}
             />
+            </div>
           )}
         </div>
         <div className='grid col-span-1'>

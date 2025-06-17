@@ -180,7 +180,7 @@ export interface IStockInfo {
 }
 
 export interface IStock {
-  id: string;
+  id?: string;
   variantId: string;
   stockInfo: IStockInfo;
 }
