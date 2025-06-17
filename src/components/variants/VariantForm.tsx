@@ -38,12 +38,14 @@ interface VariantFormProps {
   productType: IProductType;
   product: IProduct;
   variant?: IVariant;
+  children?: React.ReactNode;
 }
 
 const VariantForm: FC<VariantFormProps> = ({
   productType,
   product,
   variant,
+  children,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
@@ -317,29 +319,32 @@ const VariantForm: FC<VariantFormProps> = ({
         ))}
       <div className='grid grid-cols-1 gap-6 xl:grid-cols-3 my-6'>
         <div className='grid col-span-1 xl:col-span-2'>
-          <DefaultInputs
-            cta={{
-              label: 'Save variant',
-              loading: loading,
-              onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-                event.preventDefault();
-                handleSaveVariant();
-              },
-            }}
-            heading='Variant Form'
-            fields={fields}
-          />
-          {productType.id && (
-            <div>
-            <AttributeForm
-              title='Attributes'
-              productTypeId={productType.id}
-              attributes={attributes}
-              setAttributes={setAttributes}
-              attributeType={AttributeTypes.Variant}
+          <div>
+            <DefaultInputs
+              cta={{
+                label: 'Save variant',
+                loading: loading,
+                onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+                  event.preventDefault();
+                  handleSaveVariant();
+                },
+              }}
+              heading='Variant Form'
+              fields={fields}
             />
-            </div>
-          )}
+            {productType.id && (
+              <div>
+                <AttributeForm
+                  title='Attributes'
+                  productTypeId={productType.id}
+                  attributes={attributes}
+                  setAttributes={setAttributes}
+                  attributeType={AttributeTypes.Variant}
+                />
+              </div>
+            )}
+            {children}
+          </div>
         </div>
         <div className='grid col-span-1'>
           <div>
@@ -347,7 +352,10 @@ const VariantForm: FC<VariantFormProps> = ({
               heading='Variant Status'
               fields={[variantStatusFields]}
             />
-            <DropzoneComponent loading={imageUploading} onDrop={handleImageDrop} />
+            <DropzoneComponent
+              loading={imageUploading}
+              onDrop={handleImageDrop}
+            />
             <ImageGallery
               images={variantFormFields.medias}
               showOverlay={true}

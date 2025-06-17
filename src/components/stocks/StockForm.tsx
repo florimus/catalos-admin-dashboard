@@ -130,32 +130,30 @@ const StockForm: FC<IStockFormProps> = ({ stockInfo, variantId }) => {
   };
 
   return (
-    <div className='grid grid-cols-1 gap-6 xl:grid-cols-3'>
-      <div className='grid col-span-1 xl:col-span-2'>
-        {Array.isArray(alerts) &&
-          alerts.length > 0 &&
-          alerts.map((alert) => (
-            <div className='mb-5' key={alert.message}>
-              <Alert
-                message=''
-                variant={
-                  alert.variant as 'success' | 'error' | 'warning' | 'info'
-                }
-                title={alert.message}
-              />
-            </div>
-          ))}
-        <GridFormInputs
-          heading='Stocks Details'
-          cta={{
-            label: 'Save',
-            onSubmit: handleSaveStock,
-            loading: loading,
-          }}
-          gridFields={[...createStockGridForm()]}
-        />
-      </div>
-    </div>
+    <>
+      {Array.isArray(alerts) &&
+        alerts.length > 0 &&
+        alerts.map((alert) => (
+          <div className='mb-5' key={alert.message}>
+            <Alert
+              message=''
+              variant={
+                alert.variant as 'success' | 'error' | 'warning' | 'info'
+              }
+              title={alert.message}
+            />
+          </div>
+        ))}
+      <GridFormInputs
+        heading='Stocks Details'
+        cta={{
+          label: 'Save',
+          onSubmit: handleSaveStock,
+          loading: loading,
+        }}
+        gridFields={[...createStockGridForm()]}
+      />
+    </>
   );
 };
 

@@ -66,8 +66,9 @@ export default async function EditVariant(ctx: { params: { id: string } }) {
         product={product}
         productType={productType}
         variant={variant}
-      />
-      <StockForm variantId={variant.id} stockInfo={stocks?.data} />
+      >
+        <StockForm variantId={variant.id} stockInfo={stocks?.data} />
+      </VariantForm>
     </>
   );
 }
