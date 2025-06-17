@@ -168,3 +168,19 @@ export interface IVariantFormInputs {
   attributes: IAttributes;
   active?: boolean;
 }
+
+export interface IStockInfoItem {
+  totalStocks: number;
+  reservedStocks: number;
+  safetyStocks: number;
+}
+
+export interface IStockInfo {
+  [key: string]: IStockInfoItem;
+}
+
+export interface IStock {
+  id: string;
+  variantId: string;
+  stockInfo: IStockInfo;
+}

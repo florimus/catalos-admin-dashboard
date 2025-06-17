@@ -162,7 +162,7 @@ const VariantForm: FC<VariantFormProps> = ({
         variant: response.success ? 'success' : 'error',
       },
     ]);
-    if (!product?.id && response.success) {
+    if (!variant?.id && response.success) {
       router.push(`/variants/${response.data?.id}`);
     }
   };

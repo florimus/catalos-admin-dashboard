@@ -2,10 +2,18 @@
 
 import { getProductById } from '@/actions/product';
 import { getProductTypeById } from '@/actions/product-type';
+import { getStockByVariantId } from '@/actions/stock';
 import { getVariantById } from '@/actions/variant';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
+import StockForm from '@/components/stocks/StockForm';
 import VariantForm from '@/components/variants/VariantForm';
-import { IProduct, IProductType, IResponse, IVariant } from '@/core/types';
+import {
+  IProduct,
+  IProductType,
+  IResponse,
+  IStock,
+  IVariant,
+} from '@/core/types';
 
 export default async function EditVariant(ctx: { params: { id: string } }) {
   const awaitedParam = await ctx.params;
@@ -40,6 +48,8 @@ export default async function EditVariant(ctx: { params: { id: string } }) {
 
   const productType: IProductType = productTypeResponse.data;
 
+  const stocks: IResponse<IStock> = await getStockByVariantId(variant.id);
+
   const breadCrumbItems = [
     { label: 'Products', href: '/products' },
     { label: product.name, href: `/products/${product.id}` },
@@ -57,6 +67,7 @@ export default async function EditVariant(ctx: { params: { id: string } }) {
         productType={productType}
         variant={variant}
       />
+      <StockForm stockInfo={stocks?.data} />
     </>
   );
 }
