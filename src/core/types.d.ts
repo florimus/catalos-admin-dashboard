@@ -184,3 +184,17 @@ export interface IStock {
   variantId: string;
   stockInfo: IStockInfo;
 }
+
+export interface IPriceInfoItem {
+  taxClasses: string[];
+  salesPrice: number;
+}
+
+export interface IPriceInfo {
+  [key: string]: IPriceInfoItem;
+}
+
+export interface IPrice {
+  skuId: string;
+  priceInfo: IPriceInfo;
+}

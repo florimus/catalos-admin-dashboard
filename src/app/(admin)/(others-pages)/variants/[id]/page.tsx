@@ -1,13 +1,16 @@
 'use server';
 
+import { getPriceBySku } from '@/actions/price';
 import { getProductById } from '@/actions/product';
 import { getProductTypeById } from '@/actions/product-type';
 import { getStockByVariantId } from '@/actions/stock';
 import { getVariantById } from '@/actions/variant';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
+import PriceForm from '@/components/prices/PriceForm';
 import StockForm from '@/components/stocks/StockForm';
 import VariantForm from '@/components/variants/VariantForm';
 import {
+  IPrice,
   IProduct,
   IProductType,
   IResponse,
@@ -49,6 +52,7 @@ export default async function EditVariant(ctx: { params: { id: string } }) {
   const productType: IProductType = productTypeResponse.data;
 
   const stocks: IResponse<IStock> = await getStockByVariantId(variant.id);
+  const price: IResponse<IPrice> = await getPriceBySku(variant.skuId);
 
   const breadCrumbItems = [
     { label: 'Products', href: '/products' },
@@ -68,6 +72,7 @@ export default async function EditVariant(ctx: { params: { id: string } }) {
         variant={variant}
       >
         <StockForm variantId={variant.id} stockInfo={stocks?.data} />
+        <PriceForm priceInfo={price?.data} skuId={variant?.skuId} />
       </VariantForm>
     </>
   );

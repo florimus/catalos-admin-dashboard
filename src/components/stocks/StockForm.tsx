@@ -121,8 +121,8 @@ const StockForm: FC<IStockFormProps> = ({ stockInfo, variantId }) => {
         message:
           response.message ||
           (response.success
-            ? 'Variant saved successfully'
-            : 'Failed to save Variant'),
+            ? 'Stock details saved successfully'
+            : 'Failed to save Stock details'),
         variant: response.success ? 'success' : 'error',
       },
     ]);
