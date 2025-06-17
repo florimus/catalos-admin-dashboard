@@ -35,45 +35,45 @@ const GridFormInputs: FC<GridFormInputsProps> = ({
       onSubmit={cta?.onSubmit}
     >
       <Table>
-        {Array.isArray(gridFields) ? (
-          gridFields?.map((fields, index) => (
-            <TableRow key={`key_grid-row-${index}_`}>
-              {Array.isArray(fields) &&
-                fields.map((field) => (
-                  <TableCell key={field.name}>
-                    {field.fieldType === FormFieldType.Text ? (
-                      <FormFields.TextFormField
-                        key={field.name}
-                        {...(field as unknown as ITextFormFieldProps)}
-                      />
-                    ) : field.fieldType === FormFieldType.MultiSelect ? (
-                      <FormFields.MultiSelectFormField
-                        key={field.name}
-                        {...(field as unknown as IMultiSelectFormFieldProps)}
-                      />
-                    ) : field.fieldType === FormFieldType.DropDown ? (
-                      <FormFields.DropDownFormField
-                        key={field.name}
-                        {...(field as unknown as IDropDownFormFieldProps)}
-                      />
-                    ) : field.fieldType === FormFieldType.Display ? (
-                      <FormFields.DisplayField
-                        key={field.name}
-                        {...(field as unknown as IDisplayFieldProps)}
-                      />
-                    ) : field.fieldType === FormFieldType.Switch ? (
-                      <FormFields.SwitchField
-                        key={field.name}
-                        {...(field as unknown as ISwitchFieldProps)}
-                      />
-                    ) : null}
-                  </TableCell>
-                ))}
-            </TableRow>
-          ))
-        ) : (
-          <></>
-        )}
+        <tbody>
+          {Array.isArray(gridFields) ? (
+            gridFields?.map((fields, index) => (
+              <TableRow key={`key_grid-row-${index}_`}>
+                {Array.isArray(fields) &&
+                  fields.map((field) => (
+                    <TableCell key={field.name}>
+                      {field.fieldType === FormFieldType.Text ? (
+                        <FormFields.TextFormField
+                          key={field.name}
+                          {...(field as unknown as ITextFormFieldProps)}
+                        />
+                      ) : field.fieldType === FormFieldType.MultiSelect ? (
+                        <FormFields.MultiSelectFormField
+                          key={field.name}
+                          {...(field as unknown as IMultiSelectFormFieldProps)}
+                        />
+                      ) : field.fieldType === FormFieldType.DropDown ? (
+                        <FormFields.DropDownFormField
+                          key={field.name}
+                          {...(field as unknown as IDropDownFormFieldProps)}
+                        />
+                      ) : field.fieldType === FormFieldType.Display ? (
+                        <FormFields.DisplayField
+                          key={field.name}
+                          {...(field as unknown as IDisplayFieldProps)}
+                        />
+                      ) : field.fieldType === FormFieldType.Switch ? (
+                        <FormFields.SwitchField
+                          key={field.name}
+                          {...(field as unknown as ISwitchFieldProps)}
+                        />
+                      ) : null}
+                    </TableCell>
+                  ))}
+              </TableRow>
+            ))
+          ) : null}
+        </tbody>
       </Table>
     </FormCard>
   );

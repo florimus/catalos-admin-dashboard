@@ -1,12 +1,17 @@
+'use client';
+
+import FormInModal from '@/components/modals/FormInModal';
+import Avatar from '@/components/ui/avatar/Avatar';
 import Button from '@/components/ui/button/Button';
 import { IImage } from '@/core/types';
+import { useModal } from '@/hooks/useModal';
 import { PencilIcon, TrashBinIcon } from '@/icons';
 import Image from 'next/image';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 interface ImageGalleryProps {
   images: IImage[];
-  handleEdit?: (index: number, image: IImage) => void
+  handleEdit?: (index: number, image: IImage) => void;
   handleDelete?: (index: number, image: IImage) => void;
   showOverlay?: boolean;
 }
@@ -17,6 +22,12 @@ const ImageGallery: FC<ImageGalleryProps> = ({
   handleDelete,
   showOverlay,
 }) => {
+  const { isOpen, openModal, closeModal } = useModal();
+
+  const [selectedImage, setSelectedImage] = useState<string>('');
+
+  const [deleingImage, setDeleingImage] = useState<IImage | null>(null);
+
   return (
     <div className='grid grid-cols-3 gap-2 my-4'>
       {images.map((image, index) => (
@@ -40,7 +51,11 @@ const ImageGallery: FC<ImageGalleryProps> = ({
               </Button>
               <Button
                 size='xm'
-                onClick={() => handleDelete && handleDelete(index, image)}
+                onClick={() => {
+                  setDeleingImage({ ...image, index });
+                  setSelectedImage(image.defaultSrc);
+                  openModal();
+                }}
               >
                 <TrashBinIcon />
               </Button>
@@ -48,6 +63,50 @@ const ImageGallery: FC<ImageGalleryProps> = ({
           )}
         </div>
       ))}
+      {isOpen && (
+        <FormInModal
+          title='Are you sure you want to delete this image?'
+          isOpen={isOpen}
+          closeModal={closeModal}
+          handleSave={() => {
+            if (handleDelete) {
+              handleDelete(deleingImage!.index!, deleingImage!);
+              closeModal();
+            }
+          }}
+          hasCloseButton={true}
+          hasSaveButton={true}
+          saveButtonText='Delete'
+        >
+          <div className='flex flex-col items-center mt-10'>
+            <div className='mb-4 relative w-[200px] h-[200px]'>
+              <Image
+                alt={deleingImage?.alt || ''}
+                src={selectedImage || deleingImage?.defaultSrc || ''}
+                fill
+                className='rounded-full object-cover'
+              />
+            </div>
+            <div className='flex items-center justify-center gap-4 cursor-pointer'>
+              <Avatar
+                src={deleingImage?.lg || ''}
+                onClick={() => setSelectedImage(deleingImage?.lg || '')}
+                size='xxlarge'
+              />
+              <Avatar
+                src={deleingImage?.md || ''}
+                onClick={() => setSelectedImage(deleingImage?.md || '')}
+                size='xxlarge'
+              />
+              <Avatar
+                src={deleingImage?.sm || ''}
+                onClick={() => setSelectedImage(deleingImage?.sm || '')}
+                size='xxlarge'
+              />
+            </div>
+          </div>
+        </FormInModal>
+      )}
     </div>
   );
 };

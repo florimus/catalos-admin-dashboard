@@ -108,6 +108,13 @@ const VariantForm: FC<VariantFormProps> = ({
     openFullscreenModal();
   };
 
+  const handleDeleteImage = (index: number) => {
+    setVariantFormFields((prev) => ({
+      ...prev,
+      medias: prev.medias.filter((img, i) => i !== index),
+    }));
+  };
+
   const handleCloseImageCropEditor = () => {
     setEditingImage(null);
     closeCropModal();
@@ -360,6 +367,7 @@ const VariantForm: FC<VariantFormProps> = ({
               images={variantFormFields.medias}
               showOverlay={true}
               handleEdit={handleOpenImageCropEditor}
+              handleDelete={handleDeleteImage}
             />
           </div>
         </div>
