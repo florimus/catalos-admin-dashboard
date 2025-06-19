@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import { ICategory } from '@/core/types';
-import { createCategoryAPI, getCategories } from '@/actions/category';
+import { createCategoryAPI, getCategories, updateCategoryById } from '@/actions/category';
 import { categoryToSingleSelectMapper } from '@/utils/mapperUtils';
 import { useModal } from '@/hooks/useModal';
 import FormInModal from '../modals/FormInModal';
@@ -12,7 +12,15 @@ import Input from '../form/input/InputField';
 import { useRouter } from 'next/navigation';
 import Alert from '../ui/alert/Alert';
 
-const CategoryForm = () => {
+interface CategoryFormProps {
+  category?: ICategory;
+  parentCategoryOption?: {
+    label: string;
+    value: string;
+  };
+}
+
+const CategoryForm: FC<CategoryFormProps> = ({ category, parentCategoryOption }) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -30,21 +38,21 @@ const CategoryForm = () => {
   }, [alerts]);
 
   const [categoryFormData, setCategoryFormData] = useState<ICategory>({
-    id: '',
-    name: '',
-    parentId: null,
-    seoTitle: '',
-    seoDescription: '',
-    active: false,
+    id: category?.id || '',
+    name: category?.name || '',
+    parentId: category?.parentId || null,
+    seoTitle: category?.seoTitle || '',
+    seoDescription: category?.seoDescription || '',
+    active: category?.active || false,
   });
 
   const [categories, setCategories] = useState<
     { value: string; label: string }[]
-  >([]);
+  >( parentCategoryOption ? [parentCategoryOption] : []);
 
   const handleSave = async () => {
     setLoading(true);
-    const method = createCategoryAPI;
+    const method = category?.id ? updateCategoryById : createCategoryAPI;
     const response = await method({
       ...categoryFormData,
     });
@@ -59,7 +67,7 @@ const CategoryForm = () => {
         variant: response.success ? 'success' : 'error',
       },
     ]);
-    if (response.success) {
+    if (!category?.id && response.success) {
       router.push(`/categories/${response.data?.id}`);
     }
   };
@@ -145,7 +153,7 @@ const CategoryForm = () => {
       name: 'parentId',
       label: 'Select Parent Category',
       required: true,
-      disabled: false,
+      disabled: category?.id ? true : false,
       value:
         categories.find(
           (category) => category.value === categoryFormData.parentId

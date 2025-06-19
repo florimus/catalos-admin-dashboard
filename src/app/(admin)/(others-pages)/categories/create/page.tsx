@@ -3,7 +3,7 @@
 import CategoryForm from '@/components/categories/CategoryForm';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 
-const CategoryCreatePage = () => {
+const CategoryCreatePage = async() => {
   const breadCrumbItems = [
     { label: 'Categories', href: '/categories' },
     { label: 'Create Category', href: '/categories/create' },

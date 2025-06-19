@@ -82,3 +82,68 @@ export const createCategoryAPI = async (
     };
   });
 };
+
+export const getCategoryById = async (
+  id: string
+): Promise<IResponse<ICategory>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/category/id/${id}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Category fetched successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to fetch category',
+    };
+  });
+};
+
+export const updateCategoryById = async (
+  category: ICategory
+): Promise<IResponse<ICategory>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/category/id/${category.id}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify(category),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Category updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to update category',
+    };
+  });
+};
