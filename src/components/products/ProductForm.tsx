@@ -1,10 +1,16 @@
 'use client';
 
-import { IAttributes, IProduct, IProductCreateFormInputs } from '@/core/types';
+import {
+  IAttributes,
+  ICategory,
+  IProduct,
+  IProductCreateFormInputs,
+} from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useEffect, useState } from 'react';
 import {
+  categoryToSingleSelectMapper,
   channelToMultiSelectMapper,
   formatAttributeValues,
   productTypesToSingleSelectMapper,
@@ -22,14 +28,25 @@ import {
 } from '@/actions/product';
 import Alert from '../ui/alert/Alert';
 import { useRouter } from 'next/navigation';
+import { getCategories } from '@/actions/category';
 
 interface ProductFormProps {
   productTypeOptions?: { value: string; label: string }[];
   product?: IProduct;
+  initialCategories?: ICategory[];
 }
 
-const ProductForm: FC<ProductFormProps> = ({ productTypeOptions, product }) => {
+const ProductForm: FC<ProductFormProps> = ({
+  productTypeOptions,
+  product,
+  initialCategories,
+}) => {
   const { isOpen, openModal, closeModal } = useModal();
+  const {
+    isOpen: isCategoryOpen,
+    openModal: openCategoryModal,
+    closeModal: closeCategoryModal,
+  } = useModal();
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
 
@@ -52,6 +69,7 @@ const ProductForm: FC<ProductFormProps> = ({ productTypeOptions, product }) => {
       skuId: product?.skuId || '',
       productTypeId: product?.productTypeId || '',
       active: product?.active || false,
+      categoryId: product?.categoryId || null,
       publishedChannels: product?.publishedChannels || [],
     });
 
@@ -62,6 +80,10 @@ const ProductForm: FC<ProductFormProps> = ({ productTypeOptions, product }) => {
   const [productTypes, setProductTypes] = useState<
     { value: string; label: string }[]
   >(productTypeOptions || []);
+
+  const [categories, setCategories] = useState<
+    { value: string; label: string }[]
+  >(initialCategories ? categoryToSingleSelectMapper(initialCategories) : []);
 
   const handleSave = async () => {
     setLoading(true);
@@ -112,6 +134,29 @@ const ProductForm: FC<ProductFormProps> = ({ productTypeOptions, product }) => {
     }));
     setProductAttributes({});
     closeModal();
+  };
+
+  const handleCategorySelect = (value: string) => {
+    setCreateProductForm((prev) => ({
+      ...prev,
+      categoryId: value,
+    }));
+    closeCategoryModal();
+  };
+
+  const handleCategorySearch = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.value.trim() === '') {
+      setCategories(
+        initialCategories ? categoryToSingleSelectMapper(initialCategories) : []
+      );
+      return;
+    }
+    const response = await getCategories(event.target.value);
+    if (response.success && response.data?.hits) {
+      setCategories(categoryToSingleSelectMapper(response.data.hits));
+    }
   };
 
   const handleProductTypeSearch = async (
@@ -189,6 +234,19 @@ const ProductForm: FC<ProductFormProps> = ({ productTypeOptions, product }) => {
         )?.label || 'Select Product Type',
       id: 'productTypeId',
       onClick: openModal,
+    },
+    {
+      fieldType: FormFieldType.Display,
+      name: 'categoryId',
+      label: 'Select Category',
+      required: true,
+      disabled: false,
+      value:
+        categories.find(
+          (category) => category.value === createProductForm.categoryId
+        )?.label || 'Select Category',
+      id: 'categoryId',
+      onClick: openCategoryModal,
     },
   ];
 
@@ -271,6 +329,31 @@ const ProductForm: FC<ProductFormProps> = ({ productTypeOptions, product }) => {
                 key={type.value}
                 className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
                 onClick={() => handleProductTypeSelect(type.value)}
+              >
+                {type.label}
+              </li>
+            ))}
+          </ul>
+        </FormInModal>
+      )}
+      {isCategoryOpen && (
+        <FormInModal
+          title='Select Category'
+          isOpen={isCategoryOpen}
+          closeModal={closeCategoryModal}
+        >
+          <Input
+            type='text'
+            placeholder='Select Category'
+            name='categoryIdModal'
+            onChange={handleCategorySearch}
+          />
+          <ul>
+            {categories.map((type, index) => (
+              <li
+                key={`${type.value}_${index}`}
+                className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
+                onClick={() => handleCategorySelect(type.value)}
               >
                 {type.label}
               </li>
