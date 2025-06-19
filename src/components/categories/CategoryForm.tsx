@@ -27,6 +27,7 @@ interface CategoryFormProps {
   };
   searchParams?: ISearchParams;
   associatedCategories?: IPage<ICategory>;
+  initialCategoryList?: ICategory[];
 }
 
 const CategoryForm: FC<CategoryFormProps> = ({
@@ -34,6 +35,7 @@ const CategoryForm: FC<CategoryFormProps> = ({
   parentCategoryOption,
   searchParams,
   associatedCategories,
+  initialCategoryList,
 }) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [loading, setLoading] = useState<boolean>(false);
@@ -63,7 +65,11 @@ const CategoryForm: FC<CategoryFormProps> = ({
 
   const [categories, setCategories] = useState<
     { value: string; label: string }[]
-  >(parentCategoryOption ? [parentCategoryOption] : []);
+  >(
+    parentCategoryOption
+      ? [parentCategoryOption]
+      : categoryToSingleSelectMapper(initialCategoryList) ?? []
+  );
 
   const handleSave = async () => {
     setLoading(true);

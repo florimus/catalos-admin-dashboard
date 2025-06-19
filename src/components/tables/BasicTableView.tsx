@@ -67,10 +67,12 @@ const BasicTableView: FC<TableProps> = ({
               </TableBody>
             )}
           </Table>
-          { isEmpty && <EmptySection
-            heading='No Variants'
-            description='No variants created yet.'
-          />}
+          {isEmpty && (
+            <EmptySection
+              heading='No Results'
+              description='No Items here to show at the moment'
+            />
+          )}
         </div>
       </div>
     </div>

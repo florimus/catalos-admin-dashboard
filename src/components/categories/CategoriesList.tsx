@@ -63,6 +63,7 @@ const CategoriesList: FC<CategoriesListProps> = ({ hits = [], ...rest }) => {
       headingData={headingData}
       tableData={tableData}
       pageProps={rest}
+      isEmpty={hits.length === 0}
     />
   );
 };
