@@ -45,7 +45,7 @@ const CategoriesList: FC<CategoriesListProps> = ({ hits = [], ...rest }) => {
         primaryText: category.parentName || 'Un Categorized',
         secondaryText: category.parentId,
         text: 'Root Category',
-        onclick: () => goToCategoryDetails(category.id),
+        onclick: () => category.parentId && goToCategoryDetails(category.parentId || ''),
       },
       {
         type: TableCellTypes.StatusCell,

@@ -11,7 +11,7 @@ interface TableCardProps {
   searchParams: ISearchParams | null;
   children: React.ReactNode;
   desc?: string;
-  cta: {
+  cta?: {
     label: string;
     href: string;
   };
@@ -39,7 +39,7 @@ const TableCard: React.FC<TableCardProps> = ({
   };
 
   const handleCtaClick = () => {
-    router.push(cta.href);
+    router.push(cta?.href || '#');
   };
 
   return (
@@ -65,14 +65,16 @@ const TableCard: React.FC<TableCardProps> = ({
               Search
             </Button>
 
-            <Button
-              size='sm'
-              type='button'
-              className='ml-2'
-              onClick={handleCtaClick}
-            >
-              {cta.label}
-            </Button>
+            {cta?.label && (
+              <Button
+                size='sm'
+                type='button'
+                className='ml-2'
+                onClick={handleCtaClick}
+              >
+                {cta.label}
+              </Button>
+            )}
           </div>
         </form>
         {desc && (

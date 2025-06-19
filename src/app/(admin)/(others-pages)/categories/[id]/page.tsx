@@ -1,15 +1,15 @@
 'use server';
 
-import { getCategoryById } from '@/actions/category';
+import { getCategories, getCategoryById } from '@/actions/category';
 import CategoryForm from '@/components/categories/CategoryForm';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
-import { ISearchParams } from '@/core/types';
+import { ICategory, IPage, IResponse, ISearchParams } from '@/core/types';
 
 const CategoryEditPage = async (ctx: {
   params: { id: string };
   searchParams?: Promise<ISearchParams | null>;
 }) => {
-  // const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
+  const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
   const awaitedParams = await ctx.params;
 
   const categoryResponse = await getCategoryById(awaitedParams.id);
@@ -18,22 +18,40 @@ const CategoryEditPage = async (ctx: {
     return <div>Error fetching category details.</div>;
   }
 
-  const parentCategoryOption = categoryResponse?.data?.parentId ? {
-    label: categoryResponse?.data?.parentName || '',
-    value: categoryResponse?.data?.parentId || '',
-  } : undefined;
+  const associatedCategories: IResponse<IPage<ICategory>> = await getCategories(
+    searchParams?.query,
+    searchParams?.page,
+    searchParams?.size,
+    categoryResponse?.data?.id
+  );
+
+  if (!associatedCategories?.success || !associatedCategories?.data) {
+    return <div>Error fetching category details.</div>;
+  }
+
+  const parentCategoryOption = categoryResponse?.data?.parentId
+    ? {
+        label: categoryResponse?.data?.parentName || '',
+        value: categoryResponse?.data?.parentId || '',
+      }
+    : undefined;
 
   const breadCrumbItems = [
     { label: 'Categories', href: '/categories' },
     { label: categoryResponse?.data?.name, href: '#' },
   ];
+
   return (
     <>
       <PageBreadcrumb
         pageTitle={categoryResponse?.data?.name}
         items={breadCrumbItems}
       />
-      <CategoryForm category={categoryResponse?.data} parentCategoryOption={parentCategoryOption} />
+      <CategoryForm
+        category={categoryResponse?.data}
+        parentCategoryOption={parentCategoryOption}
+        associatedCategories={associatedCategories?.data}
+      />
     </>
   );
 };

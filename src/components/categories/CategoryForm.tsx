@@ -3,7 +3,7 @@
 import { FC, useEffect, useState } from 'react';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
-import { ICategory } from '@/core/types';
+import { ICategory, IPage, ISearchParams } from '@/core/types';
 import {
   createCategoryAPI,
   getCategories,
@@ -16,6 +16,8 @@ import FormInModal from '../modals/FormInModal';
 import Input from '../form/input/InputField';
 import { useRouter } from 'next/navigation';
 import Alert from '../ui/alert/Alert';
+import TableCard from '../common/TableCard';
+import CategoriesList from './CategoriesList';
 
 interface CategoryFormProps {
   category?: ICategory;
@@ -23,11 +25,15 @@ interface CategoryFormProps {
     label: string;
     value: string;
   };
+  searchParams?: ISearchParams;
+  associatedCategories?: IPage<ICategory>;
 }
 
 const CategoryForm: FC<CategoryFormProps> = ({
   category,
   parentCategoryOption,
+  searchParams,
+  associatedCategories,
 }) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [loading, setLoading] = useState<boolean>(false);
@@ -243,6 +249,14 @@ const CategoryForm: FC<CategoryFormProps> = ({
           </div>
         </div>
       </div>
+      {associatedCategories && (
+        <TableCard
+          searchPlaceHolder={'Search Associated categories...'}
+          searchParams={searchParams || {}}
+        >
+          <CategoriesList {...associatedCategories} />
+        </TableCard>
+      )}
       {isOpen && (
         <FormInModal
           title='Select Parent Category'
