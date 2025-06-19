@@ -44,6 +44,7 @@ export interface ISearchParams {
   size?: number;
   sort?: string;
   order?: 'asc' | 'desc';
+  parent?: string;
 }
 
 export interface IAttributeOption {
@@ -197,4 +198,14 @@ export interface IPriceInfo {
 export interface IPrice {
   skuId: string;
   priceInfo: IPriceInfo;
+}
+
+export interface ICategory {
+  id: string;
+  name: string;
+  parentName?: string;
+  parentId?: string;
+  seoTitle: string;
+  seoDescription: string;
+  active: boolean;
 }

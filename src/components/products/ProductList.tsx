@@ -1,4 +1,5 @@
 'use client';
+
 import { IProduct } from '@/core/types';
 import BasicTableOne from '../tables/BasicTableOne';
 import { TableCellTypes } from '../tables/TableCells';

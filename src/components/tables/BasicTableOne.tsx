@@ -3,42 +3,11 @@
 import React, { FC } from 'react';
 import BasicTableView from './BasicTableView';
 import Pagination from './Pagination';
-import { TableCellTypes } from './TableCells';
 import { useRouter } from 'next/navigation';
 
 interface BasicTableOneProps {
-  tableData: (
-    | {
-        type: TableCellTypes;
-        hasAvatar: boolean;
-        primaryText: string;
-        secondaryText: string;
-        text?: undefined;
-        status?: undefined;
-        color?: undefined;
-        onclick?: () => void;
-      }
-    | {
-        type: TableCellTypes;
-        text: string | number;
-        hasAvatar?: undefined;
-        primaryText?: undefined;
-        secondaryText?: undefined;
-        status?: undefined;
-        color?: undefined;
-        onclick?: () => void;
-      }
-    | {
-        type: TableCellTypes;
-        status: string;
-        color: string;
-        hasAvatar?: undefined;
-        primaryText?: undefined;
-        secondaryText?: undefined;
-        text?: undefined;
-        onclick?: () => void;
-      }
-  )[][];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tableData: any[][];
   headingData: string[];
   isEmpty?: boolean;
   pageProps?: {

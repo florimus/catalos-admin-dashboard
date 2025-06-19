@@ -11,38 +11,8 @@ import { BadgeColor } from '../ui/badge/Badge';
 import EmptySection from '../example/EmptySection';
 
 interface TableProps {
-  tableData: (
-    | {
-        type: TableCellTypes;
-        hasAvatar: boolean;
-        primaryText: string;
-        secondaryText: string;
-        text?: undefined;
-        status?: undefined;
-        color?: undefined;
-        onclick?: () => void;
-      }
-    | {
-        type: TableCellTypes;
-        text: string | number;
-        hasAvatar?: undefined;
-        primaryText?: undefined;
-        secondaryText?: undefined;
-        status?: undefined;
-        color?: undefined;
-        onclick?: () => void;
-      }
-    | {
-        type: TableCellTypes;
-        status: string;
-        color: string;
-        hasAvatar?: undefined;
-        primaryText?: undefined;
-        secondaryText?: undefined;
-        text?: undefined;
-        onclick?: () => void;
-      }
-  )[][];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tableData: any[][];
   isEmpty?: boolean;
   headingData: string[];
 }
