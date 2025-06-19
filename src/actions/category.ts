@@ -52,3 +52,33 @@ export const getCategories = async (
     };
   });
 };
+
+export const createCategoryAPI = async (
+  category: ICategory
+): Promise<IResponse<ICategory>> => {
+  const cookieStore = await cookies();
+  const url = new URL('/category', process.env.NEXT_PUBLIC_API_BASE_URL);
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify(category),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Category created successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to create category',
+    };
+  });
+};

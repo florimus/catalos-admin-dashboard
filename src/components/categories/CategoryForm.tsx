@@ -1,0 +1,215 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import DefaultInputs from '../form/form-elements/DefaultInputs';
+import { FormFieldType } from '../form/form-elements/DefaultFormFields';
+import { ICategory } from '@/core/types';
+import { createCategoryAPI, getCategories } from '@/actions/category';
+import { categoryToSingleSelectMapper } from '@/utils/mapperUtils';
+import { useModal } from '@/hooks/useModal';
+import FormInModal from '../modals/FormInModal';
+import Input from '../form/input/InputField';
+import { useRouter } from 'next/navigation';
+import Alert from '../ui/alert/Alert';
+
+const CategoryForm = () => {
+  const { isOpen, openModal, closeModal } = useModal();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const router = useRouter();
+
+  const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
+    []
+  );
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAlerts([]);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [alerts]);
+
+  const [categoryFormData, setCategoryFormData] = useState<ICategory>({
+    id: '',
+    name: '',
+    parentId: null,
+    seoTitle: '',
+    seoDescription: '',
+    active: false,
+  });
+
+  const [categories, setCategories] = useState<
+    { value: string; label: string }[]
+  >([]);
+
+  const handleSave = async () => {
+    setLoading(true);
+    const method = createCategoryAPI;
+    const response = await method({
+      ...categoryFormData,
+    });
+    setLoading(false);
+    setAlerts([
+      {
+        message:
+          response.message ||
+          (response.success
+            ? 'Product saved successfully'
+            : 'Failed to save product'),
+        variant: response.success ? 'success' : 'error',
+      },
+    ]);
+    if (response.success) {
+      router.push(`/categories/${response.data?.id}`);
+    }
+  };
+
+  const handleParentCategorySelect = (value: string) => {
+    setCategoryFormData((prev) => ({
+      ...prev,
+      parentId: value,
+    }));
+    closeModal();
+  };
+
+  const handleCategorySearch = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.value.trim() === '') {
+      setCategories([]);
+      return;
+    }
+    const response = await getCategories(event.target.value);
+    if (response.success && response.data?.hits) {
+      setCategories(categoryToSingleSelectMapper(response.data.hits));
+    }
+  };
+
+  const fields = [
+    {
+      fieldType: FormFieldType.Text,
+      name: 'name',
+      label: 'Category Name',
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCategoryFormData((prev) => ({
+          ...prev,
+          name: event.target.value,
+        }));
+      },
+      value: categoryFormData.name,
+      placeholder: 'Koui hammer...',
+      id: 'name',
+      required: true,
+      disabled: false,
+      error: false,
+      hint: 'Please enter valid category name',
+    },
+    {
+      fieldType: FormFieldType.Text,
+      name: 'seoTitle',
+      label: 'Seo Title',
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCategoryFormData((prev) => ({
+          ...prev,
+          seoTitle: event.target.value,
+        }));
+      },
+      value: categoryFormData.seoTitle,
+      placeholder: 'All Koui hammer..',
+      id: 'seoTitle',
+      required: true,
+      disabled: false,
+      error: false,
+      hint: 'Please enter valid seoTitle',
+    },
+    {
+      fieldType: FormFieldType.Text,
+      name: 'seoDescription',
+      label: 'Seo Description',
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCategoryFormData((prev) => ({
+          ...prev,
+          seoDescription: event.target.value,
+        }));
+      },
+      value: categoryFormData.seoTitle,
+      placeholder: 'Describe Koui hammer..',
+      id: 'seoDescription',
+      required: true,
+      disabled: false,
+      error: false,
+      hint: 'Please enter valid seoDescription',
+    },
+    {
+      fieldType: FormFieldType.Display,
+      name: 'parentId',
+      label: 'Select Parent Category',
+      required: true,
+      disabled: false,
+      value:
+        categories.find(
+          (category) => category.value === categoryFormData.parentId
+        )?.label || 'Select Product Type',
+      id: 'productTypeId',
+      onClick: openModal,
+    },
+  ];
+
+  return (
+    <>
+      {Array.isArray(alerts) &&
+        alerts.length > 0 &&
+        alerts.map((alert) => (
+          <Alert
+            key={alert.message}
+            message=''
+            variant={alert.variant as 'success' | 'error' | 'warning' | 'info'}
+            title={alert.message}
+          />
+        ))}
+      <div className='grid grid-cols-1 gap-6 xl:grid-cols-3 my-6'>
+        <div className='grid col-span-1 xl:col-span-2'>
+          <DefaultInputs
+            cta={{
+              label: 'Save Category',
+              loading: loading,
+              onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+                event.preventDefault();
+                handleSave();
+              },
+            }}
+            heading='Category Form'
+            fields={fields}
+          />
+        </div>
+      </div>
+      {isOpen && (
+        <FormInModal
+          title='Select Parent Category'
+          isOpen={isOpen}
+          closeModal={closeModal}
+        >
+          <Input
+            type='text'
+            placeholder='Select Parent Category'
+            name='parentId'
+            onChange={handleCategorySearch}
+          />
+          <ul>
+            {categories.map((type) => (
+              <li
+                key={type.value}
+                className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
+                onClick={() => handleParentCategorySelect(type.value)}
+              >
+                {type.label}
+              </li>
+            ))}
+          </ul>
+        </FormInModal>
+      )}
+    </>
+  );
+};
+
+export default CategoryForm;

@@ -3,6 +3,7 @@ import {
   IAttributeListItem,
   IAttributeOption,
   IAttributes,
+  ICategory,
   IProductType,
 } from '@/core/types';
 
@@ -118,7 +119,8 @@ export const formatAttributeValues = (attributes: IAttributes) => {
           (option) => option.value === attribute.value
         ) as IAttributeOption) ||
         attribute.options?.find(
-          (option) => option.value === (attribute.value as IAttributeOption)?.value
+          (option) =>
+            option.value === (attribute.value as IAttributeOption)?.value
         );
     }
     return attribute;
@@ -144,4 +146,13 @@ export const attributesToAttributeListMapper = (attributes: IAttributes) => {
     options: attributes[key].options,
     value: attributes[key].value,
   }));
+};
+
+export const categoryToSingleSelectMapper = (categories?: ICategory[]) => {
+  return Array.isArray(categories)
+    ? categories.map((category) => ({
+        value: category.id,
+        label: category.name,
+      }))
+    : [];
 };

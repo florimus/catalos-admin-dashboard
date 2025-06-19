@@ -204,7 +204,7 @@ export interface ICategory {
   id: string;
   name: string;
   parentName?: string;
-  parentId?: string;
+  parentId?: string | null;
   seoTitle: string;
   seoDescription: string;
   active: boolean;
