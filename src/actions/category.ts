@@ -2,6 +2,7 @@
 
 import { handleError } from '@/client/httpClient';
 import { ICategory, IPage, IResponse } from '@/core/types';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 export const getCategories = async (
@@ -70,6 +71,7 @@ export const createCategoryAPI = async (
   return response.json().then((data) => {
     handleError(data);
     if (data?.success) {
+      revalidatePath('/categories');
       return {
         success: true,
         data: data.data,
@@ -135,6 +137,7 @@ export const updateCategoryById = async (
   return response.json().then((data) => {
     handleError(data);
     if (data?.success) {
+      revalidatePath('/categories');
       return {
         success: true,
         data: data.data,
@@ -144,6 +147,40 @@ export const updateCategoryById = async (
     return {
       success: false,
       message: data?.message?.[0] || 'Failed to update category',
+    };
+  });
+};
+
+export const updateCategoryStatus = async (
+  id: string,
+  status: boolean
+): Promise<IResponse<ICategory>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/category/id/${id}/status/${status}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath('/categories');
+      return {
+        success: true,
+        data: data.data,
+        message: 'Category status updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to update category status',
     };
   });
 };

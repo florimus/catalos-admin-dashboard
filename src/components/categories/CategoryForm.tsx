@@ -4,7 +4,12 @@ import { FC, useEffect, useState } from 'react';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import { ICategory } from '@/core/types';
-import { createCategoryAPI, getCategories, updateCategoryById } from '@/actions/category';
+import {
+  createCategoryAPI,
+  getCategories,
+  updateCategoryById,
+  updateCategoryStatus,
+} from '@/actions/category';
 import { categoryToSingleSelectMapper } from '@/utils/mapperUtils';
 import { useModal } from '@/hooks/useModal';
 import FormInModal from '../modals/FormInModal';
@@ -20,9 +25,13 @@ interface CategoryFormProps {
   };
 }
 
-const CategoryForm: FC<CategoryFormProps> = ({ category, parentCategoryOption }) => {
+const CategoryForm: FC<CategoryFormProps> = ({
+  category,
+  parentCategoryOption,
+}) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [loading, setLoading] = useState<boolean>(false);
+  const [statusLoading, setStatusLoading] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -48,7 +57,7 @@ const CategoryForm: FC<CategoryFormProps> = ({ category, parentCategoryOption })
 
   const [categories, setCategories] = useState<
     { value: string; label: string }[]
-  >( parentCategoryOption ? [parentCategoryOption] : []);
+  >(parentCategoryOption ? [parentCategoryOption] : []);
 
   const handleSave = async () => {
     setLoading(true);
@@ -90,6 +99,24 @@ const CategoryForm: FC<CategoryFormProps> = ({ category, parentCategoryOption })
     const response = await getCategories(event.target.value);
     if (response.success && response.data?.hits) {
       setCategories(categoryToSingleSelectMapper(response.data.hits));
+    }
+  };
+
+  const handleCategoryStatusUpdate = async (active: boolean) => {
+    setStatusLoading(true);
+    const response = await updateCategoryStatus(category?.id || '', active);
+    setStatusLoading(false);
+    if (response.success) {
+      setAlerts([
+        {
+          message: response.message || 'Category status updated successfully',
+          variant: 'success',
+        },
+      ]);
+      setCategoryFormData((prev) => ({
+        ...prev,
+        active,
+      }));
     }
   };
 
@@ -163,6 +190,23 @@ const CategoryForm: FC<CategoryFormProps> = ({ category, parentCategoryOption })
     },
   ];
 
+  const statusLoader = (
+    <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
+  );
+
+  const categoryStatusFields = {
+    fieldType: FormFieldType.Switch,
+    label: statusLoading
+      ? statusLoader
+      : categoryFormData.active
+      ? 'Online'
+      : 'Offline',
+    name: 'product-status',
+    disabled: category?.id ? false : true,
+    checked: categoryFormData.active || false,
+    onChange: (checked: boolean) => handleCategoryStatusUpdate(checked),
+  };
+
   return (
     <>
       {Array.isArray(alerts) &&
@@ -189,6 +233,14 @@ const CategoryForm: FC<CategoryFormProps> = ({ category, parentCategoryOption })
             heading='Category Form'
             fields={fields}
           />
+        </div>
+        <div className='grid col-span-1'>
+          <div>
+            <DefaultInputs
+              heading='Category Status'
+              fields={[categoryStatusFields]}
+            />
+          </div>
         </div>
       </div>
       {isOpen && (
