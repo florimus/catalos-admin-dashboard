@@ -2,6 +2,7 @@
 
 import { getCategories } from '@/actions/category';
 import CategoriesList from '@/components/categories/CategoriesList';
+import RootCategoryFilter from '@/components/categories/filters/RootCategoryFilter';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
 import { ICategory, IPage, IResponse, ISearchParams } from '@/core/types';
@@ -39,6 +40,7 @@ export default async function CategoriesListPage(ctx: {
           searchPlaceHolder={'Search categories...'}
           searchParams={searchParams}
           cta={cta}
+          filters={<RootCategoryFilter />}
         >
           <CategoriesList {...response.data} />
         </TableCard>

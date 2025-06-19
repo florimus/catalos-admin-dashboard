@@ -15,6 +15,7 @@ interface TableCardProps {
     label: string;
     href: string;
   };
+  filters?: React.ReactNode;
 }
 
 const TableCard: React.FC<TableCardProps> = ({
@@ -22,6 +23,7 @@ const TableCard: React.FC<TableCardProps> = ({
   searchParams,
   children,
   cta,
+  filters,
   desc = '',
 }) => {
   const router = useRouter();
@@ -65,16 +67,19 @@ const TableCard: React.FC<TableCardProps> = ({
               Search
             </Button>
 
-            {cta?.label && (
-              <Button
-                size='sm'
-                type='button'
-                className='ml-2'
-                onClick={handleCtaClick}
-              >
-                {cta.label}
-              </Button>
-            )}
+            <div className='flex items-center align-middle'>
+              {filters ? filters : ''}
+              {cta?.label && (
+                <Button
+                  size='sm'
+                  type='button'
+                  className='ml-2'
+                  onClick={handleCtaClick}
+                >
+                  {cta.label}
+                </Button>
+              )}
+            </div>
           </div>
         </form>
         {desc && (
