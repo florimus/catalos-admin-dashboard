@@ -66,9 +66,10 @@ const CategoryForm: FC<CategoryFormProps> = ({
   const [categories, setCategories] = useState<
     { value: string; label: string }[]
   >(
-    parentCategoryOption
-      ? [parentCategoryOption]
-      : categoryToSingleSelectMapper(initialCategoryList) ?? []
+    [
+      ...(parentCategoryOption ? [parentCategoryOption] : []),
+      ...categoryToSingleSelectMapper(initialCategoryList),
+    ].flat()
   );
 
   const handleSave = async () => {
@@ -105,7 +106,10 @@ const CategoryForm: FC<CategoryFormProps> = ({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.value.trim() === '') {
-      setCategories([]);
+      setCategories([
+        ...(parentCategoryOption ? [parentCategoryOption] : []),
+        ...categoryToSingleSelectMapper(initialCategoryList),
+      ].flat());
       return;
     }
     const response = await getCategories(event.target.value);
@@ -179,7 +183,7 @@ const CategoryForm: FC<CategoryFormProps> = ({
           seoDescription: event.target.value,
         }));
       },
-      value: categoryFormData.seoTitle,
+      value: categoryFormData.seoDescription,
       placeholder: 'Describe Koui hammer..',
       id: 'seoDescription',
       required: true,
@@ -192,7 +196,7 @@ const CategoryForm: FC<CategoryFormProps> = ({
       name: 'parentId',
       label: 'Select Parent Category',
       required: true,
-      disabled: category?.id ? true : false,
+      disabled: false,
       value:
         categories.find(
           (category) => category.value === categoryFormData.parentId
@@ -276,9 +280,9 @@ const CategoryForm: FC<CategoryFormProps> = ({
             onChange={handleCategorySearch}
           />
           <ul>
-            {categories.map((type) => (
+            {categories.map((type, index) => (
               <li
-                key={type.value}
+                key={`${type.value}_${index}`}
                 className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
                 onClick={() => handleParentCategorySelect(type.value)}
               >

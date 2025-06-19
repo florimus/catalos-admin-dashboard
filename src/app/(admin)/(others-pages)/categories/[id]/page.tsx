@@ -36,6 +36,9 @@ const CategoryEditPage = async (ctx: {
       }
     : undefined;
 
+  const initialCategoryList: IResponse<IPage<ICategory>> =
+    (await getCategories()) || {};
+
   const breadCrumbItems = [
     { label: 'Categories', href: '/categories' },
     { label: categoryResponse?.data?.name, href: '#' },
@@ -51,6 +54,7 @@ const CategoryEditPage = async (ctx: {
         category={categoryResponse?.data}
         parentCategoryOption={parentCategoryOption}
         associatedCategories={associatedCategories?.data}
+        initialCategoryList={initialCategoryList?.data?.hits || []}
       />
     </>
   );
