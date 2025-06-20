@@ -223,7 +223,7 @@ const AppSidebar: React.FC = () => {
                     <Link
                       href={subItem.path}
                       className={`menu-dropdown-item ${
-                        isActive(subItem.path)
+                        isActive(subItem.path, subItem.activeUrl)
                           ? 'menu-dropdown-item-active'
                           : 'menu-dropdown-item-inactive'
                       }`}
@@ -233,7 +233,7 @@ const AppSidebar: React.FC = () => {
                         {subItem.new && (
                           <span
                             className={`ml-auto ${
-                              isActive(subItem.path)
+                              isActive(subItem.path, subItem.activeUrl)
                                 ? 'menu-dropdown-badge-active'
                                 : 'menu-dropdown-badge-inactive'
                             } menu-dropdown-badge `}
