@@ -6,15 +6,12 @@ import { ILoginFormProps, ILoginResponse, IResponse } from '@/core/types';
 import { loginWithPassword } from '@/actions/login';
 import { useRouter } from 'next/navigation';
 import { fetchUserInfo } from '@/actions/user';
-import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const { start } = useGlobalLoader();
 
   const [formData, setFormData] = useState<ILoginFormProps>({
     email: '',
@@ -44,9 +41,10 @@ export default function SignInForm() {
       formData.email,
       formData.password
     );
+
     if (response.success) {
-      await fetchUserInfo();
-      start(() => router.push('/'));
+      await fetchUserInfo();      
+      router.push('/');
     } else {
       setMessage(response.message || 'Login failed');
     }
