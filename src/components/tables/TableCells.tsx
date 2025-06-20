@@ -16,7 +16,7 @@ const ProfileCell = ({
   primaryText?: string;
   secondaryText?: string;
   onclick?: () => void;
-}) => {
+}) => {  
   return (
     <TableCell className='px-5 py-4 sm:px-6 text-start'>
       <div

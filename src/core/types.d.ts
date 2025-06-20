@@ -212,3 +212,12 @@ export interface ICategory {
   seoDescription: string;
   active: boolean;
 }
+
+export interface IBrand {
+  id: string;
+  name: string;
+  avatar: string;
+  seoTitle: string;
+  seoDescription: string;
+  active: boolean;
+}

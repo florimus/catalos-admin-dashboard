@@ -60,6 +60,12 @@ const navItems: NavItem[] = [
         pro: false,
         activeUrl: ['/categories'],
       },
+      {
+        name: 'Brands',
+        path: '/brands',
+        pro: false,
+        activeUrl: ['/brands'],
+      },
     ],
   },
   {
