@@ -41,7 +41,7 @@ const BasicTableOne: FC<BasicTableOneProps> = ({
         headingData={headingData}
         isEmpty={isEmpty}
       />
-      {!isEmpty && (
+      {!isEmpty && (pageProps?.hasNext || pageProps?.hasPrevious) && (
         <Pagination
           currentPage={(pageProps?.currentPage || 0) + 1}
           totalPages={pageProps?.totalPages || 0}
