@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Alert from '../ui/alert/Alert';
 import { IBrand } from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
@@ -9,9 +9,18 @@ import DropzoneComponent from '../form/form-elements/DropZone';
 import ImageGallery from '../form/form-elements/ImageGalery';
 import { IUploadedImage, uploadImage } from '@/utils/imageUtils';
 import { urlToImageMapper } from '@/utils/mapperUtils';
-import { createBrandAPI } from '@/actions/brand';
+import {
+  createBrandAPI,
+  updateBrandAPI,
+  updateBrandStatusAPI,
+} from '@/actions/brand';
+import { useRouter } from 'next/navigation';
 
-const BrandForm = () => {
+interface BrandFormProps {
+  brand?: IBrand;
+}
+
+const BrandForm: FC<BrandFormProps> = ({ brand }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
@@ -19,13 +28,15 @@ const BrandForm = () => {
     []
   );
 
+  const router = useRouter();
+
   const [brandFormData, setBrandFormData] = useState<IBrand>({
-    active: false,
-    avatar: '',
-    id: '',
-    name: '',
-    seoDescription: '',
-    seoTitle: '',
+    id: brand?.id || '',
+    name: brand?.name || '',
+    avatar: brand?.avatar || '',
+    seoTitle: brand?.seoTitle || '',
+    seoDescription: brand?.seoDescription || '',
+    active: brand?.active || false,
   });
 
   useEffect(() => {
@@ -37,42 +48,42 @@ const BrandForm = () => {
 
   const handleSave = async () => {
     setLoading(true);
-      const method =  createBrandAPI;
-      const response = await method({
-        ...brandFormData,
-      });
-      setLoading(false);
-      setAlerts([
-        {
-          message:
-            response.message ||
-            (response.success
-              ? 'Brand saved successfully'
-              : 'Failed to save brand'),
-          variant: response.success ? 'success' : 'error',
-        },
-      ]);
-    //   if (!category?.id && response.success) {
-    //     router.push(`/categories/${response.data?.id}`);
-    //   }
+    const method = brand?.id ? updateBrandAPI : createBrandAPI;
+    const response = await method({
+      ...brandFormData,
+    });
+    setLoading(false);
+    setAlerts([
+      {
+        message:
+          response.message ||
+          (response.success
+            ? 'Brand saved successfully'
+            : 'Failed to save brand'),
+        variant: response.success ? 'success' : 'error',
+      },
+    ]);
+    if (!brand?.id && response.success) {
+      router.push(`/brands/${response.data?.id}`);
+    }
   };
 
   const handleCategoryStatusUpdate = async (active: boolean) => {
     setStatusLoading(true);
-    //   const response = await updateCategoryStatus(category?.id || '', active);
-    //   setStatusLoading(false);
-    //   if (response.success) {
-    //     setAlerts([
-    //       {
-    //         message: response.message || 'Category status updated successfully',
-    //         variant: 'success',
-    //       },
-    //     ]);
-    //     setCategoryFormData((prev) => ({
-    //       ...prev,
-    //       active,
-    //     }));
-    //   }
+    const response = await updateBrandStatusAPI(brand?.id || '', active);
+    setStatusLoading(false);
+    if (response.success) {
+      setAlerts([
+        {
+          message: response.message || 'Brand status updated successfully',
+          variant: 'success',
+        },
+      ]);
+      setBrandFormData((prev) => ({
+        ...prev,
+        active,
+      }));
+    }
   };
 
   const handleImageDrop = async (files: File[]) => {
@@ -154,8 +165,8 @@ const BrandForm = () => {
       ? 'Online'
       : 'Offline',
     name: 'brand-status',
-    disabled: true,
-    checked: false,
+    disabled: brand?.id ? false : true,
+    checked: brandFormData.active || false,
     onChange: (checked: boolean) => handleCategoryStatusUpdate(checked),
   };
 
@@ -183,7 +194,7 @@ const BrandForm = () => {
                   handleSave();
                 },
               }}
-              heading='Category Form'
+              heading='Brand Form'
               fields={fields}
             />
           </div>
