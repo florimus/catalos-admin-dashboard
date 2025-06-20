@@ -12,12 +12,18 @@ export default async function CreateProduct() {
     { label: 'Products', href: '/products' },
     { label: 'Create Product', href: '/products/create' },
   ];
-  const productTypes: IResponse<IPage<IProductType>> = await getProductTypeList();
+  const productTypes: IResponse<IPage<IProductType>> =
+    await getProductTypeList();
   const initialCategories: IResponse<IPage<ICategory>> = await getCategories();
   return (
     <>
       <PageBreadcrumb pageTitle='Create Product' items={breadCrumbItems} />
-      <ProductForm productTypeOptions={productTypesToSingleSelectMapper(productTypes?.data?.hits)} initialCategories={initialCategories?.data?.hits || []} />
+      <ProductForm
+        productTypeOptions={productTypesToSingleSelectMapper(
+          productTypes?.data?.hits
+        )}
+        initialCategories={initialCategories?.data?.hits || []}
+      />
     </>
   );
 }

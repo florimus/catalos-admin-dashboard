@@ -29,6 +29,9 @@ const ProductList: React.FC<ProductListProps> = ({ hits = [], ...rest }) => {
   const goToProductDetails = (productId: string) =>
     router.push(`/products/${productId}`);
 
+  const goToCategoryDetails = (categoryId: string) =>
+    router.push(`/categories/${categoryId}`);
+
   const tableData =
     hits?.map((product) => [
       {
@@ -40,7 +43,8 @@ const ProductList: React.FC<ProductListProps> = ({ hits = [], ...rest }) => {
       },
       {
         type: TableCellTypes.TextCell,
-        text: product.categoryId || 'Un Categorized',
+        text: product.categoryName || 'Un Categorized',
+        onclick: () => product.categoryId && goToCategoryDetails(product.categoryId),
       },
       {
         type: TableCellTypes.TextCell,

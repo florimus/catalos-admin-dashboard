@@ -71,6 +71,7 @@ export interface IProduct {
   id: string;
   name: string;
   skuId: string;
+  categoryName: string | null;
   categoryId: string | null;
   brandId: string | null;
   productTypeId: string;
