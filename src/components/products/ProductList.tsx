@@ -66,6 +66,7 @@ const ProductList: React.FC<ProductListProps> = ({ hits = [], ...rest }) => {
       headingData={headingData}
       tableData={tableData}
       pageProps={rest}
+      isEmpty={hits.length === 0}
     />
   );
 };

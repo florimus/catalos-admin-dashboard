@@ -3,7 +3,7 @@
 import { FC, useEffect, useState } from 'react';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
-import { ICategory, IPage, ISearchParams } from '@/core/types';
+import { ICategory, IPage, IProduct, ISearchParams } from '@/core/types';
 import {
   createCategoryAPI,
   getCategories,
@@ -18,6 +18,8 @@ import { useRouter } from 'next/navigation';
 import Alert from '../ui/alert/Alert';
 import TableCard from '../common/TableCard';
 import CategoriesList from './CategoriesList';
+import Radio from '../form/input/Radio';
+import ProductList from '../products/ProductList';
 
 interface CategoryFormProps {
   category?: ICategory;
@@ -28,6 +30,7 @@ interface CategoryFormProps {
   searchParams?: ISearchParams;
   associatedCategories?: IPage<ICategory>;
   initialCategoryList?: ICategory[];
+  associatedProducts?: IPage<IProduct>;
 }
 
 const CategoryForm: FC<CategoryFormProps> = ({
@@ -36,10 +39,12 @@ const CategoryForm: FC<CategoryFormProps> = ({
   searchParams,
   associatedCategories,
   initialCategoryList,
+  associatedProducts,
 }) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
+  const [isCategoryTab, setIsCategoryTab] = useState<boolean>(true);
 
   const router = useRouter();
 
@@ -106,10 +111,12 @@ const CategoryForm: FC<CategoryFormProps> = ({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.value.trim() === '') {
-      setCategories([
-        ...(parentCategoryOption ? [parentCategoryOption] : []),
-        ...categoryToSingleSelectMapper(initialCategoryList),
-      ].flat());
+      setCategories(
+        [
+          ...(parentCategoryOption ? [parentCategoryOption] : []),
+          ...categoryToSingleSelectMapper(initialCategoryList),
+        ].flat()
+      );
       return;
     }
     const response = await getCategories(event.target.value);
@@ -134,6 +141,10 @@ const CategoryForm: FC<CategoryFormProps> = ({
         active,
       }));
     }
+  };
+
+  const handleChangeTab = (tab: string) => {
+    setIsCategoryTab(tab === 'categories');
   };
 
   const fields = [
@@ -259,13 +270,46 @@ const CategoryForm: FC<CategoryFormProps> = ({
           </div>
         </div>
       </div>
-      {associatedCategories && (
-        <TableCard
-          searchPlaceHolder={'Search Associated categories...'}
-          searchParams={searchParams || {}}
-        >
-          <CategoriesList {...associatedCategories} />
-        </TableCard>
+      {category?.id && (
+        <>
+          <div
+            className={`rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] mb-10 p-3`}
+          >
+            <div className='flex flex-wrap items-center gap-8'>
+              <Radio
+                id='categories_option'
+                name='categories'
+                value='categories'
+                checked={isCategoryTab}
+                onChange={handleChangeTab}
+                label='Associated Categories'
+              />
+              <Radio
+                id='products_option'
+                name='products'
+                value='products'
+                checked={!isCategoryTab}
+                onChange={handleChangeTab}
+                label='Associated Products'
+              />
+            </div>
+          </div>
+          {isCategoryTab ? (
+            <TableCard
+              searchPlaceHolder={'Search Associated categories...'}
+              searchParams={searchParams || {}}
+            >
+              <CategoriesList {...associatedCategories} />
+            </TableCard>
+          ) : (
+            <TableCard
+              searchPlaceHolder={'Search products...'}
+              searchParams={searchParams || {}}
+            >
+              <ProductList {...associatedProducts} />
+            </TableCard>
+          )}
+        </>
       )}
       {isOpen && (
         <FormInModal

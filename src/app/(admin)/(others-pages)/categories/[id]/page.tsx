@@ -1,9 +1,16 @@
 'use server';
 
 import { getCategories, getCategoryById } from '@/actions/category';
+import { getProductByCategoryId } from '@/actions/product';
 import CategoryForm from '@/components/categories/CategoryForm';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
-import { ICategory, IPage, IResponse, ISearchParams } from '@/core/types';
+import {
+  ICategory,
+  IPage,
+  IProduct,
+  IResponse,
+  ISearchParams,
+} from '@/core/types';
 
 const CategoryEditPage = async (ctx: {
   params: { id: string };
@@ -28,6 +35,14 @@ const CategoryEditPage = async (ctx: {
   if (!associatedCategories?.success || !associatedCategories?.data) {
     return <div>Error fetching category details.</div>;
   }
+
+  const associatedProducts: IResponse<IPage<IProduct>> =
+    (await getProductByCategoryId(
+      categoryResponse?.data?.id || '',
+      searchParams?.query,
+      searchParams?.page,
+      searchParams?.size
+    )) || {};
 
   const parentCategoryOption = categoryResponse?.data?.parentId
     ? {
@@ -55,6 +70,7 @@ const CategoryEditPage = async (ctx: {
         parentCategoryOption={parentCategoryOption}
         associatedCategories={associatedCategories?.data}
         initialCategoryList={initialCategoryList?.data?.hits || []}
+        associatedProducts={associatedProducts?.data}
       />
     </>
   );
