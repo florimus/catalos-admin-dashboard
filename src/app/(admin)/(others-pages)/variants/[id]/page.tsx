@@ -18,7 +18,7 @@ import {
   IVariant,
 } from '@/core/types';
 
-export default async function EditVariant(ctx: { params: { id: string } }) {
+export default async function EditVariant(ctx: { params: Promise<{ id: string }> }) {
   const awaitedParam = await ctx.params;
 
   const variantResponse: IResponse<IVariant> = await getVariantById(

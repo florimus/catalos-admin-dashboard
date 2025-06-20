@@ -12,8 +12,9 @@ import {
   ISearchParams,
 } from '@/core/types';
 
+
 const CategoryEditPage = async (ctx: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
   searchParams?: Promise<ISearchParams | null>;
 }) => {
   const searchParams: ISearchParams | null = (await ctx.searchParams) || {};

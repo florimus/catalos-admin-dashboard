@@ -6,7 +6,7 @@ import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import VariantForm from '@/components/variants/VariantForm';
 import { IProduct, IProductType, IResponse } from '@/core/types';
 
-export default async function CreateVariant(ctx: { params: { id: string } }) {
+export default async function CreateVariant(ctx: { params: Promise<{ id: string }> }) {
   const awaitedParam = await ctx.params;
 
   const productResponse: IResponse<IProduct> = await getProductById(

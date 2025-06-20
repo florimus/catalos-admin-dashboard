@@ -20,7 +20,7 @@ import {
 import { productTypesToSingleSelectMapper } from '@/utils/mapperUtils';
 
 export default async function EditProduct(ctx: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
   searchParams?: Promise<ISearchParams | null>;
 }) {
   const awaitedParams = await ctx.params;

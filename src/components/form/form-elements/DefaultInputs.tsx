@@ -19,7 +19,7 @@ interface IDefaultInputsProps {
     onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fields: any[];
+  fields?: any[];
 }
 
 const DefaultInputs: FC<IDefaultInputsProps> = ({ heading, cta, fields }) => {

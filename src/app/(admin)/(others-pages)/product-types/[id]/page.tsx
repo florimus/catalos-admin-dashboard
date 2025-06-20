@@ -8,7 +8,7 @@ import { IProductType, IResponse } from '@/core/types';
 export default async function ProductTypePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const awaitedParams = await params;
 
