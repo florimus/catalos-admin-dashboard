@@ -4,6 +4,7 @@ import {
   IAttributeOption,
   IAttributes,
   ICategory,
+  IImage,
   IProductType,
 } from '@/core/types';
 
@@ -155,4 +156,18 @@ export const categoryToSingleSelectMapper = (categories?: ICategory[]) => {
         label: category.name,
       }))
     : [];
+};
+
+export const urlToImageMapper: (url: string, alt: string) => IImage = (
+  url: string,
+  alt: string
+) => {
+  return {
+    alt,
+    type: 'Image',
+    defaultSrc: url,
+    lg: url,
+    md: url,
+    sm: url,
+  };
 };
