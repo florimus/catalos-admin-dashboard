@@ -20,6 +20,7 @@ import TableCard from '../common/TableCard';
 import CategoriesList from './CategoriesList';
 import Radio from '../form/input/Radio';
 import ProductList from '../products/ProductList';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface CategoryFormProps {
   category?: ICategory;
@@ -47,6 +48,7 @@ const CategoryForm: FC<CategoryFormProps> = ({
   const [isCategoryTab, setIsCategoryTab] = useState<boolean>(true);
 
   const router = useRouter();
+  const { start } = useGlobalLoader();
 
   const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
     []
@@ -95,7 +97,7 @@ const CategoryForm: FC<CategoryFormProps> = ({
       },
     ]);
     if (!category?.id && response.success) {
-      router.push(`/categories/${response.data?.id}`);
+      start(() => router.push(`/categories/${response.data?.id}`));
     }
   };
 

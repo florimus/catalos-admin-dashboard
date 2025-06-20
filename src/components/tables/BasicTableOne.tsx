@@ -4,6 +4,7 @@ import React, { FC } from 'react';
 import BasicTableView from './BasicTableView';
 import Pagination from './Pagination';
 import { useRouter } from 'next/navigation';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface BasicTableOneProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,11 +28,12 @@ const BasicTableOne: FC<BasicTableOneProps> = ({
   isEmpty,
 }) => {
   const router = useRouter();
+  const { start } = useGlobalLoader();
 
   const handlePageChange = (page: number) => {
     const url = new URL(window.location.href);
     url.searchParams.set('page', page.toString());
-    router.push(url.toString());
+    start(() => router.push(url.toString()));
   };
 
   return (

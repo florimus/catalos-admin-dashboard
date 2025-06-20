@@ -33,6 +33,7 @@ import ImageGallery from '../form/form-elements/ImageGalery';
 import { useModal } from '@/hooks/useModal';
 import CropModal from '../common/CropModal';
 import { ASPECT_RATIOS } from '@/core/constants';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface VariantFormProps {
   productType: IProductType;
@@ -57,6 +58,7 @@ const VariantForm: FC<VariantFormProps> = ({
   } = useModal();
 
   const router = useRouter();
+  const { start } = useGlobalLoader();
 
   const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
     []
@@ -172,7 +174,7 @@ const VariantForm: FC<VariantFormProps> = ({
       },
     ]);
     if (!variant?.id && response.success) {
-      router.push(`/variants/${response.data?.id}`);
+      start(() => router.push(`/variants/${response.data?.id}`));
     }
   };
 

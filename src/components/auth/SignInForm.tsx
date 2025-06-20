@@ -1,17 +1,20 @@
 'use client';
 
-import React, {useState } from 'react';
+import React, { useState } from 'react';
 import SignInFormView from './SignInFormView';
 import { ILoginFormProps, ILoginResponse, IResponse } from '@/core/types';
 import { loginWithPassword } from '@/actions/login';
 import { useRouter } from 'next/navigation';
 import { fetchUserInfo } from '@/actions/user';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const { start } = useGlobalLoader();
 
   const [formData, setFormData] = useState<ILoginFormProps>({
     email: '',
@@ -37,10 +40,13 @@ export default function SignInForm() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
-    const response: IResponse<ILoginResponse> = await loginWithPassword(formData.email, formData.password);
+    const response: IResponse<ILoginResponse> = await loginWithPassword(
+      formData.email,
+      formData.password
+    );
     if (response.success) {
       await fetchUserInfo();
-      router.push('/');
+      start(() => router.push('/'));
     } else {
       setMessage(response.message || 'Login failed');
     }

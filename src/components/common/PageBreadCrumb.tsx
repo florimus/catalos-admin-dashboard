@@ -5,6 +5,7 @@ import React from 'react';
 import Button from '../ui/button/Button';
 import { ChevronLeftIcon } from '@/icons';
 import { useRouter } from 'next/navigation';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface IBreadcrumbItem {
   label: string;
@@ -23,6 +24,7 @@ const PageBreadcrumb: React.FC<IBreadcrumbProps> = ({
   backUrl,
 }) => {
   const router = useRouter();
+  const { start } = useGlobalLoader();
   return (
     <div className='flex flex-wrap items-center justify-between gap-3 mb-6'>
       <h2
@@ -33,7 +35,11 @@ const PageBreadcrumb: React.FC<IBreadcrumbProps> = ({
           type='button'
           size='xm'
           variant='outline'
-          onClick={() => (backUrl ? router.push(backUrl) : router.back())}
+          onClick={() =>
+            backUrl
+              ? start(() => router.push(backUrl))
+              : start(() => router.back())
+          }
         >
           <ChevronLeftIcon />
         </Button>

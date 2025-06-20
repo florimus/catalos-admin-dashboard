@@ -5,6 +5,7 @@ import Input from '../form/input/InputField';
 import Button from '../ui/button/Button';
 import { useRouter } from 'next/navigation';
 import { ISearchParams } from '@/core/types';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface TableCardProps {
   searchPlaceHolder: string;
@@ -27,6 +28,7 @@ const TableCard: React.FC<TableCardProps> = ({
   desc = '',
 }) => {
   const router = useRouter();
+  const { start } = useGlobalLoader();
 
   const [searchQuery, setSearchQuery] = useState<string | null>(
     searchParams?.query || null
@@ -41,7 +43,7 @@ const TableCard: React.FC<TableCardProps> = ({
   };
 
   const handleCtaClick = () => {
-    router.push(cta?.href || '#');
+    start(() => router.push(cta?.href || '#'));
   };
 
   return (

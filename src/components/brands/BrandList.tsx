@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 import { TableCellTypes } from '../tables/TableCells';
 import BasicTableOne from '../tables/BasicTableOne';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface BrandListProps {
   hits?: IBrand[];
@@ -19,9 +20,10 @@ const BrandList: FC<BrandListProps> = ({ hits = [], ...rest }) => {
   const headingData: string[] = ['Brand', 'Status', 'SEO Title'];
 
   const router = useRouter();
+  const { start } = useGlobalLoader();
 
   const goToBrandDetails = (brandId: string) =>
-    router.push(`/brands/${brandId}`);
+    start(() => router.push(`/brands/${brandId}`));
 
   const tableData =
     hits?.map((brand) => [

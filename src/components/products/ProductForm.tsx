@@ -29,6 +29,7 @@ import {
 import Alert from '../ui/alert/Alert';
 import { useRouter } from 'next/navigation';
 import { getCategories } from '@/actions/category';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface ProductFormProps {
   productTypeOptions?: { value: string; label: string }[];
@@ -51,6 +52,7 @@ const ProductForm: FC<ProductFormProps> = ({
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
 
   const router = useRouter();
+  const { start } = useGlobalLoader();
 
   const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
     []
@@ -105,7 +107,7 @@ const ProductForm: FC<ProductFormProps> = ({
       },
     ]);
     if (!product?.id && response.success) {
-      router.push(`/products/${response.data?.id}`);
+      start(() => router.push(`/products/${response.data?.id}`));
     }
   };
 

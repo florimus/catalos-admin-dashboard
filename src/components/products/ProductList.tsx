@@ -4,6 +4,7 @@ import { IProduct } from '@/core/types';
 import BasicTableOne from '../tables/BasicTableOne';
 import { TableCellTypes } from '../tables/TableCells';
 import { useRouter } from 'next/navigation';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface ProductListProps {
   hits?: IProduct[];
@@ -25,12 +26,13 @@ const ProductList: React.FC<ProductListProps> = ({ hits = [], ...rest }) => {
   ];
 
   const router = useRouter();
+  const { start } = useGlobalLoader();
 
   const goToProductDetails = (productId: string) =>
-    router.push(`/products/${productId}`);
+    start(() => router.push(`/products/${productId}`));
 
   const goToCategoryDetails = (categoryId: string) =>
-    router.push(`/categories/${categoryId}`);
+    start(() => router.push(`/categories/${categoryId}`));
 
   const tableData =
     hits?.map((product) => [
@@ -44,7 +46,8 @@ const ProductList: React.FC<ProductListProps> = ({ hits = [], ...rest }) => {
       {
         type: TableCellTypes.TextCell,
         text: product.categoryName || 'Un Categorized',
-        onclick: () => product.categoryId && goToCategoryDetails(product.categoryId),
+        onclick: () =>
+          product.categoryId && goToCategoryDetails(product.categoryId),
       },
       {
         type: TableCellTypes.TextCell,

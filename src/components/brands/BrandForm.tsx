@@ -15,6 +15,7 @@ import {
   updateBrandStatusAPI,
 } from '@/actions/brand';
 import { useRouter } from 'next/navigation';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface BrandFormProps {
   brand?: IBrand;
@@ -29,7 +30,8 @@ const BrandForm: FC<BrandFormProps> = ({ brand }) => {
   );
 
   const router = useRouter();
-
+  const { start } = useGlobalLoader();
+  
   const [brandFormData, setBrandFormData] = useState<IBrand>({
     id: brand?.id || '',
     name: brand?.name || '',
@@ -64,7 +66,7 @@ const BrandForm: FC<BrandFormProps> = ({ brand }) => {
       },
     ]);
     if (!brand?.id && response.success) {
-      router.push(`/brands/${response.data?.id}`);
+      start(() => router.push(`/brands/${response.data?.id}`));
     }
   };
 

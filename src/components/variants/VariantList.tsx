@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 import BasicTableOne from '../tables/BasicTableOne';
 import { TableCellTypes } from '../tables/TableCells';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface VariantListProps {
   hits?: IVariant[];
@@ -18,11 +19,12 @@ interface VariantListProps {
 
 const VariantList: FC<VariantListProps> = ({ hits = [], ...rest }) => {
   const router = useRouter();
+  const { start } = useGlobalLoader();
 
   const headingData: string[] = ['Variant', 'Slug', 'Status'];
 
   const goToVariantDetails = (variantId: string) =>
-    router.push(`/variants/${variantId}`);
+    start(() => router.push(`/variants/${variantId}`));
 
   const tableData =
     hits?.map((variant) => [

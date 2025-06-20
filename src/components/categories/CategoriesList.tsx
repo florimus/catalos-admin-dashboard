@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 import { TableCellTypes } from '../tables/TableCells';
 import BasicTableOne from '../tables/BasicTableOne';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface CategoriesListProps {
   hits?: ICategory[];
@@ -24,9 +25,10 @@ const CategoriesList: FC<CategoriesListProps> = ({ hits = [], ...rest }) => {
   ];
 
   const router = useRouter();
+  const { start } = useGlobalLoader();
 
   const goToCategoryDetails = (categoryId: string) =>
-    router.push(`/categories/${categoryId}`);
+    start(() => router.push(`/categories/${categoryId}`));
 
   const tableData =
     hits?.map((category) => [

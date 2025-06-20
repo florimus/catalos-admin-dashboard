@@ -23,6 +23,7 @@ import {
   updateProductTypeAPI,
   updateProductTypeStatusAPI,
 } from '@/actions/product-type';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface ProductTypeFormProps {
   productType?: IProductType;
@@ -33,6 +34,7 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
 
   const router = useRouter();
+  const { start } = useGlobalLoader();
 
   const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
     []
@@ -94,7 +96,7 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
       },
     ]);
     if (!productType?.id && response.success) {
-      router.push(`/product-types/${response.data?.id}`);
+      start(() => router.push(`/product-types/${response.data?.id}`));
     }
   };
 

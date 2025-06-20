@@ -1,11 +1,14 @@
 'use client';
 
 import Switch from '@/components/form/switch/Switch';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 
 const RootCategoryFilter: FC = () => {
   const router = useRouter();
+  const { start } = useGlobalLoader();
+  
 
   const handleSwitchChange = (checked: boolean) => {
     const url = new URL(window.location.href);
@@ -14,7 +17,7 @@ const RootCategoryFilter: FC = () => {
     } else {
       url.searchParams.delete('parent');
     }
-    router.push(url.toString());
+    start(() => router.push(url.toString()));
   };
 
   return (

@@ -3,6 +3,7 @@ import { IProductType } from '@/core/types';
 import BasicTableOne from '../tables/BasicTableOne';
 import { TableCellTypes } from '../tables/TableCells';
 import { useRouter } from 'next/navigation';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface ProductTypeListProps {
   hits?: IProductType[];
@@ -21,9 +22,10 @@ const ProductTypeList: React.FC<ProductTypeListProps> = ({
   const headingData: string[] = ['Name', 'Product type Id', 'Slug', 'Status'];
 
   const router = useRouter();
+  const { start } = useGlobalLoader();
 
   const goToProductTypeDetails = (productTypeId: string) =>
-    router.push(`/product-types/${productTypeId}`);
+    start(() => router.push(`/product-types/${productTypeId}`));
 
   const tableData =
     hits?.map((productType) => [
