@@ -3,6 +3,7 @@ import {
   IAttributeListItem,
   IAttributeOption,
   IAttributes,
+  IBrand,
   ICategory,
   IImage,
   IProductType,
@@ -154,6 +155,15 @@ export const categoryToSingleSelectMapper = (categories?: ICategory[]) => {
     ? categories.map((category) => ({
         value: category.id,
         label: category.name,
+      }))
+    : [];
+};
+
+export const brandToSingleSelectMapper = (brands?: IBrand[]) => {
+  return Array.isArray(brands)
+    ? brands.map((brand) => ({
+        value: brand.id,
+        label: brand.name,
       }))
     : [];
 };

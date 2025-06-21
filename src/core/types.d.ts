@@ -73,6 +73,7 @@ export interface IProduct {
   skuId: string;
   categoryName: string | null;
   categoryId: string | null;
+  brandName: string | null;
   brandId: string | null;
   productTypeId: string;
   publishedChannels: string[];
@@ -94,6 +95,7 @@ export interface IProductCreateFormInputs {
   skuId: string;
   productTypeId: string;
   categoryId: string | null;
+  brandId: string | null;
   publishedChannels: string[];
   active?: boolean;
 }
@@ -102,6 +104,7 @@ export interface IProductUpdateFormInputs {
   id: string;
   name?: string;
   categoryId?: string | null;
+  brandId?: string | null;
   attributes?: IAttributes;
   publishedChannels?: string[];
 }

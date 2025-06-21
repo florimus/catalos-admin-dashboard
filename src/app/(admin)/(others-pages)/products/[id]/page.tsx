@@ -1,5 +1,6 @@
 'use server';
 
+import { getBrands } from '@/actions/brand';
 import { getCategories } from '@/actions/category';
 import { getProductById } from '@/actions/product';
 import { getProductTypeList } from '@/actions/product-type';
@@ -9,6 +10,7 @@ import TableCard from '@/components/common/TableCard';
 import ProductForm from '@/components/products/ProductForm';
 import VariantList from '@/components/variants/VariantList';
 import {
+  IBrand,
   ICategory,
   IPage,
   IProduct,
@@ -51,6 +53,8 @@ export default async function EditProduct(ctx: {
     await getProductTypeList();
 
   const initialCategories: IResponse<IPage<ICategory>> = await getCategories();
+  const initialBrands: IResponse<IPage<IBrand>> = await getBrands();
+
   return (
     <>
       <PageBreadcrumb
@@ -64,6 +68,7 @@ export default async function EditProduct(ctx: {
         )}
         product={product.data}
         initialCategories={initialCategories?.data?.hits || []}
+        initialBrands={initialBrands?.data?.hits || []}
       />
       <TableCard
         searchPlaceHolder={'Search variants...'}

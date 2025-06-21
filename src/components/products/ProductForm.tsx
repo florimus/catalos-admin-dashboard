@@ -2,6 +2,7 @@
 
 import {
   IAttributes,
+  IBrand,
   ICategory,
   IProduct,
   IProductCreateFormInputs,
@@ -10,6 +11,7 @@ import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useEffect, useState } from 'react';
 import {
+  brandToSingleSelectMapper,
   categoryToSingleSelectMapper,
   channelToMultiSelectMapper,
   formatAttributeValues,
@@ -30,24 +32,35 @@ import Alert from '../ui/alert/Alert';
 import { useRouter } from 'next/navigation';
 import { getCategories } from '@/actions/category';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
+import { getBrands } from '@/actions/brand';
 
 interface ProductFormProps {
   productTypeOptions?: { value: string; label: string }[];
   product?: IProduct;
   initialCategories?: ICategory[];
+  initialBrands?: IBrand[];
 }
 
 const ProductForm: FC<ProductFormProps> = ({
   productTypeOptions,
   product,
   initialCategories,
+  initialBrands,
 }) => {
   const { isOpen, openModal, closeModal } = useModal();
+
   const {
     isOpen: isCategoryOpen,
     openModal: openCategoryModal,
     closeModal: closeCategoryModal,
   } = useModal();
+
+  const {
+    isOpen: isBrandOpen,
+    openModal: openBrandModal,
+    closeModal: closeBrandModal,
+  } = useModal();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
 
@@ -72,6 +85,7 @@ const ProductForm: FC<ProductFormProps> = ({
       productTypeId: product?.productTypeId || '',
       active: product?.active || false,
       categoryId: product?.categoryId || null,
+      brandId: product?.brandId || null,
       publishedChannels: product?.publishedChannels || [],
     });
 
@@ -86,6 +100,10 @@ const ProductForm: FC<ProductFormProps> = ({
   const [categories, setCategories] = useState<
     { value: string; label: string }[]
   >(initialCategories ? categoryToSingleSelectMapper(initialCategories) : []);
+
+  const [brands, setBrands] = useState<{ value: string; label: string }[]>(
+    initialBrands ? brandToSingleSelectMapper(initialBrands) : []
+  );
 
   const handleSave = async () => {
     setLoading(true);
@@ -146,6 +164,14 @@ const ProductForm: FC<ProductFormProps> = ({
     closeCategoryModal();
   };
 
+  const handleBrandSelect = (value: string) => {
+    setCreateProductForm((prev) => ({
+      ...prev,
+      brandId: value,
+    }));
+    closeBrandModal();
+  };
+
   const handleCategorySearch = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -158,6 +184,19 @@ const ProductForm: FC<ProductFormProps> = ({
     const response = await getCategories(event.target.value);
     if (response.success && response.data?.hits) {
       setCategories(categoryToSingleSelectMapper(response.data.hits));
+    }
+  };
+
+  const handleBrandSearch = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.value.trim() === '') {
+      setBrands(initialBrands ? brandToSingleSelectMapper(initialBrands) : []);
+      return;
+    }
+    const response = await getBrands(event.target.value);
+    if (response.success && response.data?.hits) {
+      setBrands(brandToSingleSelectMapper(response.data.hits));
     }
   };
 
@@ -249,6 +288,18 @@ const ProductForm: FC<ProductFormProps> = ({
         )?.label || 'Select Category',
       id: 'categoryId',
       onClick: openCategoryModal,
+    },
+    {
+      fieldType: FormFieldType.Display,
+      name: 'brandId',
+      label: 'Select Brand',
+      required: true,
+      disabled: false,
+      value:
+        brands.find((brand) => brand.value === createProductForm.brandId)
+          ?.label || 'Select Brand',
+      id: 'brandId',
+      onClick: openBrandModal,
     },
   ];
 
@@ -353,9 +404,34 @@ const ProductForm: FC<ProductFormProps> = ({
           <ul>
             {categories.map((type, index) => (
               <li
-                key={`${type.value}_${index}`}
+                key={`category_${type.value}_${index}`}
                 className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
                 onClick={() => handleCategorySelect(type.value)}
+              >
+                {type.label}
+              </li>
+            ))}
+          </ul>
+        </FormInModal>
+      )}
+      {isBrandOpen && (
+        <FormInModal
+          title='Select Brand'
+          isOpen={isBrandOpen}
+          closeModal={closeBrandModal}
+        >
+          <Input
+            type='text'
+            placeholder='Select Brand'
+            name='brandIdModal'
+            onChange={handleBrandSearch}
+          />
+          <ul>
+            {brands.map((type, index) => (
+              <li
+                key={`brand_${type.value}_${index}`}
+                className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
+                onClick={() => handleBrandSelect(type.value)}
               >
                 {type.label}
               </li>
