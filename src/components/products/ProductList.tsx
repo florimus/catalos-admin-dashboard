@@ -34,6 +34,9 @@ const ProductList: React.FC<ProductListProps> = ({ hits = [], ...rest }) => {
   const goToCategoryDetails = (categoryId: string) =>
     start(() => router.push(`/categories/${categoryId}`));
 
+  const goToBrandDetails = (brandId: string) =>
+    start(() => router.push(`/brands/${brandId}`));
+
   const tableData =
     hits?.map((product) => [
       {
@@ -51,7 +54,8 @@ const ProductList: React.FC<ProductListProps> = ({ hits = [], ...rest }) => {
       },
       {
         type: TableCellTypes.TextCell,
-        text: product.brandId || 'Un Branded',
+        text: product.brandName || 'Un Branded',
+        onclick: () => product.brandId && goToBrandDetails(product.brandId),
       },
       {
         type: TableCellTypes.StatusCell,
