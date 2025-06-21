@@ -2,7 +2,7 @@
 
 import { FC, useEffect, useState } from 'react';
 import Alert from '../ui/alert/Alert';
-import { IBrand } from '@/core/types';
+import { IBrand, IPage, IProduct, ISearchParams } from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import DropzoneComponent from '../form/form-elements/DropZone';
@@ -16,12 +16,20 @@ import {
 } from '@/actions/brand';
 import { useRouter } from 'next/navigation';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
+import TableCard from '../common/TableCard';
+import ProductList from '../products/ProductList';
 
 interface BrandFormProps {
   brand?: IBrand;
+  brandProducts?: IPage<IProduct>;
+  searchParams?: ISearchParams | null;
 }
 
-const BrandForm: FC<BrandFormProps> = ({ brand }) => {
+const BrandForm: FC<BrandFormProps> = ({
+  brand,
+  brandProducts,
+  searchParams,
+}) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
@@ -31,7 +39,7 @@ const BrandForm: FC<BrandFormProps> = ({ brand }) => {
 
   const router = useRouter();
   const { start } = useGlobalLoader();
-  
+
   const [brandFormData, setBrandFormData] = useState<IBrand>({
     id: brand?.id || '',
     name: brand?.name || '',
@@ -222,6 +230,14 @@ const BrandForm: FC<BrandFormProps> = ({ brand }) => {
           </div>
         </div>
       </div>
+      {brand?.id && (
+        <TableCard
+          searchPlaceHolder={'Search products...'}
+          searchParams={searchParams || {}}
+        >
+          <ProductList {...brandProducts} />
+        </TableCard>
+      )}
     </>
   );
 };

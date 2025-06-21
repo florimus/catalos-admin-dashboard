@@ -1,28 +1,52 @@
 'use server';
 
 import { getBrandById } from '@/actions/brand';
+import { getProductByBrandId } from '@/actions/product';
 import BrandForm from '@/components/brands/BrandForm';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
-import { IBrand, IResponse, ISearchParams } from '@/core/types';
+import {
+  IBrand,
+  IPage,
+  IProduct,
+  IResponse,
+  ISearchParams,
+} from '@/core/types';
 
 export default async function UpdateBrandPage(ctx: {
   params: Promise<{ id: string }>;
   searchParams?: Promise<ISearchParams | null>;
 }) {
+  const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
   const awaitedParams = await ctx.params;
   const brandResponse: IResponse<IBrand> = await getBrandById(awaitedParams.id);
 
   if (!brandResponse.success || !brandResponse.data) {
     return <div>Error fetching brand details.</div>;
   }
+
   const breadCrumbItems = [
     { label: 'Brands', href: '/brands' },
     { label: brandResponse.data.name, href: '#' },
   ];
+
+  const brandProducts: IResponse<IPage<IProduct>> = await getProductByBrandId(
+    awaitedParams.id,
+    searchParams?.query,
+    searchParams?.page,
+    searchParams?.size
+  );
+
   return (
     <>
-      <PageBreadcrumb pageTitle={brandResponse.data.name} items={breadCrumbItems} />
-      <BrandForm brand={brandResponse.data} />
+      <PageBreadcrumb
+        pageTitle={brandResponse.data.name}
+        items={breadCrumbItems}
+      />
+      <BrandForm
+        brand={brandResponse.data}
+        brandProducts={brandProducts?.data}
+        searchParams={searchParams}
+      />
     </>
   );
 }
