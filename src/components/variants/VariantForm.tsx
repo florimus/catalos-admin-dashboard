@@ -6,6 +6,7 @@ import DefaultInputs from '../form/form-elements/DefaultInputs';
 import {
   IAttributes,
   IImage,
+  IModule,
   IProduct,
   IProductType,
   IResponse,
@@ -34,12 +35,17 @@ import { useModal } from '@/hooks/useModal';
 import CropModal from '../common/CropModal';
 import { ASPECT_RATIOS } from '@/core/constants';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
+import dynamic from 'next/dynamic';
+const ModuleView = dynamic(() => import('../modules/ModuleView'), {
+  ssr: false,
+});
 
 interface VariantFormProps {
   productType: IProductType;
   product: IProduct;
   variant?: IVariant;
   children?: React.ReactNode;
+  contentModule?: IModule;
 }
 
 const VariantForm: FC<VariantFormProps> = ({
@@ -47,6 +53,7 @@ const VariantForm: FC<VariantFormProps> = ({
   product,
   variant,
   children,
+  contentModule,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
@@ -374,6 +381,12 @@ const VariantForm: FC<VariantFormProps> = ({
           </div>
         </div>
       </div>
+      {variant?.id && (
+        <ModuleView
+          projectData={contentModule?.data || ''}
+          moduleId={variant.id}
+        />
+      )}
       {editingImage && (
         <CropModal
           isOpen={isCropModalOpen}

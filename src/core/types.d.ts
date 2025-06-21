@@ -224,3 +224,10 @@ export interface IBrand {
   seoDescription: string;
   active: boolean;
 }
+
+export interface IModule {
+  id?: string;
+  resourceId: string;
+  data: string;
+  active: boolean;
+}

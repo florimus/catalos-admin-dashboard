@@ -1,5 +1,6 @@
 'use server';
 
+import { getModuleById } from '@/actions/module';
 import { getPriceBySku } from '@/actions/price';
 import { getProductById } from '@/actions/product';
 import { getProductTypeById } from '@/actions/product-type';
@@ -10,6 +11,7 @@ import PriceForm from '@/components/prices/PriceForm';
 import StockForm from '@/components/stocks/StockForm';
 import VariantForm from '@/components/variants/VariantForm';
 import {
+  IModule,
   IPrice,
   IProduct,
   IProductType,
@@ -60,6 +62,10 @@ export default async function EditVariant(ctx: { params: Promise<{ id: string }>
     { label: 'Create Variant', href: '#' },
   ];
 
+  const contentModule: IResponse<IModule> = await getModuleById(
+    awaitedParam.id
+  );
+
   return (
     <>
       <PageBreadcrumb
@@ -70,6 +76,7 @@ export default async function EditVariant(ctx: { params: Promise<{ id: string }>
         product={product}
         productType={productType}
         variant={variant}
+        contentModule={contentModule?.data}
       >
         <StockForm variantId={variant.id} stockInfo={stocks?.data} />
         <PriceForm priceInfo={price?.data} skuId={variant?.skuId} />
