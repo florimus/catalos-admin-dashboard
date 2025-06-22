@@ -70,8 +70,21 @@ const navItems: NavItem[] = [
   },
   {
     icon: <UserCircleIcon />,
-    name: 'User Profile',
-    path: '/profile',
+    name: 'Users',
+    subItems: [
+      {
+        name: 'Customers',
+        path: '/customers',
+        pro: false,
+        activeUrl: ['/customers'],
+      },
+      {
+        name: 'Staffs',
+        path: '/staffs',
+        pro: false,
+        activeUrl: ['/staffs'],
+      },
+    ],
   },
   {
     name: 'Forms',
