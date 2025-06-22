@@ -71,83 +71,170 @@ const GrapesEditor = () => {
         blocks: [
           {
             id: 'container',
-            label: 'Box',
+            label: 'Container',
+            category: 'Layout',
             content: `
-              <section class="container mx-auto">
-                <section class="bg-blue-100">container</section>
+              <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white shadow-md p-6 rounded-lg">
+                  Content goes here
+                </div>
               </section>
             `,
           },
           {
             id: '1-column',
-            label: 'Single Column',
+            label: '1 Column',
+            category: 'Layout',
             content: `
-              <section class="p-8 bg-transparent">
-                <section class="bg-blue-100">session 1</section>
-              </section>
+              <div class="grid grid-cols-1 gap-6">
+                <div class="bg-gray-100 p-6 rounded-lg shadow">Column 1</div>
+              </div>
             `,
           },
           {
             id: '2-columns',
-            label: 'Double Column',
+            label: '2 Columns',
+            category: 'Layout',
             content: `
-              <session class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <section class="bg-blue-100">session 1</section>
-                <section class="bg-green-100">session 2</section>
-              </session>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-100 p-6 rounded">Left Column</div>
+                <div class="bg-green-100 p-6 rounded">Right Column</div>
+              </div>
             `,
           },
           {
             id: '3-columns',
-            label: 'Three Column',
+            label: '3 Columns',
+            category: 'Layout',
             content: `
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-red-100 p-4">Col 1</div>
-                <div class="bg-yellow-100 p-4">Col 2</div>
-                <div class="bg-purple-100 p-4">Col 3</div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-pink-100 p-4 rounded">Col 1</div>
+                <div class="bg-yellow-100 p-4 rounded">Col 2</div>
+                <div class="bg-purple-100 p-4 rounded">Col 3</div>
               </div>
             `,
           },
           {
-            id: 'text',
-            label: 'Text Block',
-            content: `
-              <div>
-                <h2 class="text-2xl bg-transparent font-semibold">Heading</h2>
-                <p class="mt-2">This is a bg-transparent Tailwind-powered paragraph.</p>
-              </div>
-            `,
+            id: 'spacer-vertical',
+            label: 'Vertical Spacer',
+            category: 'Layout',
+            content: `<div class="w-full h-8 bg-transparent transition-opacity"></div>`,
           },
           {
-            id: 'image',
-            label: 'Image',
-            content: `
-              <a href="https://example.com" target="_blank" rel="noopener noreferrer">
-                <img class="rounded shadow-md" src="https://via.placeholder.com/300x150" alt="Placeholder"/>
-              </a>
-            `,
+            id: 'spacer-horizontal',
+            label: 'Horizontal Spacer',
+            category: 'Layout',
+            content: `<div class="h-full w-8 inline-block bg-transparent transition-opacity"></div>`,
           },
           {
-            id: 'h-spacer',
-            label: 'Spacer',
+            id: 'banner',
+            label: 'Hero Banner',
+            category: 'Marketing',
             content: `
-              <div class="inline-block w-full h-10px bg-transparent"></div>
-            `,
-          },
-          {
-            id: 'heading-list',
-            label: 'Heading List',
-            content: `
-              <section class="p-4">
-                <h2 class="text-2xl font-bold mb-2">Section Heading</h2>
-                <ul class="list-disc pl-5 space-y-1 text-base text-gray-700">
-                  <li>Bullet point one</li>
-                  <li>Bullet point two</li>
-                  <li>Bullet point three</li>
-                </ul>
+              <section class="bg-cover bg-center text-white p-20 rounded" style="background-image: url('https://via.placeholder.com/1200x400');">
+                <div class="bg-black bg-opacity-50 p-8 rounded">
+                  <h1 class="text-4xl font-bold mb-4">Welcome to Our Store</h1>
+                  <p class="mb-6">Discover amazing products curated just for you.</p>
+                  <a href="#" class="bg-white text-black px-5 py-2 rounded font-medium">Shop Now</a>
+                </div>
               </section>
             `,
-            category: 'Basic',
+          },
+          {
+            id: 'cta',
+            label: 'Call to Action',
+            category: 'Marketing',
+            content: `
+              <section class="bg-indigo-600 text-white p-8 rounded text-center">
+                <h2 class="text-3xl font-bold mb-4">Join our newsletter</h2>
+                <p class="mb-6">Stay updated with the latest news</p>
+                <a href="#" class="bg-white text-indigo-600 px-6 py-2 rounded font-semibold hover:bg-gray-100">Subscribe</a>
+              </section>
+            `,
+          },
+          {
+            id: 'text-image',
+            label: 'Text + Image',
+            category: 'Content',
+            content: `
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <img src="https://via.placeholder.com/500x300" alt="Image" class="rounded shadow-md" />
+                <div>
+                  <h2 class="text-2xl font-bold mb-2">About Us</h2>
+                  <p class="text-gray-700">We provide high-quality services to elevate your brand and presence.</p>
+                </div>
+              </div>
+            `,
+          },
+          {
+            id: 'image-text',
+            label: 'Image + Text',
+            category: 'Content',
+            content: `
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div>
+                  <h2 class="text-2xl font-bold mb-2">About Us</h2>
+                  <p class="text-gray-700">We provide high-quality services to elevate your brand and presence.</p>
+                </div>
+                <img src="https://via.placeholder.com/500x300" alt="Image" class="rounded shadow-md" />
+              </div>
+            `,
+          },
+          {
+            id: 'feature-list',
+            label: 'Feature List',
+            category: 'Content',
+            content: `
+              <section class="p-8 bg-white rounded">
+                <h2 class="text-2xl font-bold mb-6 text-center">Our Features</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div class="p-4 bg-gray-100 rounded text-center">
+                    <h3 class="font-semibold text-lg">Feature One</h3>
+                    <p class="text-sm mt-2">Description of feature one.</p>
+                  </div>
+                  <div class="p-4 bg-gray-100 rounded text-center">
+                    <h3 class="font-semibold text-lg">Feature Two</h3>
+                    <p class="text-sm mt-2">Description of feature two.</p>
+                  </div>
+                  <div class="p-4 bg-gray-100 rounded text-center">
+                    <h3 class="font-semibold text-lg">Feature Three</h3>
+                    <p class="text-sm mt-2">Description of feature three.</p>
+                  </div>
+                </div>
+              </section>
+            `,
+          },
+          {
+            id: 'footer',
+            label: 'Footer',
+            category: 'Footer',
+            content: `
+              <footer class="bg-gray-800 text-white p-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <h4 class="font-semibold mb-2">Company</h4>
+                    <ul class="text-sm space-y-1">
+                      <li><a href="#" class="hover:underline">About</a></li>
+                      <li><a href="#" class="hover:underline">Careers</a></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold mb-2">Support</h4>
+                    <ul class="text-sm space-y-1">
+                      <li><a href="#" class="hover:underline">Contact</a></li>
+                      <li><a href="#" class="hover:underline">FAQs</a></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold mb-2">Follow Us</h4>
+                    <ul class="text-sm space-y-1">
+                      <li><a href="#" class="hover:underline">Twitter</a></li>
+                      <li><a href="#" class="hover:underline">Instagram</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </footer>
+            `,
           },
         ],
       },
@@ -158,98 +245,6 @@ const GrapesEditor = () => {
         component.getId?.() || Math.random().toString(36).substr(2, 6);
       const className = `cmp-${cid}`;
       component.addClass(className);
-    });
-
-    editor.DomComponents.addType('custom-button', {
-      model: {
-        defaults: {
-          tagName: 'a',
-          attributes: {
-            class:
-              'bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded inline-block',
-            href: 'https://example.com',
-            target: '_blank',
-            rel: 'noopener noreferrer',
-          },
-          content: 'Click Me',
-          traits: [
-            {
-              type: 'text',
-              label: 'Button Text',
-              name: 'content',
-              changeProp: true,
-            },
-            {
-              type: 'text',
-              label: 'Link URL',
-              name: 'href',
-              placeholder: 'https://example.com',
-            },
-            {
-              type: 'checkbox',
-              label: 'Open in new tab',
-              name: 'target',
-              valueTrue: '_blank',
-              valueFalse: '_self',
-            },
-            {
-              type: 'color',
-              label: 'Background Color',
-              name: 'bgColor',
-              default: '#2563eb', // Tailwind blue-600
-              changeProp: true,
-            },
-            {
-              type: 'color',
-              label: 'Text Color',
-              name: 'textColor',
-              default: '#ffffff',
-              changeProp: true,
-            },
-          ],
-          // This ensures the text updates live
-          script: function () {
-            this.innerHTML =
-              this.el.getAttribute('data-content') || this.el.innerHTML;
-          },
-          'script-props': ['content'],
-        },
-      },
-      view: {
-        onRender({ el }) {
-          const model = this.model;
-          const content = model.get('content');
-          const bgColor = model.get('bgColor') || '#2563eb';
-          const textColor = model.get('textColor') || '#ffffff';
-
-          el.innerHTML = content || 'Click Me';
-          el.setAttribute(
-            'style',
-            `
-            text-align: center;
-            background-color: ${bgColor};
-            color: ${textColor};
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            display: inline-block;
-            transition: all 0.2s ease;
-          `
-          );
-        },
-      },
-    });
-
-    editor.BlockManager.add('custom-button', {
-      label: `
-        <div class="flex flex-col items-center text-sm text-center">
-          <span>Button</span>
-        </div>
-      `,
-      category: 'Basic',
-      content: {
-        type: 'custom-button',
-      },
     });
 
     return () => {
@@ -274,7 +269,7 @@ const GrapesEditor = () => {
     if (!editorRef.current) return;
     const projectData = localStorage.getItem('gjsProject');
     if (projectData) {
-      const response =await updateModule({
+      const response = await updateModule({
         resourceId: params.id as string,
         data: projectData || '{}',
         active: true,
