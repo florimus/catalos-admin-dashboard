@@ -24,7 +24,7 @@ const UserList: FC<UserListProps> = ({ hits = [], ...rest }) => {
   const headingData: string[] = ['Profile', 'Email', 'Status', 'Role'];
 
   const goToVariantDetails = (variantId: string) =>
-    start(() => router.push(`/variants/${variantId}`));
+    start(() => router.push(`/customers/${variantId}`));
 
   const tableData =
     hits?.map((user) => [

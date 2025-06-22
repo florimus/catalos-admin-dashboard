@@ -1,7 +1,7 @@
 'use server';
 
 import { handleError } from '@/client/httpClient';
-import { IPage, IResponse, IUserInfo } from '@/core/types';
+import { ICustomerInfo, IPage, IResponse, IUserInfo } from '@/core/types';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
@@ -30,6 +30,35 @@ export const fetchUserInfo: () => Promise<IResponse<IUserInfo>> = async () => {
     return {
       success: false,
       message: data?.message || 'Failed to fetch user info',
+    };
+  });
+};
+
+export const getUserInfoById = async (
+  id: string
+): Promise<IResponse<ICustomerInfo>> => {
+  const cookieStore = await cookies();
+  const url = new URL(`/users/id/${id}`, process.env.NEXT_PUBLIC_API_BASE_URL);
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'User fetched successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to fetch user',
     };
   });
 };

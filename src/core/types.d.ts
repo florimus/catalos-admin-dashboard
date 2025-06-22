@@ -25,6 +25,18 @@ export interface ILoginResponse {
   refreshToken: string;
 }
 
+export interface ICustomerInfo {
+  id: string;
+  userGroupId: string | null;
+  firstName: string;
+  lastName: string | null;
+  email: string;
+  grandType: string;
+  roleId: string;
+  verified: boolean;
+  active: boolean;
+}
+
 export interface IUserInfo {
   id: string;
   userGroupId: string;
