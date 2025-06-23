@@ -31,7 +31,7 @@ export default async function EditCustomer(ctx: {
         pageTitle={`${customer.firstName} ${customer.lastName}`}
         items={breadCrumbItems}
       />
-      <UserForm customer={customer} />
+      <UserForm customer={customer} disableEdits={true} />
     </>
   );
 }

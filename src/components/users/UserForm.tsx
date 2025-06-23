@@ -6,19 +6,21 @@ import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useEffect, useState } from 'react';
 
 import Alert from '../ui/alert/Alert';
+import { userStatusUpdateApi } from '@/actions/user';
 // import { useRouter } from 'next/navigation';
 // import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface UserFormProps {
   customer?: ICustomerInfo;
+  disableEdits?: boolean;
 }
 
-const UserForm: FC<UserFormProps> = ({ customer }) => {
+const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
 
-//   const router = useRouter();
-//   const { start } = useGlobalLoader();
+  //   const router = useRouter();
+  //   const { start } = useGlobalLoader();
 
   const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
     []
@@ -69,20 +71,20 @@ const UserForm: FC<UserFormProps> = ({ customer }) => {
 
   const handleProductStatusUpdate = async (active: boolean) => {
     setStatusLoading(true);
-    // const response = await productStatusUpdateApi(customer?.id || '', active);
-    // setStatusLoading(false);
-    // if (response.success) {
-    //   setAlerts([
-    //     {
-    //       message: response.message || 'Product status updated successfully',
-    //       variant: 'success',
-    //     },
-    //   ]);
-    //   setCreateProductForm((prev) => ({
-    //     ...prev,
-    //     active,
-    //   }));
-    // }
+    const response = await userStatusUpdateApi(customer?.id || '', active);
+    setStatusLoading(false);
+    if (response.success) {
+      setAlerts([
+        {
+          message: response.message || 'Customer status updated successfully',
+          variant: 'success',
+        },
+      ]);
+      setUserFormData((prev) => ({
+        ...prev,
+        active,
+      }));
+    }
   };
 
   const fields = [
@@ -100,7 +102,7 @@ const UserForm: FC<UserFormProps> = ({ customer }) => {
       placeholder: 'Lucci vasqqi...',
       id: 'firstName',
       required: true,
-      disabled: true,
+      disabled: disableEdits,
       error: false,
       hint: 'Please enter valid firstName',
     },
@@ -118,7 +120,7 @@ const UserForm: FC<UserFormProps> = ({ customer }) => {
       placeholder: 'Lucci vasqqi...',
       id: 'lastName',
       required: false,
-      disabled: true,
+      disabled: disableEdits,
       error: false,
       hint: 'Please enter valid lastName',
     },
@@ -136,7 +138,7 @@ const UserForm: FC<UserFormProps> = ({ customer }) => {
       placeholder: 'licci@catalos.com',
       id: 'email',
       required: false,
-      disabled: true,
+      disabled: disableEdits,
       error: false,
       hint: 'Please enter valid email',
     },
@@ -145,7 +147,7 @@ const UserForm: FC<UserFormProps> = ({ customer }) => {
       name: 'roleId',
       label: 'Customer Role',
       required: true,
-      disabled: true,
+      disabled: disableEdits,
       value: userFormData.roleId,
       id: 'roleId',
     },
@@ -154,7 +156,7 @@ const UserForm: FC<UserFormProps> = ({ customer }) => {
       name: 'userGroupId',
       label: 'Customer Group',
       required: true,
-      disabled: true,
+      disabled: disableEdits,
       placeholder: 'Unassigned',
       value: userFormData.userGroupId,
       id: 'userGroupId',
@@ -193,14 +195,18 @@ const UserForm: FC<UserFormProps> = ({ customer }) => {
       <div className='grid grid-cols-1 gap-6 xl:grid-cols-3 my-6'>
         <div className='grid col-span-1 xl:col-span-2'>
           <DefaultInputs
-            cta={{
-              label: 'Save Changes',
-              loading: loading,
-              onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-                event.preventDefault();
-                handleSave();
-              },
-            }}
+            cta={
+              disableEdits
+                ? undefined
+                : {
+                    label: 'Save Changes',
+                    loading: loading,
+                    onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+                      event.preventDefault();
+                      handleSave();
+                    },
+                  }
+            }
             heading='Customer Form'
             fields={fields}
           />

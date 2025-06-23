@@ -243,3 +243,8 @@ export interface IModule {
   data: string;
   active: boolean;
 }
+
+export interface IUserStatusUpdate {
+  id: string;
+  active: boolean;
+}

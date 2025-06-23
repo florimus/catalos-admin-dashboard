@@ -1,7 +1,13 @@
 'use server';
 
 import { handleError } from '@/client/httpClient';
-import { ICustomerInfo, IPage, IResponse, IUserInfo } from '@/core/types';
+import {
+  ICustomerInfo,
+  IPage,
+  IResponse,
+  IUserInfo,
+  IUserStatusUpdate,
+} from '@/core/types';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
@@ -181,6 +187,41 @@ export const getUsers = async (
     return {
       success: false,
       message: data?.message || 'Failed to fetch Users',
+    };
+  });
+};
+
+export const userStatusUpdateApi = async (
+  id: string,
+  active: boolean
+): Promise<IResponse<IUserStatusUpdate>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/users/id/${id}/status/${active}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath(`/customers`);
+      revalidatePath('/customers');
+      return {
+        success: true,
+        data: data.data,
+        message: 'Customer status updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to update Customer status',
     };
   });
 };
