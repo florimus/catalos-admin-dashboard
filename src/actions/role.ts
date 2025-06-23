@@ -47,3 +47,36 @@ export const getRoles = async (
     };
   });
 };
+
+export const getRoleByUniqueId = async (
+  uniqueId: string
+): Promise<IResponse<IRole>> => {
+  const cookieStore = await cookies();
+
+  const url = new URL(
+    `/roles/id/${uniqueId}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Roles fetched successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to fetch roles',
+    };
+  });
+};

@@ -15,7 +15,7 @@ export default async function RolesListPage(ctx: {
   const response: IResponse<IPage<IRole>> = await getRoles(
     searchParams?.query,
     searchParams?.page,
-    searchParams?.size,
+    searchParams?.size
   );
 
   if (!response.success) {
@@ -27,7 +27,10 @@ export default async function RolesListPage(ctx: {
     <>
       <PageBreadcrumb
         pageTitle='Roles And Permissions'
-        items={[{ label: 'Roles And Permissions', href: '#' }]}
+        items={[
+          { label: 'Settings', href: '/settings' },
+          { label: 'Roles And Permissions', href: '#' },
+        ]}
       />
       <div className='space-y-6'>
         <TableCard
