@@ -7,6 +7,10 @@ import { FC, useEffect, useState } from 'react';
 
 import Alert from '../ui/alert/Alert';
 import { updateStaffUserInfo, userStatusUpdateApi } from '@/actions/user';
+import DropzoneComponent from '../form/form-elements/DropZone';
+import { IUploadedImage, uploadImage } from '@/utils/imageUtils';
+import ImageGallery from '../form/form-elements/ImageGalery';
+import { urlToImageMapper } from '@/utils/mapperUtils';
 // import { useRouter } from 'next/navigation';
 // import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
@@ -18,9 +22,10 @@ interface UserFormProps {
 const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
+  const [imageUploading, setImageUploading] = useState<boolean>(false);
 
-    // const router = useRouter();
-    // const { start } = useGlobalLoader();
+  // const router = useRouter();
+  // const { start } = useGlobalLoader();
 
   const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
     []
@@ -39,6 +44,7 @@ const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
     firstName: customer?.firstName || '',
     lastName: customer?.lastName || '',
     email: customer?.email || '',
+    avatar: customer?.avatar || '',
     grandType: customer?.grandType || '',
     roleId: customer?.roleId || '',
     verified: customer?.verified || false,
@@ -63,6 +69,16 @@ const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
     // if (!customer?.id && response.success) {
     //   start(() => router.push(`/products/${response.data?.id}`));
     // }
+  };
+
+  const handleImageDrop = async (files: File[]) => {
+    setImageUploading(true);
+    const uploadedImages: IUploadedImage = await uploadImage(files?.[0]);
+    setUserFormData((prev) => ({
+      ...prev,
+      avatar: uploadedImages.url,
+    }));
+    setImageUploading(false);
   };
 
   const handleProductStatusUpdate = async (active: boolean) => {
@@ -213,6 +229,22 @@ const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
               heading='Customer Status'
               fields={[productStatusFields]}
             />
+            {!disableEdits && (
+              <>
+                <DropzoneComponent
+                  loading={imageUploading}
+                  onDrop={handleImageDrop}
+                />
+                <ImageGallery
+                  images={
+                    userFormData.avatar
+                      ? [urlToImageMapper(userFormData.avatar, '')]
+                      : []
+                  }
+                  showOverlay={false}
+                />
+              </>
+            )}
           </div>
         </div>
       </div>

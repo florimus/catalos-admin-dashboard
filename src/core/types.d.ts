@@ -31,6 +31,7 @@ export interface ICustomerInfo {
   firstName: string;
   lastName: string | null;
   email: string;
+  avatar: string | null;
   grandType: string;
   roleId: string;
   verified: boolean;
@@ -43,6 +44,7 @@ export interface IUserInfo {
   firstName: string;
   lastName: string;
   email: string;
+  avatar: string | null;
   grandType: string;
   roleId: string;
   verified: boolean;

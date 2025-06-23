@@ -115,6 +115,7 @@ export const getUserInfo: () => Promise<IUserInfo | null> = async () => {
 export const updateUserInfo = async (
   firstName: string,
   lastName: string,
+  avatar: string,
   userGroupId: string = ''
 ): Promise<IResponse<IUserInfo>> => {
   const cookieStore = await cookies();
@@ -126,7 +127,7 @@ export const updateUserInfo = async (
         'Content-Type': 'application/json',
         Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
       },
-      body: JSON.stringify({ firstName, lastName, userGroupId }),
+      body: JSON.stringify({ firstName, lastName, userGroupId, avatar }),
     }
   );
 

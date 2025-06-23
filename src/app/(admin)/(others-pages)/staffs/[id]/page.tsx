@@ -28,7 +28,9 @@ export default async function EditCustomer(ctx: {
   return (
     <>
       <PageBreadcrumb
-        pageTitle={`${customer.firstName} ${customer.lastName}`}
+        pageTitle={`${customer.firstName} ${
+          customer.lastName ? customer.lastName : ''
+        }`}
         items={breadCrumbItems}
       />
       <UserForm customer={customer} disableEdits={false} />

@@ -4,24 +4,43 @@ import Button from '../ui/button/Button';
 import Input from '../form/input/InputField';
 import Label from '../form/Label';
 import { IUserInfo } from '@/core/types';
+import Image from 'next/image';
 
 interface UserInfoCardViewProps {
-  userInfo?: IUserInfo;
   isOpen: boolean;
+  loading: boolean;
+  isUploading: boolean;
+  userInfo?: IUserInfo;
   openModal: () => void;
   closeModal: () => void;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSave: (event: React.FormEvent<HTMLFormElement>) => void;
+  handleProfileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const UserInfoCardView: FC<UserInfoCardViewProps> = ({
+  loading,
   userInfo,
   isOpen,
+  isUploading,
   openModal,
   closeModal,
   handleInputChange,
   handleSave,
+  handleProfileChange,
 }) => {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleProfileButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const statusLoader = (
+    <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin position-absolute' />
+  );
+
   return (
     <div className='p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6'>
       <div className='flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between'>
@@ -95,6 +114,24 @@ const UserInfoCardView: FC<UserInfoCardViewProps> = ({
           </div>
           <form onSubmit={handleSave} className='flex flex-col'>
             <div className='custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3'>
+              <div className='mr-3 overflow-hidden rounded-full h-20 w-20 relative border-gray-200 dark:border-gray-800 flex justify-center items-center'>
+                <Image
+                  src={userInfo?.avatar || '/images/user/owner.jpeg'}
+                  alt='User'
+                  fill
+                  onClick={handleProfileButtonClick}
+                  className='object-cover cursor-pointer'
+                />
+                {isUploading &&statusLoader}
+              </div>
+              <input
+                ref={fileInputRef}
+                onChange={handleProfileChange}
+                type='file'
+                name='avatar'
+                id='avatar'
+                className='hidden'
+              />
               <div className='mt-7'>
                 <h5 className='mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6'>
                   Personal Information
@@ -103,12 +140,22 @@ const UserInfoCardView: FC<UserInfoCardViewProps> = ({
                 <div className='grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2'>
                   <div className='col-span-2 lg:col-span-1'>
                     <Label>First Name</Label>
-                    <Input type='text' name='firstName' value={userInfo?.firstName} onChange={handleInputChange} />
+                    <Input
+                      type='text'
+                      name='firstName'
+                      value={userInfo?.firstName}
+                      onChange={handleInputChange}
+                    />
                   </div>
 
                   <div className='col-span-2 lg:col-span-1'>
                     <Label>Last Name</Label>
-                    <Input type='text' name='lastName' value={userInfo?.lastName} onChange={handleInputChange} />
+                    <Input
+                      type='text'
+                      name='lastName'
+                      value={userInfo?.lastName}
+                      onChange={handleInputChange}
+                    />
                   </div>
 
                   <div className='col-span-2 lg:col-span-1'>
@@ -119,11 +166,16 @@ const UserInfoCardView: FC<UserInfoCardViewProps> = ({
               </div>
             </div>
             <div className='flex items-center gap-3 px-2 mt-6 lg:justify-end'>
-              <Button size='sm' variant='outline' type='button' onClick={closeModal}>
+              <Button
+                size='sm'
+                variant='outline'
+                type='button'
+                onClick={closeModal}
+              >
                 Close
               </Button>
               <Button size='sm' type='submit'>
-                Save Changes
+                Save Changes {loading && statusLoader}
               </Button>
             </div>
           </form>

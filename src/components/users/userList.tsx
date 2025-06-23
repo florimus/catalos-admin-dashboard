@@ -32,8 +32,8 @@ const UserList: FC<UserListProps> = ({ origin, hits = [], ...rest }) => {
       {
         type: TableCellTypes.ProfileCell,
         hasAvatar: true,
-        primaryText: user.firstName + ' ' + user.lastName,
-        src: '',
+        primaryText: user.firstName + ' ' + (user.lastName ? user.lastName : ''),
+        src: user.avatar,
         secondaryText: user.id,
         onclick: () => goToVariantDetails(user.id),
       },

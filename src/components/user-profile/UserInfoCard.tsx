@@ -1,10 +1,11 @@
 'use client';
 
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useModal } from '../../hooks/useModal';
 import { IResponse, IUserInfo } from '@/core/types';
 import UserInfoCardView from './UserInfoCardView';
 import { updateUserInfo } from '@/actions/user';
+import { IUploadedImage, uploadImage } from '@/utils/imageUtils';
 
 interface UserInfoCardProps {
   userInfo?: IUserInfo;
@@ -12,7 +13,9 @@ interface UserInfoCardProps {
 
 const UserInfoCard: FC<UserInfoCardProps> = ({ userInfo }) => {
   const { isOpen, openModal, closeModal } = useModal();
-  const [userInfoState, setUserInfoState] = React.useState<
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [userInfoState, setUserInfoState] = useState<
     IUserInfo | undefined
   >(userInfo);
 
@@ -26,10 +29,14 @@ const UserInfoCard: FC<UserInfoCardProps> = ({ userInfo }) => {
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     const response: IResponse<IUserInfo> = await updateUserInfo(
       userInfoState?.firstName || '',
-      userInfoState?.lastName || ''
+      userInfoState?.lastName || '',
+      userInfoState?.avatar || '',
+      userInfo?.userGroupId
     );
+    setLoading(false);
     if (response.success) {
       setUserInfoState(response.data);
       closeModal();
@@ -37,14 +44,33 @@ const UserInfoCard: FC<UserInfoCardProps> = ({ userInfo }) => {
       console.error(response.message);
     }
   };
+
+  const handleProfileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setIsUploading(true);
+      const image: IUploadedImage = await uploadImage(file);
+      setIsUploading(false);
+      setUserInfoState((prev) => ({
+        ...prev!,
+        avatar: image.url,
+      }));
+    }
+  };
+
   return (
     <UserInfoCardView
       userInfo={userInfoState}
       isOpen={isOpen}
+      isUploading={isUploading}
+      loading={loading}
       openModal={openModal}
       closeModal={closeModal}
       handleInputChange={handleInputChange}
       handleSave={handleSave}
+      handleProfileChange={handleProfileChange}
     />
   );
 };
