@@ -230,21 +230,19 @@ const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
               fields={[productStatusFields]}
             />
             {!disableEdits && (
-              <>
-                <DropzoneComponent
-                  loading={imageUploading}
-                  onDrop={handleImageDrop}
-                />
-                <ImageGallery
-                  images={
-                    userFormData.avatar
-                      ? [urlToImageMapper(userFormData.avatar, '')]
-                      : []
-                  }
-                  showOverlay={false}
-                />
-              </>
+              <DropzoneComponent
+                loading={imageUploading}
+                onDrop={handleImageDrop}
+              />
             )}
+            <ImageGallery
+              images={
+                userFormData.avatar
+                  ? [urlToImageMapper(userFormData.avatar, '')]
+                  : []
+              }
+              showOverlay={false}
+            />
           </div>
         </div>
       </div>
