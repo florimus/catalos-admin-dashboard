@@ -250,3 +250,17 @@ export interface IUserStatusUpdate {
   id: string;
   active: boolean;
 }
+
+export interface IRolePermissionItem {
+  [key: string]: string[];
+}
+
+export interface IRole {
+  id: string;
+  uniqueId: string;
+  name: string;
+  description: string;
+  permissionList: IRolePermissionItem;
+  default: boolean;
+  active: boolean;
+}
