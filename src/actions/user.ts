@@ -150,7 +150,8 @@ export const updateUserInfo = async (
 export const getUsers = async (
   query: string = '',
   page: number = 0,
-  size: number = 10
+  size: number = 10,
+  role?: string
 ): Promise<IResponse<IPage<IUserInfo>>> => {
   const cookieStore = await cookies();
   const url = new URL('/users/search', process.env.NEXT_PUBLIC_API_BASE_URL);
@@ -165,6 +166,10 @@ export const getUsers = async (
 
   if (size >= 1) {
     url.searchParams.append('size', size.toString());
+  }
+
+  if (role) {
+    url.searchParams.append('role', role);
   }
 
   const response = await fetch(url, {
@@ -212,7 +217,7 @@ export const userStatusUpdateApi = async (
     handleError(data);
     if (data?.success) {
       revalidatePath(`/customers`);
-      revalidatePath('/customers');
+      revalidatePath('/staffs');
       return {
         success: true,
         data: data.data,
@@ -222,6 +227,40 @@ export const userStatusUpdateApi = async (
     return {
       success: false,
       message: data?.message || 'Failed to update Customer status',
+    };
+  });
+};
+
+export const updateStaffUserInfo = async (
+  payload: ICustomerInfo
+): Promise<IResponse<ICustomerInfo>> => {
+  
+  const cookieStore = await cookies();
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/staff`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+      },
+      body: JSON.stringify(payload),
+    }
+  );
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath('/staffs');
+      return {
+        success: true,
+        data: data.data,
+        message: 'Staff info updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to update staff info',
     };
   });
 };

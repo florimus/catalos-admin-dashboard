@@ -15,26 +15,27 @@ export default async function CustomersListPage(ctx: {
   const response: IResponse<IPage<IUserInfo>> = await getUsers(
     searchParams?.query,
     searchParams?.page,
-    searchParams?.size
+    searchParams?.size,
+    'staffs'
   );
 
   if (!response.success) {
-    console.error('Failed to fetch products:', response.message);
-    return <div>Error fetching products: {response.message}</div>;
+    console.error('Failed to fetch staffs:', response.message);
+    return <div>Error fetching staffs: {response.message}</div>;
   }
 
   return (
     <>
       <PageBreadcrumb
-        pageTitle='Customers'
-        items={[{ label: 'Customers', href: '#' }]}
+        pageTitle='Staffs'
+        items={[{ label: 'Staffs', href: '#' }]}
       />
       <div className='space-y-6'>
         <TableCard
-          searchPlaceHolder={'Search customers...'}
+          searchPlaceHolder={'Search staffs...'}
           searchParams={searchParams}
         >
-          <UserList origin='/customers' {...response.data} />
+          <UserList origin='/staffs' {...response.data} />
         </TableCard>
       </div>
     </>

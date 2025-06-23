@@ -8,6 +8,7 @@ import { TableCellTypes } from '../tables/TableCells';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface UserListProps {
+  origin: string;
   hits?: IUserInfo[];
   totalHitsCount?: number;
   currentPage?: number;
@@ -17,14 +18,14 @@ interface UserListProps {
   hasPrevious?: boolean;
 }
 
-const UserList: FC<UserListProps> = ({ hits = [], ...rest }) => {
+const UserList: FC<UserListProps> = ({ origin, hits = [], ...rest }) => {
   const router = useRouter();
   const { start } = useGlobalLoader();
 
   const headingData: string[] = ['Profile', 'Email', 'Status', 'Role'];
 
   const goToVariantDetails = (variantId: string) =>
-    start(() => router.push(`/customers/${variantId}`));
+    start(() => router.push(`${origin}/${variantId}`));
 
   const tableData =
     hits?.map((user) => [

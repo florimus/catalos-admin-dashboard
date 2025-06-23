@@ -6,7 +6,7 @@ import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useEffect, useState } from 'react';
 
 import Alert from '../ui/alert/Alert';
-import { userStatusUpdateApi } from '@/actions/user';
+import { updateStaffUserInfo, userStatusUpdateApi } from '@/actions/user';
 // import { useRouter } from 'next/navigation';
 // import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
@@ -19,8 +19,8 @@ const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
 
-  //   const router = useRouter();
-  //   const { start } = useGlobalLoader();
+    // const router = useRouter();
+    // const { start } = useGlobalLoader();
 
   const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
     []
@@ -47,23 +47,19 @@ const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
 
   const handleSave = async () => {
     setLoading(true);
-    // const method = customer?.id ? updateProductApi : createProductAPI;
-    // const response = await method({
-    //   id: customer?.id || '',
-    //   ...createProductForm,
-    //   attributes: formatAttributeValues(productAttributes),
-    // });
-    // setLoading(false);
-    // setAlerts([
-    //   {
-    //     message:
-    //       response.message ||
-    //       (response.success
-    //         ? 'Product saved successfully'
-    //         : 'Failed to save product'),
-    //     variant: response.success ? 'success' : 'error',
-    //   },
-    // ]);
+    const method = updateStaffUserInfo;
+    const response = await method(userFormData);
+    setLoading(false);
+    setAlerts([
+      {
+        message:
+          response.message ||
+          (response.success
+            ? 'Staff ifo saved successfully'
+            : 'Failed to save Staff'),
+        variant: response.success ? 'success' : 'error',
+      },
+    ]);
     // if (!customer?.id && response.success) {
     //   start(() => router.push(`/products/${response.data?.id}`));
     // }
@@ -138,7 +134,7 @@ const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
       placeholder: 'licci@catalos.com',
       id: 'email',
       required: false,
-      disabled: disableEdits,
+      disabled: true,
       error: false,
       hint: 'Please enter valid email',
     },
@@ -155,7 +151,7 @@ const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
       fieldType: FormFieldType.Display,
       name: 'userGroupId',
       label: 'Customer Group',
-      required: true,
+      required: false,
       disabled: disableEdits,
       placeholder: 'Unassigned',
       value: userFormData.userGroupId,
