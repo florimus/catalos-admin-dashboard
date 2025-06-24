@@ -4,10 +4,9 @@ import { getRoleByUniqueId } from '@/actions/role';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import RoleForm from '@/components/settings/roles-permission/RoleForm';
 import Badge from '@/components/ui/badge/Badge';
-// import UserForm from '@/components/users/UserForm';
 import { IResponse, IRole } from '@/core/types';
 
-export default async function EditCustomer(ctx: {
+export default async function EditRolePage(ctx: {
   params: Promise<{ id: string }>;
 }) {
   const awaitedParam = await ctx.params;
@@ -39,7 +38,11 @@ export default async function EditCustomer(ctx: {
 
   return (
     <>
-      <PageBreadcrumb pageTitle={RoleTitle} items={breadCrumbItems} />
+      <PageBreadcrumb
+        pageTitle={RoleTitle}
+        items={breadCrumbItems}
+        backUrl='/settings/roles-and-permissions'
+      />
       <RoleForm role={role} />
     </>
   );

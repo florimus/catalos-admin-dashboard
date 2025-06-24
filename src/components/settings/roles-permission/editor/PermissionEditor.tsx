@@ -53,7 +53,7 @@ const PermissionEditor: FC<IPermissionEditorProps> = ({
         {AllModules.map((module, index) => (
           <div
             key={module}
-            className='p-6 border rounded-md dark:border-gray-700 border-gray-300'
+            className='p-6 border rounded-md dark:border-gray-700 border-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
           >
             <div
               className='flex justify-between items-center cursor-pointer'
@@ -62,7 +62,7 @@ const PermissionEditor: FC<IPermissionEditorProps> = ({
               <p className='text-gray-700 dark:text-gray-300 font-medium'>
                 {module}
               </p>
-              <span className='flex items-center text-gray-700 dark:text-gray-300 font-medium'>
+              <span className='flex items-center text-gray-500 dark:text-gray-500 font-medium'>
                 {`${roleFormData?.[module]?.length || 0} / 3`}{' '}
                 {expandedModules[index] ? (
                   <ChevronDownIcon className='text-gray-700 dark:text-gray-300' />

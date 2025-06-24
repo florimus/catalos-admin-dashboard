@@ -8,9 +8,9 @@ import Alert from '@/components/ui/alert/Alert';
 import DefaultInputs from '@/components/form/form-elements/DefaultInputs';
 import { formatSlug } from '@/utils/stringUtils';
 import PermissionEditor from './editor/PermissionEditor';
-import { updateRoleByUniqueId } from '@/actions/role';
-// import { useRouter } from 'next/navigation';
-// import { useGlobalLoader } from '@/context/GlobalLoaderContext';
+import { createRoleAPI, updateRoleByUniqueId } from '@/actions/role';
+import { useRouter } from 'next/navigation';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface RoleFormProps {
   role?: IRole;
@@ -20,8 +20,8 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
 
-  // const router = useRouter();
-  // const { start } = useGlobalLoader();
+  const router = useRouter();
+  const { start } = useGlobalLoader();
 
   const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
     []
@@ -50,7 +50,7 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
 
   const handleSave = async () => {
     setLoading(true);
-    const method = updateRoleByUniqueId;
+    const method = role?.id ? updateRoleByUniqueId : createRoleAPI;
     const response = await method({
       ...roleFormData,
       permissionList: validateAndFormatPermissionList(permissionList),
@@ -66,9 +66,13 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
         variant: response.success ? 'success' : 'error',
       },
     ]);
-    // if (!customer?.id && response.success) {
-    //   start(() => router.push(`/products/${response.data?.id}`));
-    // }
+    if (!role?.id && response.success) {
+      start(() =>
+        router.push(
+          `/settings/roles-and-permissions/${response.data?.uniqueId}`
+        )
+      );
+    }
   };
 
   const validateAndFormatPermissionList = (list: IRolePermissionItem) => {
@@ -114,7 +118,7 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
       placeholder: 'Unique ID',
       id: 'uniqueId',
       required: true,
-      disabled: true,
+      disabled: role?.id || role?.default ? true : false,
       error: false,
       hint: 'Please enter valid uniqueId',
     },
@@ -132,7 +136,7 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
       placeholder: 'Locci nutter',
       id: 'lastName',
       required: false,
-      disabled: false,
+      disabled: role?.default ? true : false,
       error: false,
       hint: 'Please enter valid name',
     },
@@ -150,7 +154,7 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
       placeholder: 'This is a description',
       id: 'description',
       required: false,
-      disabled: true,
+      disabled: role?.default ? true : false,
       error: false,
       hint: 'Please enter valid description',
     },

@@ -2,6 +2,7 @@
 
 import { handleError } from '@/client/httpClient';
 import { IPage, IResponse, IRole } from '@/core/types';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 export const getRoles = async (
@@ -101,6 +102,7 @@ export const updateRoleByUniqueId = async (
   return response.json().then((data) => {
     handleError(data);
     if (data?.success) {
+      revalidatePath('/settings/roles-and-permissions');
       return {
         success: true,
         data: data.data,
@@ -110,6 +112,37 @@ export const updateRoleByUniqueId = async (
     return {
       success: false,
       message: data?.message || 'Failed to update role',
+    };
+  });
+};
+
+export const createRoleAPI = async (
+  payload: IRole
+): Promise<IResponse<IRole>> => {
+  const cookieStore = await cookies();
+  const url = new URL('/roles', process.env.NEXT_PUBLIC_API_BASE_URL);
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath('/settings/roles-and-permissions');
+      return {
+        success: true,
+        data: data.data,
+        message: 'Role created successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to create role',
     };
   });
 };

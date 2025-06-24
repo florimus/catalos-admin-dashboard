@@ -23,6 +23,11 @@ export default async function RolesListPage(ctx: {
     return <div>Error fetching roles: {response.message}</div>;
   }
 
+  const cta = {
+    label: 'New Role',
+    href: '/settings/roles-and-permissions/create',
+  };
+
   return (
     <>
       <PageBreadcrumb
@@ -36,6 +41,7 @@ export default async function RolesListPage(ctx: {
         <TableCard
           searchPlaceHolder={'Search Roles...'}
           searchParams={searchParams}
+          cta={cta}
         >
           <RoleList {...response.data} />
         </TableCard>
