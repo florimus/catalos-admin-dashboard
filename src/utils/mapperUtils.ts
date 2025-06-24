@@ -7,6 +7,7 @@ import {
   ICategory,
   IImage,
   IProductType,
+  IRole,
 } from '@/core/types';
 
 export const channelToMultiSelectMapper = (
@@ -180,4 +181,13 @@ export const urlToImageMapper: (url: string, alt: string) => IImage = (
     md: url,
     sm: url,
   };
+};
+
+export const rolesToSingleSelectMapper = (roles?: IRole[]) => {
+  return Array.isArray(roles)
+    ? roles.map((role) => ({
+        value: role.uniqueId,
+        label: role.uniqueId,
+      }))
+    : [];
 };

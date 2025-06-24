@@ -1,6 +1,6 @@
 'use client';
 
-import { ICustomerInfo } from '@/core/types';
+import { ICustomerInfo, IPage, IRole } from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useEffect, useState } from 'react';
@@ -10,25 +10,43 @@ import { updateStaffUserInfo, userStatusUpdateApi } from '@/actions/user';
 import DropzoneComponent from '../form/form-elements/DropZone';
 import { IUploadedImage, uploadImage } from '@/utils/imageUtils';
 import ImageGallery from '../form/form-elements/ImageGalery';
-import { urlToImageMapper } from '@/utils/mapperUtils';
+import {
+  rolesToSingleSelectMapper,
+  urlToImageMapper,
+} from '@/utils/mapperUtils';
+import FormInModal from '../modals/FormInModal';
+import { useModal } from '@/hooks/useModal';
+import Input from '../form/input/InputField';
+import { getRoles } from '@/actions/role';
 // import { useRouter } from 'next/navigation';
 // import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
 interface UserFormProps {
   customer?: ICustomerInfo;
   disableEdits?: boolean;
+  initialRoles?: IPage<IRole>;
 }
 
-const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
+const UserForm: FC<UserFormProps> = ({
+  customer,
+  initialRoles,
+  disableEdits = false,
+}) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
+
+  const { isOpen, openModal, closeModal } = useModal();
 
   // const router = useRouter();
   // const { start } = useGlobalLoader();
 
   const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
     []
+  );
+
+  const [roles, setRoles] = useState<{ value: string; label: string }[]>(
+    rolesToSingleSelectMapper(initialRoles?.hits) || []
   );
 
   useEffect(() => {
@@ -99,6 +117,27 @@ const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
     }
   };
 
+  const handleRoleSearch = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.value.trim() === '') {
+      setRoles(rolesToSingleSelectMapper(initialRoles?.hits) || []);
+      return;
+    }
+    const response = await getRoles(event.target.value);
+    if (response.success && response.data?.hits) {
+      setRoles(rolesToSingleSelectMapper(response.data.hits));
+    }
+  };
+
+  const handleRoleSelect = (value: string) => {
+    setUserFormData((prev) => ({
+      ...prev,
+      roleId: value,
+    }));
+    closeModal();
+  };
+
   const fields = [
     {
       fieldType: FormFieldType.Text,
@@ -162,6 +201,7 @@ const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
       disabled: disableEdits,
       value: userFormData.roleId,
       id: 'roleId',
+      onClick: openModal,
     },
     {
       fieldType: FormFieldType.Display,
@@ -246,6 +286,31 @@ const UserForm: FC<UserFormProps> = ({ customer, disableEdits = false }) => {
           </div>
         </div>
       </div>
+      {isOpen && (
+        <FormInModal
+          title='Select Product Type'
+          isOpen={isOpen}
+          closeModal={closeModal}
+        >
+          <Input
+            type='text'
+            placeholder='Select ProductType'
+            name='productTypeId'
+            onChange={handleRoleSearch}
+          />
+          <ul>
+            {roles.map((type) => (
+              <li
+                key={type.value}
+                className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
+                onClick={() => handleRoleSelect(type.value)}
+              >
+                {type.label}
+              </li>
+            ))}
+          </ul>
+        </FormInModal>
+      )}
     </>
   );
 };

@@ -1,9 +1,10 @@
 'use server';
 
+import { getRoles } from '@/actions/role';
 import { getUserInfoById } from '@/actions/user';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import UserForm from '@/components/users/UserForm';
-import { ICustomerInfo, IResponse } from '@/core/types';
+import { ICustomerInfo, IPage, IResponse, IRole } from '@/core/types';
 
 export default async function EditCustomer(ctx: {
   params: Promise<{ id: string }>;
@@ -25,6 +26,8 @@ export default async function EditCustomer(ctx: {
     { label: customer.firstName, href: '#' },
   ];
 
+  const initialRoles: IResponse<IPage<IRole>> = await getRoles();
+
   return (
     <>
       <PageBreadcrumb
@@ -33,7 +36,11 @@ export default async function EditCustomer(ctx: {
         }`}
         items={breadCrumbItems}
       />
-      <UserForm customer={customer} disableEdits={false} />
+      <UserForm
+        customer={customer}
+        disableEdits={false}
+        initialRoles={initialRoles.data}
+      />
     </>
   );
 }
