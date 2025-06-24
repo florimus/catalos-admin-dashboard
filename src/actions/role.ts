@@ -146,3 +146,38 @@ export const createRoleAPI = async (
     };
   });
 };
+
+export const updateRoleStatusById = async (
+  id: string,
+  status: boolean
+): Promise<IResponse<IRole>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/roles/id/${id}/status/${status}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify({ status }),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath('/settings/roles-and-permissions');
+      return {
+        success: true,
+        data: data.data,
+        message: 'Role status updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to update role status',
+    };
+  });
+};

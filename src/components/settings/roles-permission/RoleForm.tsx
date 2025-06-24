@@ -8,7 +8,11 @@ import Alert from '@/components/ui/alert/Alert';
 import DefaultInputs from '@/components/form/form-elements/DefaultInputs';
 import { formatSlug } from '@/utils/stringUtils';
 import PermissionEditor from './editor/PermissionEditor';
-import { createRoleAPI, updateRoleByUniqueId } from '@/actions/role';
+import {
+  createRoleAPI,
+  updateRoleByUniqueId,
+  updateRoleStatusById,
+} from '@/actions/role';
 import { useRouter } from 'next/navigation';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
@@ -87,20 +91,20 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
 
   const handleRoleStatusUpdate = async (active: boolean) => {
     setStatusLoading(true);
-    // const response = await userStatusUpdateApi(role?.id || '', active);
-    // setStatusLoading(false);
-    // if (response.success) {
-    //   setAlerts([
-    //     {
-    //       message: response.message || 'Customer status updated successfully',
-    //       variant: 'success',
-    //     },
-    //   ]);
-    //   setRoleFormData((prev) => ({
-    //     ...prev,
-    //     active,
-    //   }));
-    // }
+    const response = await updateRoleStatusById(role?.id || '', active);
+    setStatusLoading(false);
+    if (response.success) {
+      setAlerts([
+        {
+          message: response.message || 'Role status updated successfully',
+          variant: 'success',
+        },
+      ]);
+      setRoleFormData((prev) => ({
+        ...prev,
+        active,
+      }));
+    }
   };
 
   const fields = [
@@ -164,7 +168,7 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
     <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
   );
 
-  const productStatusFields = {
+  const roleStatusFields = {
     fieldType: FormFieldType.Switch,
     label: statusLoading
       ? statusLoader
@@ -172,7 +176,7 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
       ? 'Online'
       : 'Offline',
     name: 'product-status',
-    disabled: role?.id ? false : true,
+    disabled: role?.default || !role?.id ? true : false,
     checked: roleFormData.active || false,
     onChange: (checked: boolean) => handleRoleStatusUpdate(checked),
   };
@@ -213,7 +217,7 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
           <div>
             <DefaultInputs
               heading='Customer Status'
-              fields={[productStatusFields]}
+              fields={[roleStatusFields]}
             />
           </div>
         </div>
