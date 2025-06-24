@@ -10,6 +10,7 @@ import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import PriceForm from '@/components/prices/PriceForm';
 import StockForm from '@/components/stocks/StockForm';
 import VariantForm from '@/components/variants/VariantForm';
+import { validatePagePermissions } from '@/core/authentication/roleValidations';
 import {
   IModule,
   IPrice,
@@ -21,6 +22,7 @@ import {
 } from '@/core/types';
 
 export default async function EditVariant(ctx: { params: Promise<{ id: string }> }) {
+  await validatePagePermissions('VAR:LS');
   const awaitedParam = await ctx.params;
 
   const variantResponse: IResponse<IVariant> = await getVariantById(

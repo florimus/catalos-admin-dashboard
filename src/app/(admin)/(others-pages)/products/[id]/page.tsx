@@ -9,6 +9,7 @@ import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
 import ProductForm from '@/components/products/ProductForm';
 import VariantList from '@/components/variants/VariantList';
+import { validatePagePermissions } from '@/core/authentication/roleValidations';
 import {
   IBrand,
   ICategory,
@@ -25,6 +26,7 @@ export default async function EditProduct(ctx: {
   params: Promise<{ id: string }>;
   searchParams?: Promise<ISearchParams | null>;
 }) {
+  await validatePagePermissions('USR:LS');
   const awaitedParams = await ctx.params;
   const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
   const product: IResponse<IProduct> = await getProductById(awaitedParams.id);

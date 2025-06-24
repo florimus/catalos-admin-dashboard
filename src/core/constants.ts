@@ -28,3 +28,5 @@ export const AllModules: string[] = [
 ];
 
 export const AllPermissions: string[] = ['READ', 'EDIT', 'DELETE'];
+
+export const DEFAULT_ROLE = 'User';
