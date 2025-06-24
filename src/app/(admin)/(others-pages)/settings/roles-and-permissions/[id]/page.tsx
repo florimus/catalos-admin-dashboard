@@ -3,6 +3,7 @@
 import { getRoleByUniqueId } from '@/actions/role';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import RoleForm from '@/components/settings/roles-permission/RoleForm';
+import Badge from '@/components/ui/badge/Badge';
 // import UserForm from '@/components/users/UserForm';
 import { IResponse, IRole } from '@/core/types';
 
@@ -27,14 +28,19 @@ export default async function EditCustomer(ctx: {
     { label: role.name, href: '#' },
   ];
 
+  const RoleTitle = (
+    <>
+      {role.name}{' '}
+      <Badge variant='light' color={role.default ? 'warning' : 'primary'}>
+        {role.default ? 'System' : 'Custom'}
+      </Badge>
+    </>
+  );
+
   return (
     <>
-      <PageBreadcrumb
-        pageTitle={role.name}
-        items={breadCrumbItems}
-      />
+      <PageBreadcrumb pageTitle={RoleTitle} items={breadCrumbItems} />
       <RoleForm role={role} />
-      {/* <UserForm customer={customer} disableEdits={true} /> */}
     </>
   );
 }

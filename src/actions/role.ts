@@ -80,3 +80,36 @@ export const getRoleByUniqueId = async (
     };
   });
 };
+
+export const updateRoleByUniqueId = async (
+  payload: IRole
+): Promise<IResponse<IRole>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/roles/id/${payload.uniqueId}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Role updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to update role',
+    };
+  });
+};

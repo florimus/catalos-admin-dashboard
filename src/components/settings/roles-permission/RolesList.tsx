@@ -37,6 +37,7 @@ const RoleList: FC<RoleListProps> = ({ hits = [], ...rest }) => {
       {
         type: TableCellTypes.TextCell,
         text: role.uniqueId,
+        onclick: () => goToRoleDetails(role.uniqueId),
       },
       {
         type: TableCellTypes.TextCell,

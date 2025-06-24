@@ -18,7 +18,8 @@ const Switch: React.FC<SwitchProps> = ({
 }) => {
   const [isChecked, setIsChecked] = useState(defaultChecked);
 
-  const handleToggle = () => {
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (disabled) return;
     const newCheckedState = !isChecked;
     setIsChecked(newCheckedState);

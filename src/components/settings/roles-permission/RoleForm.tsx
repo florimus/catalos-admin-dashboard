@@ -1,12 +1,14 @@
 'use client';
 
-import { IRole } from '@/core/types';
+import { IRole, IRolePermissionItem } from '@/core/types';
 import { FC, useEffect, useState } from 'react';
 
 import { FormFieldType } from '@/components/form/form-elements/DefaultFormFields';
 import Alert from '@/components/ui/alert/Alert';
 import DefaultInputs from '@/components/form/form-elements/DefaultInputs';
 import { formatSlug } from '@/utils/stringUtils';
+import PermissionEditor from './editor/PermissionEditor';
+import { updateRoleByUniqueId } from '@/actions/role';
 // import { useRouter } from 'next/navigation';
 // import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
@@ -42,24 +44,41 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
     active: role?.active || false,
   });
 
+  const [permissionList, setPermissionList] = useState<IRolePermissionItem>(
+    role?.permissionList || {}
+  );
+
   const handleSave = async () => {
     setLoading(true);
-    // const method = updateStaffUserInfo;
-    // const response = await method(roleFormData);
-    // setLoading(false);
-    // setAlerts([
-    //   {
-    //     message:
-    //       response.message ||
-    //       (response.success
-    //         ? 'Staff ifo saved successfully'
-    //         : 'Failed to save Staff'),
-    //     variant: response.success ? 'success' : 'error',
-    //   },
-    // ]);
+    const method = updateRoleByUniqueId;
+    const response = await method({
+      ...roleFormData,
+      permissionList: validateAndFormatPermissionList(permissionList),
+    });
+    setLoading(false);
+    setAlerts([
+      {
+        message:
+          response.message ||
+          (response.success
+            ? 'Role saved successfully'
+            : 'Failed to save Role'),
+        variant: response.success ? 'success' : 'error',
+      },
+    ]);
     // if (!customer?.id && response.success) {
     //   start(() => router.push(`/products/${response.data?.id}`));
     // }
+  };
+
+  const validateAndFormatPermissionList = (list: IRolePermissionItem) => {
+    const permissionList: IRolePermissionItem = {};
+    Object.keys(list).forEach((key) => {
+      if (list[key] && list[key].length > 0) {
+        permissionList[key] = list[key];
+      }
+    });
+    return permissionList;
   };
 
   const handleRoleStatusUpdate = async (active: boolean) => {
@@ -135,16 +154,6 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
       error: false,
       hint: 'Please enter valid description',
     },
-    {
-      fieldType: FormFieldType.Switch,
-      name: 'default',
-      label: 'Is System Role',
-      checked: roleFormData.default,
-      required: true,
-      disabled: true,
-      onChange: (checked: boolean) => {},
-      id: 'roleId',
-    },
   ];
 
   const statusLoader = (
@@ -189,6 +198,11 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
             }}
             heading='Customer Form'
             fields={fields}
+          />
+          <PermissionEditor
+            roleFormData={permissionList}
+            setRoleFormData={setPermissionList}
+            disabled={role?.default || false}
           />
         </div>
         <div className='grid col-span-1'>

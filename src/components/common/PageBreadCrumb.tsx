@@ -13,7 +13,7 @@ interface IBreadcrumbItem {
 }
 
 interface IBreadcrumbProps {
-  pageTitle: string;
+  pageTitle: string | React.ReactNode;
   backUrl?: string;
   items?: IBreadcrumbItem[];
 }
