@@ -3,11 +3,13 @@
 import { getUserInfoById } from '@/actions/user';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import UserForm from '@/components/users/UserForm';
+import { validatePermissions } from '@/core/authentication/roleValidations';
 import { ICustomerInfo, IResponse } from '@/core/types';
 
 export default async function EditCustomer(ctx: {
   params: Promise<{ id: string }>;
 }) {
+  await validatePermissions('USR:LS');
   const awaitedParam = await ctx.params;
 
   const userResponse: IResponse<ICustomerInfo> = await getUserInfoById(

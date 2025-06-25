@@ -18,6 +18,7 @@ import FormInModal from '../modals/FormInModal';
 import { useModal } from '@/hooks/useModal';
 import Input from '../form/input/InputField';
 import { getRoles } from '@/actions/role';
+import SecureComponent from '@/core/authentication/SecureComponent';
 // import { useRouter } from 'next/navigation';
 // import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
@@ -106,7 +107,7 @@ const UserForm: FC<UserFormProps> = ({
     if (response.success) {
       setAlerts([
         {
-          message: response.message || 'Customer status updated successfully',
+          message: response.message || 'Status updated successfully',
           variant: 'success',
         },
       ]);
@@ -114,6 +115,13 @@ const UserForm: FC<UserFormProps> = ({
         ...prev,
         active,
       }));
+    } else {
+      setAlerts([
+        {
+          message: response.message || 'Failed to update status',
+          variant: 'error',
+        },
+      ]);
     }
   };
 
@@ -251,6 +259,7 @@ const UserForm: FC<UserFormProps> = ({
               disableEdits
                 ? undefined
                 : {
+                    permission: 'USR:NN',
                     label: 'Save Changes',
                     loading: loading,
                     onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
@@ -270,10 +279,12 @@ const UserForm: FC<UserFormProps> = ({
               fields={[productStatusFields]}
             />
             {!disableEdits && (
-              <DropzoneComponent
-                loading={imageUploading}
-                onDrop={handleImageDrop}
-              />
+              <SecureComponent permission='USR:NN'>
+                <DropzoneComponent
+                  loading={imageUploading}
+                  onDrop={handleImageDrop}
+                />
+              </SecureComponent>
             )}
             <ImageGallery
               images={

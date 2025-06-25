@@ -4,12 +4,14 @@ import { getUsers } from '@/actions/user';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
 import UserList from '@/components/users/userList';
+import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IPage, IResponse, ISearchParams, IUserInfo } from '@/core/types';
 import React from 'react';
 
 export default async function CustomersListPage(ctx: {
   searchParams?: Promise<ISearchParams | null>;
 }) {
+  await validatePermissions('USR:LS');
   const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
 
   const response: IResponse<IPage<IUserInfo>> = await getUsers(
