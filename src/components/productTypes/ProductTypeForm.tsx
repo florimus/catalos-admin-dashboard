@@ -119,6 +119,13 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
         ...prev,
         active,
       }));
+    } else {
+      setAlerts([
+        {
+          message: response.message || 'Failed to update product type status',
+          variant: 'error',
+        },
+      ]);
     }
   };
 
@@ -194,6 +201,7 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
         <div className='grid col-span-1 xl:col-span-2'>
           <DefaultInputs
             cta={{
+              permission: 'PTY:NN',
               label: 'Save Product Type',
               loading: loading,
               onSubmit: (event: React.FormEvent<HTMLFormElement>) => {

@@ -25,6 +25,7 @@ type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
+  activeUrl?: string[];
   subItems?: {
     name: string;
     path: string;
@@ -117,6 +118,7 @@ const othersItems: NavItem[] = [
     icon: <ListIcon />,
     name: 'Product Types',
     path: '/product-types',
+    activeUrl: ['/product-types'],
   },
   // {
   //   icon: <PieChartIcon />,

@@ -14,6 +14,7 @@ const ProductTypeListPage = async (ctx: {
   const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
 
   const cta = {
+    permission: 'PTY:NN',
     label: 'New Product Type',
     href: '/product-types/create',
   };
