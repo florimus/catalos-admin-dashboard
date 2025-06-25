@@ -5,11 +5,13 @@ import CategoriesList from '@/components/categories/CategoriesList';
 import RootCategoryFilter from '@/components/categories/filters/RootCategoryFilter';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
+import { validatePermissions } from '@/core/authentication/roleValidations';
 import { ICategory, IPage, IResponse, ISearchParams } from '@/core/types';
 
 export default async function CategoriesListPage(ctx: {
   searchParams?: Promise<ISearchParams | null>;
 }) {
+  await validatePermissions('CAT:LS');
   const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
 
   const response: IResponse<IPage<ICategory>> = await getCategories(
@@ -25,6 +27,7 @@ export default async function CategoriesListPage(ctx: {
   }
 
   const cta = {
+    permission: 'CAT:NN',
     label: 'New Category',
     href: '/categories/create',
   };

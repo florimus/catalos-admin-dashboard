@@ -3,9 +3,11 @@
 import { getCategories } from '@/actions/category';
 import CategoryForm from '@/components/categories/CategoryForm';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
+import { validatePermissions } from '@/core/authentication/roleValidations';
 import { ICategory, IPage, IResponse } from '@/core/types';
 
 const CategoryCreatePage = async() => {
+  await validatePermissions('CAT:NN');
   const breadCrumbItems = [
     { label: 'Categories', href: '/categories' },
     { label: 'Create Category', href: '/categories/create' },

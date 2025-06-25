@@ -10,7 +10,7 @@ import { IBrand, ICategory, IPage, IProductType, IResponse } from '@/core/types'
 import { productTypesToSingleSelectMapper } from '@/utils/mapperUtils';
 
 export default async function CreateProduct() {
-  await validatePermissions('USR:NN');
+  await validatePermissions('PRD:NN');
   const breadCrumbItems = [
     { label: 'Products', href: '/products' },
     { label: 'Create Product', href: '/products/create' },
@@ -23,6 +23,7 @@ export default async function CreateProduct() {
     <>
       <PageBreadcrumb pageTitle='Create Product' items={breadCrumbItems} />
       <ProductForm
+        permission='PRD:NN'
         productTypeOptions={productTypesToSingleSelectMapper(
           productTypes?.data?.hits
         )}

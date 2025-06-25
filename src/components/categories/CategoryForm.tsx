@@ -21,6 +21,7 @@ import CategoriesList from './CategoriesList';
 import Radio from '../form/input/Radio';
 import ProductList from '../products/ProductList';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
+import SecureComponent from '@/core/authentication/SecureComponent';
 
 interface CategoryFormProps {
   category?: ICategory;
@@ -252,6 +253,7 @@ const CategoryForm: FC<CategoryFormProps> = ({
         <div className='grid col-span-1 xl:col-span-2'>
           <DefaultInputs
             cta={{
+              permission: 'CAT:NN',
               label: 'Save Category',
               loading: loading,
               onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
@@ -286,14 +288,16 @@ const CategoryForm: FC<CategoryFormProps> = ({
                 onChange={handleChangeTab}
                 label='Associated Categories'
               />
-              <Radio
-                id='products_option'
-                name='products'
-                value='products'
-                checked={!isCategoryTab}
-                onChange={handleChangeTab}
-                label='Associated Products'
-              />
+              <SecureComponent permission='PRD:LS'>
+                <Radio
+                  id='products_option'
+                  name='products'
+                  value='products'
+                  checked={!isCategoryTab}
+                  onChange={handleChangeTab}
+                  label='Associated Products'
+                />
+              </SecureComponent>
             </div>
           </div>
           {isCategoryTab ? (

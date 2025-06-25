@@ -11,7 +11,7 @@ import React from 'react';
 export default async function ProductListPage(ctx: {
   searchParams?: Promise<ISearchParams | null>;
 }) {
-  await validatePermissions('USR:LS');
+  await validatePermissions('PRD:LS');
   const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
 
   const response: IResponse<IPage<IProduct>> = await getProducts(

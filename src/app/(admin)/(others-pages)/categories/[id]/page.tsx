@@ -4,6 +4,7 @@ import { getCategories, getCategoryById } from '@/actions/category';
 import { getProductByCategoryId } from '@/actions/product';
 import CategoryForm from '@/components/categories/CategoryForm';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
+import { validatePermissions } from '@/core/authentication/roleValidations';
 import {
   ICategory,
   IPage,
@@ -17,6 +18,7 @@ const CategoryEditPage = async (ctx: {
   params: Promise<{ id: string }>;
   searchParams?: Promise<ISearchParams | null>;
 }) => {
+  await validatePermissions('CAT:LS');
   const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
   const awaitedParams = await ctx.params;
 
