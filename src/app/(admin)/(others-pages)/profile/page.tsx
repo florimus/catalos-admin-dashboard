@@ -5,6 +5,7 @@ import UserMetaCard from '@/components/user-profile/UserMetaCard';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IResponse, IUserInfo } from '@/core/types';
 import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import React from 'react';
 
 export const metadata: Metadata = {
@@ -18,7 +19,8 @@ export default async function Profile() {
   const response: IResponse<IUserInfo> = await fetchUserInfoWithoutCookies();
 
   if (!response?.success) {
-    // TODO: Logout
+    console.error('Failed to fetch user info:', response.message);
+    redirect('/signin');
   }
 
   return (

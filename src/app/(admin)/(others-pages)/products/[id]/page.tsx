@@ -22,6 +22,7 @@ import {
   IVariant,
 } from '@/core/types';
 import { productTypesToSingleSelectMapper } from '@/utils/mapperUtils';
+import { redirect } from 'next/navigation';
 
 export default async function EditProduct(ctx: {
   params: Promise<{ id: string }>;
@@ -39,7 +40,8 @@ export default async function EditProduct(ctx: {
   )) || { data: [] };
 
   if (!product?.success || !product?.data) {
-    return <div>Error fetching product details.</div>;
+    console.error(product.message);
+    redirect('/404');
   }
 
   const breadCrumbItems = [

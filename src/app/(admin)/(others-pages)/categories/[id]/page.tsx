@@ -12,7 +12,7 @@ import {
   IResponse,
   ISearchParams,
 } from '@/core/types';
-
+import { redirect } from 'next/navigation';
 
 const CategoryEditPage = async (ctx: {
   params: Promise<{ id: string }>;
@@ -25,7 +25,8 @@ const CategoryEditPage = async (ctx: {
   const categoryResponse = await getCategoryById(awaitedParams.id);
 
   if (!categoryResponse?.success || !categoryResponse?.data) {
-    return <div>Error fetching category details.</div>;
+    console.error(categoryResponse.message);
+    redirect('/404');
   }
 
   const associatedCategories: IResponse<IPage<ICategory>> = await getCategories(

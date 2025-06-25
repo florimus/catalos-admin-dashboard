@@ -12,6 +12,7 @@ import {
   IResponse,
   ISearchParams,
 } from '@/core/types';
+import { redirect } from 'next/navigation';
 
 export default async function UpdateBrandPage(ctx: {
   params: Promise<{ id: string }>;
@@ -23,7 +24,8 @@ export default async function UpdateBrandPage(ctx: {
   const brandResponse: IResponse<IBrand> = await getBrandById(awaitedParams.id);
 
   if (!brandResponse.success || !brandResponse.data) {
-    return <div>Error fetching brand details.</div>;
+    console.error(brandResponse.message);
+    redirect('/404');
   }
 
   const breadCrumbItems = [

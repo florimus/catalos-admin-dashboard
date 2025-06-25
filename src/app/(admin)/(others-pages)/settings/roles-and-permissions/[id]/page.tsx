@@ -6,6 +6,7 @@ import RoleForm from '@/components/settings/roles-permission/RoleForm';
 import Badge from '@/components/ui/badge/Badge';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IResponse, IRole } from '@/core/types';
+import { redirect } from 'next/navigation';
 
 export default async function EditRolePage(ctx: {
   params: Promise<{ id: string }>;
@@ -18,7 +19,8 @@ export default async function EditRolePage(ctx: {
   );
 
   if (!roleResponse.success || !roleResponse.data) {
-    return <div>Error fetching role details.</div>;
+    console.error(roleResponse.message);
+    redirect('/404');
   }
 
   const role = roleResponse.data;

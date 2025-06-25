@@ -5,6 +5,7 @@ import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import ProductTypeForm from '@/components/productTypes/ProductTypeForm';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IProductType, IResponse } from '@/core/types';
+import { redirect } from 'next/navigation';
 
 export default async function ProductTypePage({
   params,
@@ -19,7 +20,8 @@ export default async function ProductTypePage({
   );
 
   if (!productType?.success || !productType?.data) {
-    return <div>Error fetching product type details.</div>;
+    console.error(productType.message);
+    redirect('/404');
   }
 
   const breadCrumbItems = [

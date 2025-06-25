@@ -5,6 +5,7 @@ import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import UserForm from '@/components/users/UserForm';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { ICustomerInfo, IResponse } from '@/core/types';
+import { redirect } from 'next/navigation';
 
 export default async function EditCustomer(ctx: {
   params: Promise<{ id: string }>;
@@ -17,7 +18,8 @@ export default async function EditCustomer(ctx: {
   );
 
   if (!userResponse.success || !userResponse.data) {
-    return <div>Error fetching user details.</div>;
+    console.error(userResponse.message);
+    redirect('/404');
   }
 
   const customer = userResponse.data;

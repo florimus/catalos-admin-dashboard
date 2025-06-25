@@ -21,6 +21,7 @@ import {
   IStock,
   IVariant,
 } from '@/core/types';
+import { redirect } from 'next/navigation';
 
 export default async function EditVariant(ctx: {
   params: Promise<{ id: string }>;
@@ -33,7 +34,8 @@ export default async function EditVariant(ctx: {
   );
 
   if (!variantResponse.success || !variantResponse.data) {
-    return <div>Error fetching variant details.</div>;
+    console.error(variantResponse.message);
+    redirect('/404');
   }
 
   const variant: IVariant = variantResponse.data;
@@ -43,7 +45,8 @@ export default async function EditVariant(ctx: {
   );
 
   if (!productResponse.success || !productResponse.data) {
-    return <div>Error fetching product details.</div>;
+    console.error(productResponse.message);
+    redirect('/404');
   }
 
   const product: IProduct = productResponse.data;
@@ -53,7 +56,8 @@ export default async function EditVariant(ctx: {
   );
 
   if (!productTypeResponse.success || !productTypeResponse.data) {
-    return <div>Error fetching product type details.</div>;
+    console.error(productTypeResponse.message);
+    redirect('/404');
   }
 
   const productType: IProductType = productTypeResponse.data;

@@ -9,7 +9,7 @@ const handleDefaultRole = (role: string, avoidRedirect: boolean = false) => {
     if (avoidRedirect) {
       return false;
     } else {
-      redirect('/403');
+      redirect('/forbidden');
     }
   }
 };
@@ -30,5 +30,5 @@ export const validatePermissions = async (
       return true;
     }
   }
-  return avoidRedirect ? false : redirect('/');
+  return avoidRedirect ? false : redirect('/forbidden');
 };
