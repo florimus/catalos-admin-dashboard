@@ -104,6 +104,13 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
         ...prev,
         active,
       }));
+    } else {
+      setAlerts([
+        {
+          message: response.message || 'Failed to update role status',
+          variant: 'error',
+        },
+      ]);
     }
   };
 
@@ -196,7 +203,8 @@ const RoleForm: FC<RoleFormProps> = ({ role }) => {
       <div className='grid grid-cols-1 gap-6 xl:grid-cols-3 my-6'>
         <div className='grid col-span-1 xl:col-span-2'>
           <DefaultInputs
-            cta={{
+            cta={role?.default ? undefined : {
+              permission: 'ROL:NN',
               label: 'Save Changes',
               loading: loading,
               onSubmit: (event: React.FormEvent<HTMLFormElement>) => {

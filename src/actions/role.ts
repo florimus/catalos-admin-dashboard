@@ -44,7 +44,7 @@ export const getRoles = async (
     }
     return {
       success: false,
-      message: data?.message || 'Failed to fetch Roles',
+      message: data?.message?.[0] || 'Failed to fetch Roles',
     };
   });
 };
@@ -77,7 +77,7 @@ export const getRoleByUniqueId = async (
     }
     return {
       success: false,
-      message: data?.message || 'Failed to fetch roles',
+      message: data?.message?.[0] || 'Failed to fetch roles',
     };
   });
 };
@@ -111,7 +111,7 @@ export const updateRoleByUniqueId = async (
     }
     return {
       success: false,
-      message: data?.message || 'Failed to update role',
+      message: data?.message?.[0] || 'Failed to update role',
     };
   });
 };
@@ -142,7 +142,7 @@ export const createRoleAPI = async (
     }
     return {
       success: false,
-      message: data?.message || 'Failed to create role',
+      message: data?.message?.[0] || 'Failed to create role',
     };
   });
 };
@@ -177,7 +177,7 @@ export const updateRoleStatusById = async (
     }
     return {
       success: false,
-      message: data?.message || 'Failed to update role status',
+      message: data?.message?.[0] || 'Failed to update role status',
     };
   });
 };

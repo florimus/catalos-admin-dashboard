@@ -4,11 +4,13 @@ import { getRoleByUniqueId } from '@/actions/role';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import RoleForm from '@/components/settings/roles-permission/RoleForm';
 import Badge from '@/components/ui/badge/Badge';
+import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IResponse, IRole } from '@/core/types';
 
 export default async function EditRolePage(ctx: {
   params: Promise<{ id: string }>;
 }) {
+  await validatePermissions('ROL:LS');
   const awaitedParam = await ctx.params;
 
   const roleResponse: IResponse<IRole> = await getRoleByUniqueId(
