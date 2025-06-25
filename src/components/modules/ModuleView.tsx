@@ -8,6 +8,7 @@ import { PencilIcon } from '@/icons';
 import { useRouter } from 'next/navigation';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import EmptySection from '../example/EmptySection';
+import SecureComponent from '@/core/authentication/SecureComponent';
 
 interface ModuleViewProps {
   projectData: string;
@@ -54,9 +55,11 @@ const ModuleView: React.FC<ModuleViewProps> = ({ projectData, moduleId }) => {
         <h3 className='text-base font-medium text-gray-800 dark:text-white/90'>
           Custom Module
         </h3>
-        <Button size='xm' type='button' onClick={handleEditClick}>
-          <PencilIcon /> {projectData ? 'Edit' : 'Create'}
-        </Button>
+        <SecureComponent permission='MOD:NN'>
+          <Button size='xm' type='button' onClick={handleEditClick}>
+            <PencilIcon /> {projectData ? 'Edit' : 'Create'}
+          </Button>
+        </SecureComponent>
       </div>
       {projectData ? (
         <div className='bg-gray-100 module-scope'>

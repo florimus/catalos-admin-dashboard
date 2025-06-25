@@ -5,12 +5,12 @@ import { getCategories } from '@/actions/category';
 import { getProductTypeList } from '@/actions/product-type';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import ProductForm from '@/components/products/ProductForm';
-import { validatePagePermissions } from '@/core/authentication/roleValidations';
+import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IBrand, ICategory, IPage, IProductType, IResponse } from '@/core/types';
 import { productTypesToSingleSelectMapper } from '@/utils/mapperUtils';
 
 export default async function CreateProduct() {
-  await validatePagePermissions('USR:NN');
+  await validatePermissions('USR:NN');
   const breadCrumbItems = [
     { label: 'Products', href: '/products' },
     { label: 'Create Product', href: '/products/create' },

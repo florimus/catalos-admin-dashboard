@@ -4,13 +4,13 @@ import { getProductById } from '@/actions/product';
 import { getProductTypeById } from '@/actions/product-type';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import VariantForm from '@/components/variants/VariantForm';
-import { validatePagePermissions } from '@/core/authentication/roleValidations';
+import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IProduct, IProductType, IResponse } from '@/core/types';
 
 export default async function CreateVariant(ctx: {
   params: Promise<{ id: string }>;
 }) {
-  await validatePagePermissions('VAR:NN');
+  await validatePermissions('VAR:NN');
   const awaitedParam = await ctx.params;
 
   const productResponse: IResponse<IProduct> = await getProductById(

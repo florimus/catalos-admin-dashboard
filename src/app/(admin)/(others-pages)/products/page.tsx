@@ -4,14 +4,14 @@ import { getProducts } from '@/actions/product';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
 import ProductList from '@/components/products/ProductList';
-import { validatePagePermissions } from '@/core/authentication/roleValidations';
+import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IPage, IProduct, IResponse, ISearchParams } from '@/core/types';
 import React from 'react';
 
 export default async function ProductListPage(ctx: {
   searchParams?: Promise<ISearchParams | null>;
 }) {
-  await validatePagePermissions('USR:LS');
+  await validatePermissions('USR:LS');
   const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
 
   const response: IResponse<IPage<IProduct>> = await getProducts(
@@ -26,6 +26,7 @@ export default async function ProductListPage(ctx: {
   }
 
   const cta = {
+    permission: 'PRD:NN',
     label: 'New Product',
     href: '/products/create',
   };

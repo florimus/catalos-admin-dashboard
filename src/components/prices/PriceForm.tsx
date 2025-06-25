@@ -120,6 +120,7 @@ const PriceForm: FC<IPriceFormProps> = ({ priceInfo, skuId }) => {
       <GridFormInputs
         heading='Price Details'
         cta={{
+          permission: 'PRZ:NN',
           label: 'Save',
           onSubmit: handleSaveStock,
           loading: loading,

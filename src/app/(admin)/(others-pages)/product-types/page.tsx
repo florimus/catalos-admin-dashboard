@@ -4,13 +4,13 @@ import { getProductTypeList } from '@/actions/product-type';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
 import ProductTypeList from '@/components/productTypes/ProductTypeList';
-import { validatePagePermissions } from '@/core/authentication/roleValidations';
+import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IPage, IProductType, IResponse, ISearchParams } from '@/core/types';
 
 const ProductTypeListPage = async (ctx: {
   searchParams?: Promise<ISearchParams | null>;
 }) => {
-  await validatePagePermissions('PTY:LS');
+  await validatePermissions('PTY:LS');
   const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
 
   const cta = {

@@ -147,6 +147,7 @@ const StockForm: FC<IStockFormProps> = ({ stockInfo, variantId }) => {
       <GridFormInputs
         heading='Stocks Details'
         cta={{
+          permission: 'STK:NN',
           label: 'Save',
           onSubmit: handleSaveStock,
           loading: loading,

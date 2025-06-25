@@ -6,6 +6,7 @@ import Button from '../ui/button/Button';
 import { useRouter } from 'next/navigation';
 import { ISearchParams } from '@/core/types';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
+import SecureComponent from '@/core/authentication/SecureComponent';
 
 interface TableCardProps {
   searchPlaceHolder: string;
@@ -13,6 +14,7 @@ interface TableCardProps {
   children: React.ReactNode;
   desc?: string;
   cta?: {
+    permission?: string;
     label: string;
     href: string;
   };
@@ -72,14 +74,16 @@ const TableCard: React.FC<TableCardProps> = ({
             <div className='flex items-center align-middle'>
               {filters ? filters : ''}
               {cta?.label && (
-                <Button
-                  size='sm'
-                  type='button'
-                  className='ml-2'
-                  onClick={handleCtaClick}
-                >
-                  {cta.label}
-                </Button>
+                <SecureComponent permission={cta.permission}>
+                  <Button
+                    size='sm'
+                    type='button'
+                    className='ml-2'
+                    onClick={handleCtaClick}
+                  >
+                    {cta.label}
+                  </Button>
+                </SecureComponent>
               )}
             </div>
           </div>

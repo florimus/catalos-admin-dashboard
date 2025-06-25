@@ -10,7 +10,8 @@ import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import PriceForm from '@/components/prices/PriceForm';
 import StockForm from '@/components/stocks/StockForm';
 import VariantForm from '@/components/variants/VariantForm';
-import { validatePagePermissions } from '@/core/authentication/roleValidations';
+import { validatePermissions } from '@/core/authentication/roleValidations';
+import SecureComponent from '@/core/authentication/SecureComponent';
 import {
   IModule,
   IPrice,
@@ -21,8 +22,10 @@ import {
   IVariant,
 } from '@/core/types';
 
-export default async function EditVariant(ctx: { params: Promise<{ id: string }> }) {
-  await validatePagePermissions('VAR:LS');
+export default async function EditVariant(ctx: {
+  params: Promise<{ id: string }>;
+}) {
+  await validatePermissions('VAR:LS');
   const awaitedParam = await ctx.params;
 
   const variantResponse: IResponse<IVariant> = await getVariantById(
@@ -80,8 +83,12 @@ export default async function EditVariant(ctx: { params: Promise<{ id: string }>
         variant={variant}
         contentModule={contentModule?.data}
       >
-        <StockForm variantId={variant.id} stockInfo={stocks?.data} />
-        <PriceForm priceInfo={price?.data} skuId={variant?.skuId} />
+        <SecureComponent permission='STK:LS'>
+          <StockForm variantId={variant.id} stockInfo={stocks?.data} />
+        </SecureComponent>
+        <SecureComponent permission='PRZ:LS'>
+          <PriceForm priceInfo={price?.data} skuId={variant?.skuId} />
+        </SecureComponent>
       </VariantForm>
     </>
   );

@@ -3,6 +3,7 @@
 import React, { FormEvent } from 'react';
 import Form from '../form/Form';
 import Button from '../ui/button/Button';
+import SecureComponent from '@/core/authentication/SecureComponent';
 
 interface FormCardProps {
   title: string;
@@ -10,6 +11,7 @@ interface FormCardProps {
   className?: string;
   ctaLabel?: string;
   loading?: boolean;
+  permission?: string;
   onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
 }
 
@@ -17,6 +19,7 @@ const FormCard: React.FC<FormCardProps> = ({
   title,
   children,
   ctaLabel,
+  permission,
   className = '',
   loading = false,
   onSubmit = () => {},
@@ -31,9 +34,14 @@ const FormCard: React.FC<FormCardProps> = ({
             {title}
           </h3>
           {ctaLabel && (
-            <Button size='xm' type='submit'>
-              {ctaLabel }{loading && <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />}
-            </Button>
+            <SecureComponent permission={permission}>
+              <Button size='xm' type='submit'>
+                {ctaLabel}
+                {loading && (
+                  <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
+                )}
+              </Button>
+            </SecureComponent>
           )}
         </div>
 

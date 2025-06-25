@@ -9,7 +9,8 @@ import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
 import ProductForm from '@/components/products/ProductForm';
 import VariantList from '@/components/variants/VariantList';
-import { validatePagePermissions } from '@/core/authentication/roleValidations';
+import { validatePermissions } from '@/core/authentication/roleValidations';
+import SecureComponent from '@/core/authentication/SecureComponent';
 import {
   IBrand,
   ICategory,
@@ -26,7 +27,7 @@ export default async function EditProduct(ctx: {
   params: Promise<{ id: string }>;
   searchParams?: Promise<ISearchParams | null>;
 }) {
-  await validatePagePermissions('USR:LS');
+  await validatePermissions('USR:LS');
   const awaitedParams = await ctx.params;
   const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
   const product: IResponse<IProduct> = await getProductById(awaitedParams.id);
@@ -47,6 +48,7 @@ export default async function EditProduct(ctx: {
   ];
 
   const newVariantCta = {
+    permission: 'VAR:NN',
     label: 'New Variant',
     href: `/variants/create/${awaitedParams.id}`,
   };
@@ -65,6 +67,7 @@ export default async function EditProduct(ctx: {
         backUrl='/products'
       />
       <ProductForm
+        permission='PRD:NN'
         productTypeOptions={productTypesToSingleSelectMapper(
           productTypes?.data?.hits
         )}
@@ -72,13 +75,15 @@ export default async function EditProduct(ctx: {
         initialCategories={initialCategories?.data?.hits || []}
         initialBrands={initialBrands?.data?.hits || []}
       />
-      <TableCard
-        searchPlaceHolder={'Search variants...'}
-        searchParams={searchParams}
-        cta={newVariantCta}
-      >
-        <VariantList {...variants?.data} />
-      </TableCard>
+      <SecureComponent permission='VAR:LS'>
+        <TableCard
+          searchPlaceHolder={'Search variants...'}
+          searchParams={searchParams}
+          cta={newVariantCta}
+        >
+          <VariantList {...variants?.data} />
+        </TableCard>
+      </SecureComponent>
     </>
   );
 }

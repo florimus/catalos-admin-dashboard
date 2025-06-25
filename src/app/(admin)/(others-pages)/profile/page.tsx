@@ -2,7 +2,7 @@
 import { fetchUserInfoWithoutCookies } from '@/actions/user';
 import UserInfoCard from '@/components/user-profile/UserInfoCard';
 import UserMetaCard from '@/components/user-profile/UserMetaCard';
-import { validatePagePermissions } from '@/core/authentication/roleValidations';
+import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IResponse, IUserInfo } from '@/core/types';
 import { Metadata } from 'next';
 import React from 'react';
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Profile() {
-  await validatePagePermissions('USR:LS');
+  await validatePermissions('USR:LS');
   const response: IResponse<IUserInfo> = await fetchUserInfoWithoutCookies();
 
   if (!response?.success) {

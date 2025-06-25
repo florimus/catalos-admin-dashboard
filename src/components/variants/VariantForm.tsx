@@ -36,6 +36,7 @@ import CropModal from '../common/CropModal';
 import { ASPECT_RATIOS } from '@/core/constants';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import dynamic from 'next/dynamic';
+import SecureComponent from '@/core/authentication/SecureComponent';
 const ModuleView = dynamic(() => import('../modules/ModuleView'), {
   ssr: false,
 });
@@ -338,6 +339,7 @@ const VariantForm: FC<VariantFormProps> = ({
           <div>
             <DefaultInputs
               cta={{
+                permission: 'VAR:NN',
                 label: 'Save variant',
                 loading: loading,
                 onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
@@ -368,10 +370,12 @@ const VariantForm: FC<VariantFormProps> = ({
               heading='Variant Status'
               fields={[variantStatusFields]}
             />
-            <DropzoneComponent
-              loading={imageUploading}
-              onDrop={handleImageDrop}
-            />
+            <SecureComponent permission='VAR:NN'>
+              <DropzoneComponent
+                loading={imageUploading}
+                onDrop={handleImageDrop}
+              />
+            </SecureComponent>
             <ImageGallery
               images={variantFormFields.medias}
               showOverlay={true}
@@ -382,10 +386,12 @@ const VariantForm: FC<VariantFormProps> = ({
         </div>
       </div>
       {variant?.id && (
-        <ModuleView
-          projectData={contentModule?.data || ''}
-          moduleId={variant.id}
-        />
+        <SecureComponent permission='MOD:LS'>
+          <ModuleView
+            projectData={contentModule?.data || ''}
+            moduleId={variant.id}
+          />
+        </SecureComponent>
       )}
       {editingImage && (
         <CropModal

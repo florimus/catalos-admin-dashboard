@@ -15,6 +15,7 @@ interface GridFormInputsProps {
   heading?: string;
   cta?: {
     label: string;
+    permission?: string;
     loading?: boolean;
     onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   };
@@ -32,6 +33,7 @@ const GridFormInputs: FC<GridFormInputsProps> = ({
       title={heading || 'Default Inputs'}
       ctaLabel={cta?.label}
       loading={cta?.loading}
+      permission={cta?.permission}
       onSubmit={cta?.onSubmit}
     >
       <Table>

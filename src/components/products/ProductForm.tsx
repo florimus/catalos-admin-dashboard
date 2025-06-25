@@ -39,6 +39,7 @@ interface ProductFormProps {
   product?: IProduct;
   initialCategories?: ICategory[];
   initialBrands?: IBrand[];
+  permission?: string;
 }
 
 const ProductForm: FC<ProductFormProps> = ({
@@ -46,6 +47,7 @@ const ProductForm: FC<ProductFormProps> = ({
   product,
   initialCategories,
   initialBrands,
+  permission,
 }) => {
   const { isOpen, openModal, closeModal } = useModal();
 
@@ -144,6 +146,13 @@ const ProductForm: FC<ProductFormProps> = ({
         ...prev,
         active,
       }));
+    } else {
+      setAlerts([
+        {
+          message: response.message || 'Failed to update product status',
+          variant: 'error',
+        },
+      ]);
     }
   };
 
@@ -336,6 +345,7 @@ const ProductForm: FC<ProductFormProps> = ({
         <div className='grid col-span-1 xl:col-span-2'>
           <DefaultInputs
             cta={{
+              permission,
               label: 'Save Product',
               loading: loading,
               onSubmit: (event: React.FormEvent<HTMLFormElement>) => {

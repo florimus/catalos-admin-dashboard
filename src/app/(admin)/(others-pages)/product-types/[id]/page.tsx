@@ -3,7 +3,7 @@
 import { getProductTypeById } from '@/actions/product-type';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import ProductTypeForm from '@/components/productTypes/ProductTypeForm';
-import { validatePagePermissions } from '@/core/authentication/roleValidations';
+import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IProductType, IResponse } from '@/core/types';
 
 export default async function ProductTypePage({
@@ -11,7 +11,7 @@ export default async function ProductTypePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await validatePagePermissions('PTY:LS');
+  await validatePermissions('PTY:LS');
   const awaitedParams = await params;
 
   const productType: IResponse<IProductType> = await getProductTypeById(
