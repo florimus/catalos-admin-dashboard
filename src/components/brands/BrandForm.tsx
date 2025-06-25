@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import TableCard from '../common/TableCard';
 import ProductList from '../products/ProductList';
+import SecureComponent from '@/core/authentication/SecureComponent';
 
 interface BrandFormProps {
   brand?: IBrand;
@@ -93,6 +94,13 @@ const BrandForm: FC<BrandFormProps> = ({
         ...prev,
         active,
       }));
+    } else {
+      setAlerts([
+        {
+          message: response.message || 'Failed to update brand status',
+          variant: 'error',
+        },
+      ]);
     }
   };
 
@@ -197,6 +205,7 @@ const BrandForm: FC<BrandFormProps> = ({
           <div>
             <DefaultInputs
               cta={{
+                permission: 'BRD:NN',
                 label: 'Save Brand',
                 loading: loading,
                 onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
@@ -215,10 +224,12 @@ const BrandForm: FC<BrandFormProps> = ({
               heading='Brand Status'
               fields={[categoryStatusFields]}
             />
-            <DropzoneComponent
-              loading={imageUploading}
-              onDrop={handleImageDrop}
-            />
+            <SecureComponent permission='BRD:NN'>
+              <DropzoneComponent
+                loading={imageUploading}
+                onDrop={handleImageDrop}
+              />
+            </SecureComponent>
             <ImageGallery
               images={
                 brandFormData.avatar
@@ -231,12 +242,14 @@ const BrandForm: FC<BrandFormProps> = ({
         </div>
       </div>
       {brand?.id && (
-        <TableCard
-          searchPlaceHolder={'Search products...'}
-          searchParams={searchParams || {}}
-        >
-          <ProductList {...brandProducts} />
-        </TableCard>
+        <SecureComponent permission='PRD:LS'>
+          <TableCard
+            searchPlaceHolder={'Search products...'}
+            searchParams={searchParams || {}}
+          >
+            <ProductList {...brandProducts} />
+          </TableCard>
+        </SecureComponent>
       )}
     </>
   );

@@ -4,6 +4,7 @@ import { getBrandById } from '@/actions/brand';
 import { getProductByBrandId } from '@/actions/product';
 import BrandForm from '@/components/brands/BrandForm';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
+import { validatePermissions } from '@/core/authentication/roleValidations';
 import {
   IBrand,
   IPage,
@@ -16,6 +17,7 @@ export default async function UpdateBrandPage(ctx: {
   params: Promise<{ id: string }>;
   searchParams?: Promise<ISearchParams | null>;
 }) {
+  await validatePermissions('BRD:LS');
   const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
   const awaitedParams = await ctx.params;
   const brandResponse: IResponse<IBrand> = await getBrandById(awaitedParams.id);

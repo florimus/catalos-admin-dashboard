@@ -143,6 +143,13 @@ const CategoryForm: FC<CategoryFormProps> = ({
         ...prev,
         active,
       }));
+    } else {
+      setAlerts([
+        {
+          message: response.message || 'Failed to update category status',
+          variant: 'error',
+        },
+      ]);
     }
   };
 
