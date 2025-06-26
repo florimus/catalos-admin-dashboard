@@ -21,7 +21,13 @@ const TaxList: FC<TaxListProps> = ({ hits = [], ...rest }) => {
   const router = useRouter();
   const { start } = useGlobalLoader();
 
-  const headingData: string[] = ['Name', 'Id', 'Rate', 'Status'];
+  const headingData: string[] = [
+    'Name',
+    'Id',
+    'Available Channels',
+    'Rate',
+    'Status',
+  ];
 
   const goToRoleDetails = (variantId: string) =>
     start(() => router.push(`/settings/tax-categories/${variantId}`));
@@ -37,6 +43,12 @@ const TaxList: FC<TaxListProps> = ({ hits = [], ...rest }) => {
         type: TableCellTypes.TextCell,
         text: tax.id,
         onclick: () => goToRoleDetails(tax?.id || ''),
+      },
+      {
+        type: TableCellTypes.TextCell,
+        text: (tax?.applicableChannels && tax.applicableChannels?.length > 0)
+          ? tax.applicableChannels?.length
+          : 'No channels',
       },
       {
         type: TableCellTypes.TextCell,

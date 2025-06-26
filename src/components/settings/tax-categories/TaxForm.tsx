@@ -13,6 +13,8 @@ import {
   updateTaxById,
   updateTaxStatusById,
 } from '@/actions/tax';
+import { channelToMultiSelectMapper } from '@/utils/mapperUtils';
+import { CHANNELS } from '@/core/constants';
 
 interface TaxFormProps {
   tax?: ITax;
@@ -106,6 +108,19 @@ const TaxForm: FC<TaxFormProps> = ({ tax }) => {
       disabled: false,
       error: false,
       hint: 'Please enter valid name',
+    },
+    {
+      fieldType: FormFieldType.MultiSelect,
+      name: 'applicableChannels',
+      label: 'Applicable Channels',
+      options: channelToMultiSelectMapper(CHANNELS),
+      defaultSelected: taxFormData.applicableChannels,
+      onChange: (selected: string[]) => {
+        setTaxFormData((prev) => ({
+          ...prev,
+          applicableChannels: selected,
+        }));
+      },
     },
     {
       fieldType: FormFieldType.Text,
