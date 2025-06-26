@@ -3,7 +3,7 @@
 import ComponentCard from '@/components/common/ComponentCard';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import SettingsBlock from '@/components/settings/SettingsBlock';
-import { LockIcon } from '@/icons';
+import { LockIcon, TableIcon } from '@/icons';
 
 const SettingsPage = async () => {
   const settingsMenu = [
@@ -15,6 +15,17 @@ const SettingsPage = async () => {
           title: 'Roles And Permissions',
           description: 'Manage roles and permissions of staffs',
           link: '/settings/roles-and-permissions',
+        },
+      ],
+    },
+    {
+      title: 'Tax Settings',
+      blocks: [
+        {
+          icon: <TableIcon className='text-gray-600 dark:text-gray-300 mb-2' />,
+          title: 'Tax Categories',
+          description: 'Define and manage tax categories',
+          link: '/settings/tax-categories',
         },
       ],
     },

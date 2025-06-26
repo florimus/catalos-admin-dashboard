@@ -264,3 +264,17 @@ export interface IRole {
   default: boolean;
   active: boolean;
 }
+
+export interface ITax {
+  id?: string;
+  name: string;
+  rate: number;
+  active: boolean;
+  applicableChannels: string[];
+  fixed: boolean;
+}
+
+export interface ITaxStatusUpdate {
+  id: string;
+  active: boolean;
+}

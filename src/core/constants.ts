@@ -25,6 +25,7 @@ export const AllModules: string[] = [
   'Promotion',
   'Prize',
   'Stock',
+  'Taxes',
 ];
 
 export const AllPermissions: string[] = ['READ', 'EDIT', 'DELETE'];
