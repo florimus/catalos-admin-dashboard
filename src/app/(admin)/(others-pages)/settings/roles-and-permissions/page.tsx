@@ -8,6 +8,12 @@ import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IPage, IResponse, IRole, ISearchParams } from '@/core/types';
 import React from 'react';
 
+export async function generateMetadata() {
+  return {
+    title: 'Roles and Permissions | Catalos Admin',
+  };
+}
+
 export default async function RolesListPage(ctx: {
   searchParams?: Promise<ISearchParams | null>;
 }) {

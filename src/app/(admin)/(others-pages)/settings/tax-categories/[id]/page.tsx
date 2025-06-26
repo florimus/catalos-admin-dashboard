@@ -7,6 +7,12 @@ import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IResponse, ITax } from '@/core/types';
 import { redirect } from 'next/navigation';
 
+export async function generateMetadata() {
+  return {
+    title: 'Tax Category | Catalos Admin',
+  };
+}
+
 export default async function EditTaxPage(ctx: {
   params: Promise<{ id: string }>;
 }) {

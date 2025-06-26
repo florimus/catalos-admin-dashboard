@@ -9,6 +9,12 @@ import { IPage, IResponse, ISearchParams, ITax } from '@/core/types';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
+export async function generateMetadata() {
+  return {
+    title: 'Tax Categories | Catalos Admin',
+  };
+}
+
 export default async function TaxListPage(ctx: {
   searchParams?: Promise<ISearchParams | null>;
 }) {

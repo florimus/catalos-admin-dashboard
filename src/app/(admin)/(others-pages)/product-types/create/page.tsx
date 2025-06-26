@@ -4,6 +4,12 @@ import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import ProductTypeForm from '@/components/productTypes/ProductTypeForm';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 
+export async function generateMetadata() {
+  return {
+    title: 'Create Product Type | Catalos Admin',
+  };
+}
+
 export default async function CreateProductType() {
   await validatePermissions('PTY:NN');
   const breadCrumbItems = [

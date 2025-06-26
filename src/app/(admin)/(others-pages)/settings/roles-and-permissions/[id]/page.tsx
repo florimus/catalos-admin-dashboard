@@ -8,6 +8,12 @@ import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IResponse, IRole } from '@/core/types';
 import { redirect } from 'next/navigation';
 
+export async function generateMetadata() {
+  return {
+    title: 'Roles and permission | Catalos Admin',
+  };
+}
+
 export default async function EditRolePage(ctx: {
   params: Promise<{ id: string }>;
 }) {

@@ -24,6 +24,12 @@ import {
 import { productTypesToSingleSelectMapper } from '@/utils/mapperUtils';
 import { redirect } from 'next/navigation';
 
+export async function generateMetadata() {
+  return {
+    title: 'Product | Catalos Admin',
+  };
+}
+
 export default async function EditProduct(ctx: {
   params: Promise<{ id: string }>;
   searchParams?: Promise<ISearchParams | null>;

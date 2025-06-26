@@ -6,6 +6,12 @@ import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { ICategory, IPage, IResponse } from '@/core/types';
 
+export async function generateMetadata() {
+  return {
+    title: 'Create Category | Catalos Admin',
+  };
+}
+
 const CategoryCreatePage = async() => {
   await validatePermissions('CAT:NN');
   const breadCrumbItems = [

@@ -5,6 +5,12 @@ import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import SettingsBlock from '@/components/settings/SettingsBlock';
 import { LockIcon, TableIcon } from '@/icons';
 
+export async function generateMetadata() {
+  return {
+    title: 'Settings | Catalos Admin',
+  };
+}
+
 const SettingsPage = async () => {
   const settingsMenu = [
     {

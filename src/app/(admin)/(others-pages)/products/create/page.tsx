@@ -9,6 +9,12 @@ import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IBrand, ICategory, IPage, IProductType, IResponse } from '@/core/types';
 import { productTypesToSingleSelectMapper } from '@/utils/mapperUtils';
 
+export async function generateMetadata() {
+  return {
+    title: 'Create Product | Catalos Admin',
+  };
+}
+
 export default async function CreateProduct() {
   await validatePermissions('PRD:NN');
   const breadCrumbItems = [

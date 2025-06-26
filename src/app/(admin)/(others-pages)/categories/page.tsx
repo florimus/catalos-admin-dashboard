@@ -8,6 +8,12 @@ import TableCard from '@/components/common/TableCard';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { ICategory, IPage, IResponse, ISearchParams } from '@/core/types';
 
+export async function generateMetadata() {
+  return {
+    title: 'Categories | Catalos Admin',
+  };
+}
+
 export default async function CategoriesListPage(ctx: {
   searchParams?: Promise<ISearchParams | null>;
 }) {

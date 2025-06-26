@@ -7,6 +7,12 @@ import { validatePermissions } from '@/core/authentication/roleValidations';
 import { ICustomerInfo, IResponse } from '@/core/types';
 import { redirect } from 'next/navigation';
 
+export async function generateMetadata() {
+  return {
+    title: 'Customer | Catalos Admin',
+  };
+}
+
 export default async function EditCustomer(ctx: {
   params: Promise<{ id: string }>;
 }) {

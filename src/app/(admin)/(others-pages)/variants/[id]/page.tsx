@@ -23,6 +23,12 @@ import {
 } from '@/core/types';
 import { redirect } from 'next/navigation';
 
+export async function generateMetadata() {
+  return {
+    title: 'Variant | Catalos Admin',
+  };
+}
+
 export default async function EditVariant(ctx: {
   params: Promise<{ id: string }>;
 }) {

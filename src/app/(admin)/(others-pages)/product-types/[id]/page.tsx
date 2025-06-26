@@ -7,6 +7,12 @@ import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IProductType, IResponse } from '@/core/types';
 import { redirect } from 'next/navigation';
 
+export async function generateMetadata() {
+  return {
+    title: 'Product Type | Catalos Admin',
+  };
+}
+
 export default async function ProductTypePage({
   params,
 }: {

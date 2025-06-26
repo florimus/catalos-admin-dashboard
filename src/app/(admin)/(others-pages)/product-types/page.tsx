@@ -7,6 +7,12 @@ import ProductTypeList from '@/components/productTypes/ProductTypeList';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IPage, IProductType, IResponse, ISearchParams } from '@/core/types';
 
+export async function generateMetadata() {
+  return {
+    title: 'Product Types | Catalos Admin',
+  };
+}
+
 const ProductTypeListPage = async (ctx: {
   searchParams?: Promise<ISearchParams | null>;
 }) => {

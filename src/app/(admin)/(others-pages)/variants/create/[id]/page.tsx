@@ -7,6 +7,12 @@ import VariantForm from '@/components/variants/VariantForm';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IProduct, IProductType, IResponse } from '@/core/types';
 
+export async function generateMetadata() {
+  return {
+    title: 'Create Variant | Catalos Admin',
+  };
+}
+
 export default async function CreateVariant(ctx: {
   params: Promise<{ id: string }>;
 }) {

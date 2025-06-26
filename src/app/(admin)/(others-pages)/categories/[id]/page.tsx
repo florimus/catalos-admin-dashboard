@@ -14,6 +14,12 @@ import {
 } from '@/core/types';
 import { redirect } from 'next/navigation';
 
+export async function generateMetadata() {
+  return {
+    title: 'Category | Catalos Admin',
+  };
+}
+
 const CategoryEditPage = async (ctx: {
   params: Promise<{ id: string }>;
   searchParams?: Promise<ISearchParams | null>;

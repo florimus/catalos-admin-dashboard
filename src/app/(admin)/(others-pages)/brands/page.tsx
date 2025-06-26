@@ -7,6 +7,12 @@ import TableCard from '@/components/common/TableCard';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IBrand, IPage, IResponse, ISearchParams } from '@/core/types';
 
+export async function generateMetadata() {
+  return {
+    title: 'Brands | Catalos Admin',
+  };
+}
+
 export default async function BrandListPage(ctx: {
   searchParams?: Promise<ISearchParams | null>;
 }) {

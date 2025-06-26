@@ -8,6 +8,12 @@ import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IPage, IProduct, IResponse, ISearchParams } from '@/core/types';
 import React from 'react';
 
+export async function generateMetadata() {
+  return {
+    title: 'Products | Catalos Admin',
+  };
+}
+
 export default async function ProductListPage(ctx: {
   searchParams?: Promise<ISearchParams | null>;
 }) {
