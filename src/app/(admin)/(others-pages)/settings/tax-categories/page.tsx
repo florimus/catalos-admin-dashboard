@@ -23,7 +23,7 @@ export default async function TaxListPage(ctx: {
 
   if (!response.success) {
     console.error('Failed to fetch staffs:', response.message);
-    return redirect('/404');
+    return redirect('/forbidden');
   }
 
   const cta = {
