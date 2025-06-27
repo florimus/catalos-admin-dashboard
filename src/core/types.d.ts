@@ -207,7 +207,7 @@ export interface IStock {
 }
 
 export interface IPriceInfoItem {
-  taxClasses: string[];
+  taxClasses: {id: string; name: string}[];
   salesPrice: number;
 }
 

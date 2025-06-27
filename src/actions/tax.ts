@@ -9,7 +9,7 @@ export const getTaxes = async (
   query: string = '',
   page: number = 0,
   size: number = 10,
-  channel?: string
+  channels?: string
 ): Promise<IResponse<IPage<ITax>>> => {
   const cookieStore = await cookies();
   const url = new URL('/taxes/search', process.env.NEXT_PUBLIC_API_BASE_URL);
@@ -26,8 +26,8 @@ export const getTaxes = async (
     url.searchParams.append('size', size.toString());
   }
 
-  if (channel) {
-    url.searchParams.append('channel', channel);
+  if (channels) {
+    url.searchParams.append('channels', channels);
   }
 
   const response = await fetch(url, {

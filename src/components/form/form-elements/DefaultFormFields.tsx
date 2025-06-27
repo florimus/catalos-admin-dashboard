@@ -223,6 +223,7 @@ export interface IMultiSelectFormFieldProps {
   label: string;
   options: Option[];
   defaultSelected?: string[];
+  onClick?: () => void;
   onChange: (selected: string[]) => void;
   disabled?: boolean;
 }
@@ -232,10 +233,11 @@ export const MultiSelectFormField: FC<IMultiSelectFormFieldProps> = ({
   options,
   defaultSelected,
   onChange,
+  onClick = () => {},
   disabled = false,
 }) => {
   return (
-    <div className='relative'>
+    <div className='relative' onClick={onClick}>
       <MultiSelect
         label={label}
         options={options}

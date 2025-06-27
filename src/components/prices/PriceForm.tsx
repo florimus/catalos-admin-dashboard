@@ -1,12 +1,17 @@
 'use client';
 
-import { IPrice, IPriceInfo, IResponse } from '@/core/types';
+import { IPage, IPrice, IPriceInfo, IResponse, ITax } from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import GridFormInputs from '../form/form-elements/GridFormInputs';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { CHANNELS } from '@/core/constants';
 import Alert from '../ui/alert/Alert';
 import { updatePrice } from '@/actions/price';
+import { useModal } from '@/hooks/useModal';
+import FormInModal from '../modals/FormInModal';
+import Input from '../form/input/InputField';
+import { getTaxes } from '@/actions/tax';
+import { taxesToSingleSelectMapper } from '@/utils/mapperUtils';
 
 interface IPriceFormProps {
   priceInfo: IPrice | undefined;
@@ -23,6 +28,70 @@ const PriceForm: FC<IPriceFormProps> = ({ priceInfo, skuId }) => {
   const [alerts, setAlerts] = useState<{ message: string; variant: string }[]>(
     []
   );
+
+  const [taxClasses, setTaxClasses] = useState<
+    { value: string; label: string }[]
+  >([]);
+
+  const [
+    selectedChannelForTaxClassSearch,
+    setSelectedChannelForTaxClassSearch,
+  ] = useState<string>('');
+
+  const { isOpen, openModal, closeModal } = useModal();
+
+  const openTaxClassSearchModal = useCallback(
+    async (channel: string) => {
+      setSelectedChannelForTaxClassSearch(channel);
+      const response: IResponse<IPage<ITax>> = await getTaxes(
+        '',
+        0,
+        10,
+        channel
+      );
+      if (response.success && response.data?.hits) {
+        setTaxClasses(taxesToSingleSelectMapper(response.data.hits));
+      }
+      openModal();
+    },
+    [openModal]
+  );
+
+  const handleTaxClassSearch = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value.trim() === '') {
+      setTaxClasses([]);
+      return;
+    }
+    const response: IResponse<IPage<ITax>> = await getTaxes(
+      event.target.value,
+      0,
+      10,
+      selectedChannelForTaxClassSearch
+    );
+    if (response.success && response.data?.hits) {
+      setTaxClasses(taxesToSingleSelectMapper(response.data.hits));
+    }
+  };
+
+  const handleTacClassSelect = (taxCClass: {
+    value: string;
+    label: string;
+  }) => {
+    setPriceData((prev) => ({
+      ...prev,
+      [selectedChannelForTaxClassSearch]: {
+        ...prev?.[selectedChannelForTaxClassSearch],
+        taxClasses: [
+          {
+            id: taxCClass.value,
+            name: taxCClass.label,
+          },
+        ],
+      },
+    }));
+    setTaxClasses([]);
+    closeModal();
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -53,6 +122,7 @@ const PriceForm: FC<IPriceFormProps> = ({ priceInfo, skuId }) => {
     return (
       CHANNELS.map((channel) => {
         const salesPrice = priceInfo[channel.id]?.salesPrice || 0;
+        const taxClasses = priceInfo[channel.id]?.taxClasses || [];
         return [
           {
             fieldType: FormFieldType.Display,
@@ -78,10 +148,20 @@ const PriceForm: FC<IPriceFormProps> = ({ priceInfo, skuId }) => {
             required: true,
             disabled: false,
           },
+          {
+            fieldType: FormFieldType.Display,
+            name: 'taxClasses',
+            label: 'Select Tax Categories',
+            required: false,
+            disabled: false,
+            value: taxClasses?.[0]?.name || '',
+            id: 'taxClasses',
+            onClick: () => openTaxClassSearchModal(channel.id),
+          },
         ];
       }) || []
     );
-  }, [handlePriceInfoChange, priceData]);
+  }, [handlePriceInfoChange, openTaxClassSearchModal, priceData]);
 
   const handleSaveStock = async () => {
     setLoading(true);
@@ -127,6 +207,31 @@ const PriceForm: FC<IPriceFormProps> = ({ priceInfo, skuId }) => {
         }}
         gridFields={[...createPriceGridForm()]}
       />
+      {isOpen && (
+        <FormInModal
+          title='Select Tax Category'
+          isOpen={isOpen}
+          closeModal={closeModal}
+        >
+          <Input
+            type='text'
+            placeholder='Select Tax Category'
+            name='productTypeId'
+            onChange={handleTaxClassSearch}
+          />
+          <ul>
+            {taxClasses.map((tax) => (
+              <li
+                key={tax.value}
+                className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
+                onClick={() => handleTacClassSelect(tax)}
+              >
+                {tax.label}
+              </li>
+            ))}
+          </ul>
+        </FormInModal>
+      )}
     </>
   );
 };

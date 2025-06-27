@@ -8,6 +8,7 @@ import {
   IImage,
   IProductType,
   IRole,
+  ITax,
 } from '@/core/types';
 
 export const channelToMultiSelectMapper = (
@@ -190,4 +191,19 @@ export const rolesToSingleSelectMapper = (roles?: IRole[]) => {
         label: role.uniqueId,
       }))
     : [];
+};
+
+export const taxesToMultiSelectMapper = (taxes: ITax[]) => {
+  return taxes.map((tax) => ({
+    value: tax.id || '',
+    text: tax.name,
+    selected: false,
+  }));
+};
+
+export const taxesToSingleSelectMapper = (taxes: ITax[]) => {
+  return taxes.map((tax) => ({
+    value: tax.id || '',
+    label: tax.name,
+  }));
 };
