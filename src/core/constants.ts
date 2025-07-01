@@ -26,8 +26,13 @@ export const AllModules: string[] = [
   'Prize',
   'Stock',
   'Taxes',
+  'Orders',
 ];
 
 export const AllPermissions: string[] = ['READ', 'EDIT', 'DELETE'];
 
 export const DEFAULT_ROLE = 'User';
+
+export const DATE_TIME_FORMAT = 'DD-MM-YYYY hh:mm A';
+
+export const DATE_FORMAT = 'DD-MM-YYYY';

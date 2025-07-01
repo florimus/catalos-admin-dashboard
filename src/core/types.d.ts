@@ -57,6 +57,7 @@ export interface ISearchParams {
   page?: number;
   size?: number;
   sort?: string;
+  channel?: string;
   order?: 'asc' | 'desc';
   parent?: string;
 }
@@ -207,7 +208,7 @@ export interface IStock {
 }
 
 export interface IPriceInfoItem {
-  taxClasses: {id: string; name: string}[];
+  taxClasses: { id: string; name: string }[];
   salesPrice: number;
 }
 
@@ -277,4 +278,58 @@ export interface ITax {
 export interface ITaxStatusUpdate {
   id: string;
   active: boolean;
+}
+
+export interface IOrderPrice {
+  subtotalPrice: number;
+  totalTaxPrice: number;
+  shippingPrice: number;
+  totalDiscountPrice: number;
+  grandTotalPrice: number;
+}
+
+export interface IOrderItemPrice {
+  salesPrice: number;
+  discountName: string | null;
+  discountedPrice: number;
+  discountPercentage: number;
+  discountFlatPrice: number;
+  taxPrice: number;
+  finalPrice: number;
+}
+
+export interface IMiniLineItemVariant {
+  id: string;
+  name: string;
+  slug: string;
+  productId: string;
+  skuId: string;
+  productTypeId: string;
+  url: string;
+  medias: IImage[];
+  active: boolean;
+}
+
+export interface IMiniLineItem {
+  id: string;
+  productName: string;
+  variant: IMiniLineItemVariant;
+  quantity: number;
+  itemPrice: IOrderItemPrice;
+  error: null;
+}
+
+export interface IMiniOrder {
+  id: string;
+  status: string;
+  userId: string;
+  email: string | null;
+  channelId: string;
+  lineItems: IMiniLineItem[];
+  coupon: null;
+  price: IOrderPrice;
+  guestOrder: boolean;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

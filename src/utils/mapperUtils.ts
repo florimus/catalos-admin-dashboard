@@ -1,4 +1,5 @@
 import { FormFieldType } from '@/components/form/form-elements/DefaultFormFields';
+import { CHANNELS } from '@/core/constants';
 import {
   IAttributeListItem,
   IAttributeOption,
@@ -19,6 +20,14 @@ export const channelToMultiSelectMapper = (
     text: channel.name,
     selected: false,
   }));
+};
+
+export const getChannelId = (channelId: string) => {
+  return CHANNELS.find((channel) => {
+    if (channel.id === channelId) {
+      return channel.id;
+    }
+  });
 };
 
 export const productTypesToSingleSelectMapper = (

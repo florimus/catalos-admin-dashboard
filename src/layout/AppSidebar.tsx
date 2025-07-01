@@ -18,6 +18,7 @@ import {
   // TableIcon,
   UserCircleIcon,
   ShootingStarIcon,
+  PaperPlaneIcon,
 } from '../icons/index';
 // import SidebarWidget from './SidebarWidget';
 
@@ -85,6 +86,18 @@ const navItems: NavItem[] = [
         path: '/staffs',
         pro: false,
         activeUrl: ['/staffs'],
+      },
+    ],
+  },
+  {
+    icon: <PaperPlaneIcon />,
+    name: 'Orders',
+    subItems: [
+      {
+        name: 'Carts',
+        path: '/carts',
+        pro: false,
+        activeUrl: ['/carts'],
       },
     ],
   },
