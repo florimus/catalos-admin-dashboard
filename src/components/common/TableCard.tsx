@@ -15,8 +15,9 @@ interface TableCardProps {
   desc?: string;
   cta?: {
     permission?: string;
-    label: string;
-    href: string;
+    label?: string;
+    href?: string;
+    custom?: React.ReactNode;
   };
   filters?: React.ReactNode;
 }
@@ -73,7 +74,7 @@ const TableCard: React.FC<TableCardProps> = ({
 
             <div className='flex items-center align-middle'>
               {filters ? filters : ''}
-              {cta?.label && (
+              {cta?.custom ? cta.custom : cta?.label && (
                 <SecureComponent permission={cta.permission}>
                   <Button
                     size='sm'

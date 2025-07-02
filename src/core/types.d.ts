@@ -333,3 +333,14 @@ export interface IMiniOrder {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface IOrder extends IMiniOrder {
+  id: string;
+  status: string;
+  userId: string;
+}
+
+export interface ICreateCartRequestInputs {
+  userId: string;
+  channelId: string;
+}

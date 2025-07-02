@@ -34,7 +34,7 @@ import { getCategories } from '@/actions/category';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import { getBrands } from '@/actions/brand';
 
-interface OrdersFormProps {
+interface CartFormProps {
   productTypeOptions?: { value: string; label: string }[];
   product?: IProduct;
   initialCategories?: ICategory[];
@@ -42,7 +42,7 @@ interface OrdersFormProps {
   permission?: string;
 }
 
-const ProductForm: FC<OrdersFormProps> = ({
+const CartForm: FC<CartFormProps> = ({
   productTypeOptions,
   product,
   initialCategories,
@@ -346,14 +346,14 @@ const ProductForm: FC<OrdersFormProps> = ({
           <DefaultInputs
             cta={{
               permission,
-              label: 'Save Product',
+              label: 'Save Cart',
               loading: loading,
               onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
                 event.preventDefault();
                 handleSave();
               },
             }}
-            heading='Product Form'
+            heading='Cart Form'
             fields={fields}
           />
           {createProductForm.productTypeId && (
@@ -453,4 +453,4 @@ const ProductForm: FC<OrdersFormProps> = ({
   );
 };
 
-export default ProductForm;
+export default CartForm;

@@ -6,3 +6,7 @@ export const formatSlug = (str: string) => {
     .replace(/^-+/, '')
     .replace(/-+$/, '');
 };
+
+export const isBlank = (str: string) => {
+  return !str || /^\s*$/.test(str);
+};

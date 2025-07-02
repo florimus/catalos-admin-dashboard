@@ -3,6 +3,7 @@
 import { getOrders } from '@/actions/order';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
+import CreateCartModal from '@/components/Orders/modal/CreateCartModal';
 import OrderList from '@/components/Orders/OrdersList';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IMiniOrder, IPage, IResponse, ISearchParams } from '@/core/types';
@@ -34,9 +35,7 @@ export default async function OrdersListPage(ctx: {
   }
 
   const cta = {
-    permission: 'ORD:NN',
-    label: 'Create Cart',
-    href: '/carts/create',
+    custom: <CreateCartModal />,
   };
 
   return (

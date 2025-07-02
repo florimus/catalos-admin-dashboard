@@ -22,6 +22,15 @@ export const channelToMultiSelectMapper = (
   }));
 };
 
+export const channelToSingleSelectMapper = (
+  channels: { id: string; name: string }[]
+) => {
+  return channels.map((channel) => ({
+    value: channel.id,
+    label: channel.name,
+  }));
+};
+
 export const getChannelId = (channelId: string) => {
   return CHANNELS.find((channel) => {
     if (channel.id === channelId) {
