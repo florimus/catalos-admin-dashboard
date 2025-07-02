@@ -5,7 +5,7 @@ import { getUsers } from '@/actions/user';
 import Input from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
 import Select from '@/components/form/Select';
-import FormInModal from '@/components/modals/FormInModal';
+import ContainerModal from '@/components/modals/ContainerModal';
 import Alert from '@/components/ui/alert/Alert';
 import Avatar from '@/components/ui/avatar/Avatar';
 import Button from '@/components/ui/button/Button';
@@ -131,7 +131,7 @@ const CreateCartModal = () => {
         </Button>
       </SecureComponent>
       {isOpen && (
-        <FormInModal
+        <ContainerModal
           title='Create Cart'
           isOpen={isOpen}
           saveButtonText='Create Cart'
@@ -257,7 +257,7 @@ const CreateCartModal = () => {
               Create cart
             </Button>
           </div>
-        </FormInModal>
+        </ContainerModal>
       )}
     </>
   );

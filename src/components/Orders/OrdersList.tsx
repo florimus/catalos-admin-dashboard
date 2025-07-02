@@ -43,7 +43,7 @@ const OrderList: React.FC<OrdersListProps> = ({ hits = [], ...rest }) => {
   }
 
   const goToOrderDetails = (orderId: string) =>
-    start(() => router.push(`/orders/${orderId}`));
+    start(() => router.push(`/carts/${orderId}`));
 
   const tableData =
     hits?.map((order) => [
