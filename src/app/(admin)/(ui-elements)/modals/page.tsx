@@ -1,7 +1,6 @@
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import DefaultModal from "@/components/example/ModalExample/DefaultModal";
 import FormInModal from "@/components/example/ModalExample/FormInModal";
-import FullScreenModal from "@/components/modals/FullScreenModal";
 import ModalBasedAlerts from "@/components/example/ModalExample/ModalBasedAlerts";
 import VerticallyCenteredModal from "@/components/example/ModalExample/VerticallyCenteredModal";
 import { Metadata } from "next";
@@ -22,9 +21,6 @@ export default function Modals() {
         <DefaultModal />
         <VerticallyCenteredModal />
         <FormInModal />
-        <FullScreenModal isOpen={false}  onClose={function (): void {
-          throw new Error('Function not implemented.');
-        } } >Ji</FullScreenModal>
         <ModalBasedAlerts />
       </div>
     </div>
