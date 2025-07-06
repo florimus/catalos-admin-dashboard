@@ -2,6 +2,7 @@
 
 import { handleError } from '@/client/httpClient';
 import {
+  IAddress,
   ICustomerInfo,
   IPage,
   IResponse,
@@ -235,7 +236,6 @@ export const userStatusUpdateApi = async (
 export const updateStaffUserInfo = async (
   payload: ICustomerInfo
 ): Promise<IResponse<ICustomerInfo>> => {
-  
   const cookieStore = await cookies();
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/staff`,
@@ -262,6 +262,37 @@ export const updateStaffUserInfo = async (
     return {
       success: false,
       message: data?.message || 'Failed to update staff info',
+    };
+  });
+};
+
+export const getUserAddresses = async (
+  userId: string
+): Promise<IResponse<IAddress[]>> => {
+  const cookieStore = await cookies();
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/address/customer/id/${userId}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+      },
+    }
+  );
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Addresses fetched successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to fetch addresses',
     };
   });
 };

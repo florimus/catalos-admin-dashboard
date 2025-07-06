@@ -319,6 +319,11 @@ export interface IMiniLineItem {
   error: null;
 }
 
+export interface IOrderLineItem extends IMiniLineItem {
+  product: IProduct;
+  variant: IVariant;
+}
+
 export interface IMiniOrder {
   id: string;
   status: string;
@@ -335,12 +340,26 @@ export interface IMiniOrder {
 }
 
 export interface IOrder extends IMiniOrder {
-  id: string;
-  status: string;
-  userId: string;
+  lineItems: IOrderLineItem[];
+  shippingAddress?: IAddress | null;
+  billingAddress?: IAddress | null;
 }
 
 export interface ICreateCartRequestInputs {
   userId: string;
   channelId: string;
 }
+
+export interface IAddress {
+  sourceId?: string;
+  addressType: 'Shipping' | 'Billing';
+  phone: string;
+  addressLine1: string;
+  addressLine2?: string;
+  country: string;
+  state: string;
+  city: string;
+  area: string;
+  pinCode: string;
+}
+

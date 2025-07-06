@@ -10,3 +10,14 @@ export const formatSlug = (str: string) => {
 export const isBlank = (str: string) => {
   return !str || /^\s*$/.test(str);
 };
+
+export const formatPrice: (value: number, locale: string) => string = (
+  value: number,
+  locale: string = 'en-IN'
+) => {
+  const formatter = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  return formatter.format(value);
+};

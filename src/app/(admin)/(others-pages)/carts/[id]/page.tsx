@@ -1,97 +1,57 @@
 'use server';
 
-import { getBrands } from '@/actions/brand';
-import { getCategories } from '@/actions/category';
-import { getProductById } from '@/actions/product';
-import { getProductTypeList } from '@/actions/product-type';
-import { getVariantsByProductId } from '@/actions/variant';
+import { getOrderById } from '@/actions/order';
+import { getUserAddresses } from '@/actions/user';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
-import TableCard from '@/components/common/TableCard';
-import ProductForm from '@/components/products/ProductForm';
-import VariantList from '@/components/variants/VariantList';
+import CartForm from '@/components/Orders/CartForm';
 import { validatePermissions } from '@/core/authentication/roleValidations';
-import SecureComponent from '@/core/authentication/SecureComponent';
 import {
-  IBrand,
-  ICategory,
-  IPage,
-  IProduct,
-  IProductType,
+  IOrder,
   IResponse,
-  ISearchParams,
-  IVariant,
 } from '@/core/types';
-import { productTypesToSingleSelectMapper } from '@/utils/mapperUtils';
 import { redirect } from 'next/navigation';
 
 export async function generateMetadata() {
   return {
-    title: 'Product | Catalos Admin',
+    title: 'Carts | Catalos Admin',
   };
 }
 
-export default async function EditProduct(ctx: {
+export default async function EditCart(ctx: {
   params: Promise<{ id: string }>;
-  searchParams?: Promise<ISearchParams | null>;
 }) {
-  await validatePermissions('USR:LS');
+  await validatePermissions('ORD:LS');
   const awaitedParams = await ctx.params;
-  const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
-  const product: IResponse<IProduct> = await getProductById(awaitedParams.id);
-  const variants: IResponse<IPage<IVariant>> = (await getVariantsByProductId(
-    awaitedParams.id,
-    searchParams?.query,
-    searchParams?.page,
-    searchParams?.size
-  )) || { data: [] };
 
-  if (!product?.success || !product?.data) {
-    console.error(product.message);
+  const cartResponse: IResponse<IOrder> = await getOrderById(
+    awaitedParams.id
+  );
+
+  if (cartResponse.success && !cartResponse.data) {
+    console.error(cartResponse.message);
     redirect('/404');
+    
   }
 
+  const addressResponse = await getUserAddresses(cartResponse.data?.userId || '');
+
   const breadCrumbItems = [
-    { label: 'Products', href: '/products' },
-    { label: product?.data?.name, href: '#' },
+    { label: 'Carts', href: '/carts' },
+    { label: 'Edit Cart', href: '#' },
   ];
-
-  const newVariantCta = {
-    permission: 'VAR:NN',
-    label: 'New Variant',
-    href: `/variants/create/${awaitedParams.id}`,
-  };
-
-  const productTypes: IResponse<IPage<IProductType>> =
-    await getProductTypeList();
-
-  const initialCategories: IResponse<IPage<ICategory>> = await getCategories();
-  const initialBrands: IResponse<IPage<IBrand>> = await getBrands();
 
   return (
     <>
       <PageBreadcrumb
-        pageTitle={product?.data?.name || 'Edit Product'}
+        pageTitle={ 'Edit Cart'}
         items={breadCrumbItems}
-        backUrl='/products'
+        backUrl='/carts'
       />
-      <ProductForm
-        permission='PRD:NN'
-        productTypeOptions={productTypesToSingleSelectMapper(
-          productTypes?.data?.hits
-        )}
-        product={product.data}
-        initialCategories={initialCategories?.data?.hits || []}
-        initialBrands={initialBrands?.data?.hits || []}
+      <CartForm
+        permission='ORD:NN'
+        cart={cartResponse?.data}
+        addresses={addressResponse?.data || []}
       />
-      <SecureComponent permission='VAR:LS'>
-        <TableCard
-          searchPlaceHolder={'Search variants...'}
-          searchParams={searchParams}
-          cta={newVariantCta}
-        >
-          <VariantList {...variants?.data} />
-        </TableCard>
-      </SecureComponent>
     </>
   );
 }

@@ -45,7 +45,8 @@ export const createProductAPI = async (
 export const getProducts = async (
   query: string = '',
   page: number = 0,
-  size: number = 10
+  size: number = 10,
+  channel?: string
 ): Promise<IResponse<IPage<IProduct>>> => {
   const cookieStore = await cookies();
   const url = new URL('/products/search', process.env.NEXT_PUBLIC_API_BASE_URL);
@@ -60,6 +61,10 @@ export const getProducts = async (
 
   if (size >= 1) {
     url.searchParams.append('size', size.toString());
+  }
+
+  if (channel && channel.trim().length > 0) {
+    url.searchParams.append('channel', channel);
   }
 
   const response = await fetch(url, {

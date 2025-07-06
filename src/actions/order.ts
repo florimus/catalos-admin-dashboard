@@ -1,7 +1,8 @@
 'use server';
 
 import { handleError } from '@/client/httpClient';
-import { IMiniOrder, IPage, IResponse } from '@/core/types';
+import { IAddress, IMiniOrder, IOrder, IPage, IResponse } from '@/core/types';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 export const getOrders = async (
@@ -49,6 +50,150 @@ export const getOrders = async (
     return {
       success: false,
       message: data?.message?.[0] || 'Failed to fetch Orders',
+    };
+  });
+};
+
+export const getOrderById = async (id: string): Promise<IResponse<IOrder>> => {
+  const cookieStore = await cookies();
+  const url = new URL(`/orders/id/${id}`, process.env.NEXT_PUBLIC_API_BASE_URL);
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Order fetched successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to fetch Order',
+    };
+  });
+};
+
+export const updateCartLineItem = async (
+  id: string,
+  quantity: number,
+  variantId: string
+): Promise<IResponse<IOrder>> => {
+  const cookieStore = await cookies();
+  const url = new URL(`/orders/id/${id}`, process.env.NEXT_PUBLIC_API_BASE_URL);
+
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify({
+      lineItems: [
+        {
+          variantId,
+          quantity,
+        },
+      ],
+    }),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath('/carts');
+      revalidatePath(`/carts/${id}`);
+      return {
+        success: true,
+        data: data.data,
+        message: 'Order item updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to fetch order item',
+    };
+  });
+};
+
+export const updateCartLineItems = async (
+  id: string,
+  lineItems: { quantity: number; variantId: string }[]
+): Promise<IResponse<IOrder>> => {
+  const cookieStore = await cookies();
+  const url = new URL(`/orders/id/${id}`, process.env.NEXT_PUBLIC_API_BASE_URL);
+
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify({
+      lineItems,
+    }),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath('/carts');
+      revalidatePath(`/carts/${id}`);
+      return {
+        success: true,
+        data: data.data,
+        message: 'Order item updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to fetch order item',
+    };
+  });
+};
+
+export const updateOrderAddress = async (
+  orderId: string,
+  address: IAddress
+): Promise<IResponse<IOrder>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/api/orders/id/${orderId}/address`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify({
+      ...address,
+    }),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath(`/carts/${orderId}`);
+      return {
+        success: true,
+        data: data.data,
+        message: 'Order address updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to update order address',
     };
   });
 };
