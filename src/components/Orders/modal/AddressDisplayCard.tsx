@@ -1,6 +1,7 @@
 'use client';
 
 import Button from '@/components/ui/button/Button';
+import SecureComponent from '@/core/authentication/SecureComponent';
 import { IAddress } from '@/core/types';
 import { useEffect, useState } from 'react';
 
@@ -50,12 +51,16 @@ const AddressDisplayCard: React.FC<IAddressDisplayCardProps> = ({
         <h3 className='text-base font-medium text-gray-800 dark:text-white/90'>
           {title}
         </h3>
-        {selectedAddress && <Button size='xm' onClick={() => setSelectedAddress(null)}>
-          Edit
-          {loading && (
-            <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
-          )}
-        </Button>}
+        {selectedAddress && (
+          <SecureComponent permission="ORD:NN">
+            <Button size='xm' onClick={() => setSelectedAddress(null)}>
+              Edit
+              {loading && (
+                <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
+              )}
+            </Button>
+          </SecureComponent>
+        )}
       </div>
 
       {selectedAddress ? (
@@ -77,7 +82,7 @@ const AddressDisplayCard: React.FC<IAddressDisplayCardProps> = ({
           </div>
         </div>
       ) : (
-        <>
+        <SecureComponent permission="ORD:NN">
           {addresses?.map((address, index) => (
             <div
               key={index}
@@ -115,7 +120,7 @@ const AddressDisplayCard: React.FC<IAddressDisplayCardProps> = ({
           >
             New Address
           </div>
-        </>
+        </SecureComponent>
       )}
     </div>
   );

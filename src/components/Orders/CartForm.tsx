@@ -23,6 +23,7 @@ import FullScreenModal from '../modals/FullScreenModal';
 import { useModal } from '@/hooks/useModal';
 import AddToCart from './modal/AddToCart';
 import AddressDisplayCard from './modal/AddressDisplayCard';
+import SecureComponent from '@/core/authentication/SecureComponent';
 
 interface CartFormProps {
   cart?: IOrder;
@@ -30,7 +31,7 @@ interface CartFormProps {
   permission?: string;
 }
 
-const CartForm: FC<CartFormProps> = ({ cart, addresses }) => {
+const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
   const [quantityButtonLoaderIndex, setQuantityButtonLoaderIndex] = useState<
     number | null
   >();
@@ -496,33 +497,41 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses }) => {
         text: (
           <div className='flex items-center space-x-2'>
             {
-              <button
-                className='h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-                disabled={item.quantity === 1}
-                onClick={() =>
-                  handleUpdateQuantity(
-                    item.quantity - 1,
-                    item.variant.id,
-                    index
-                  )
-                }
-              >
-                -
-              </button>
+              <SecureComponent permission={permission}>
+                <button
+                  className='h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                  disabled={item.quantity === 1}
+                  onClick={() =>
+                    handleUpdateQuantity(
+                      item.quantity - 1,
+                      item.variant.id,
+                      index
+                    )
+                  }
+                >
+                  -
+                </button>
+              </SecureComponent>
             }
             <span>
               {quantityButtonLoaderIndex === index
                 ? quantityButtonLoader
                 : item.quantity}
             </span>
-            <button
-              className='h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-              onClick={() =>
-                handleUpdateQuantity(item.quantity + 1, item.variant.id, index)
-              }
-            >
-              +
-            </button>
+            <SecureComponent permission={permission}>
+              <button
+                className='h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                onClick={() =>
+                  handleUpdateQuantity(
+                    item.quantity + 1,
+                    item.variant.id,
+                    index
+                  )
+                }
+              >
+                +
+              </button>
+            </SecureComponent>
           </div>
         ),
       },
@@ -550,11 +559,13 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses }) => {
       {
         type: TableCellTypes.TextCell,
         text: (
-          <span className='flex'>
-            <span className='me-5 cursor-pointer'>
-              <TrashBinIcon />
+          <SecureComponent permission={permission}>
+            <span className='flex'>
+              <span className='me-5 cursor-pointer'>
+                <TrashBinIcon />
+              </span>
             </span>
-          </span>
+          </SecureComponent>
         ),
       },
     ]) || [];
@@ -656,17 +667,18 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses }) => {
         <h1 className='text-lg font-semibold text-gray-800 dark:text-gray-200'>
           Total {cart?.lineItems?.length || 0} Item(s)
         </h1>
-        <Button
-          onClick={openAddToCartModal}
-          className='bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800'
-        >
-          Add Product
-        </Button>
+        <SecureComponent permission={permission}>
+          <Button
+            onClick={openAddToCartModal}
+            className='bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800'
+          >
+            Add Product
+          </Button>
+        </SecureComponent>
       </div>
       <BasicTableOne
         headingData={headingData}
         tableData={tableData}
-        // pageProps={rest}
         isEmpty={cart?.lineItems?.length === 0}
       />
       <div className='grid grid-cols-1 gap-6 xl:grid-cols-3 my-6'>
@@ -696,6 +708,7 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses }) => {
                 heading='Shipping Address'
                 fields={shippingAddressFields}
                 cta={{
+                  permission,
                   label: 'Save',
                   onSubmit: () => handleEditShippingAddress(shippingAddress),
                 }}
@@ -712,6 +725,7 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses }) => {
               <DefaultInputs
                 heading='Billing Address'
                 cta={{
+                  permission,
                   label: 'Save',
                   onSubmit: () => handleEditBillingAddress(billingAddress),
                 }}
