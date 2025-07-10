@@ -124,6 +124,45 @@ export const updateCartLineItem = async (
   });
 };
 
+export const removeCartLineItem = async (
+  id: string,
+  lineItems: string[]
+): Promise<IResponse<IOrder>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/api/orders/id/${id}/line-items`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify({
+      lineItems,
+    }),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath('/carts');
+      revalidatePath(`/carts/${id}`);
+      return {
+        success: true,
+        data: data.data,
+        message: 'Order item updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to fetch order item',
+    };
+  });
+};
+
 export const updateCartLineItems = async (
   id: string,
   lineItems: { quantity: number; variantId: string }[]

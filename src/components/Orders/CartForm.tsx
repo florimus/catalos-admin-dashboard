@@ -13,6 +13,7 @@ import Badge from '../ui/badge/Badge';
 import { TrashBinIcon } from '@/icons';
 import Button from '../ui/button/Button';
 import {
+  removeCartLineItem,
   updateCartLineItem,
   updateCartLineItems,
   updateOrderAddress,
@@ -135,6 +136,28 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
       setAlerts([
         {
           message: response.message || 'Failed to update cart',
+          variant: 'error',
+        },
+      ]);
+    }
+  };
+
+  const handleRemoveLineItem = async (lineItemId: string) => {
+    const response: IResponse<IOrder> = await removeCartLineItem(
+      cart?.id || '',
+      [lineItemId]
+    );
+    if (response.success && response.data) {
+      setAlerts([
+        {
+          message: response.message || 'Item removed from cart successfully',
+          variant: 'success',
+        },
+      ]);
+    } else {
+      setAlerts([
+        {
+          message: response.message || 'Failed to remove item from cart',
           variant: 'error',
         },
       ]);
@@ -561,7 +584,7 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
         text: (
           <SecureComponent permission={permission}>
             <span className='flex'>
-              <span className='me-5 cursor-pointer'>
+              <span className='me-5 cursor-pointer' onClick={() => handleRemoveLineItem(item.id)}>
                 <TrashBinIcon />
               </span>
             </span>
