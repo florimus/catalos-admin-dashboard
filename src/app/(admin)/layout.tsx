@@ -1,5 +1,6 @@
 'use client';
 
+import { FloatingCartContextProvider } from '@/context/FloatingCartContext';
 import { GlobalLoaderContextProvider } from '@/context/GlobalLoaderContext';
 import { useSidebar } from '@/context/SidebarContext';
 import AppHeader from '@/layout/AppHeader';
@@ -30,7 +31,11 @@ export default function AdminLayout({
       >
         <AppHeader />
         <div className='p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6'>
-          <GlobalLoaderContextProvider>{children}</GlobalLoaderContextProvider>
+          <GlobalLoaderContextProvider>
+            <FloatingCartContextProvider>
+              {children}
+            </FloatingCartContextProvider>
+          </GlobalLoaderContextProvider>
         </div>
       </div>
     </div>

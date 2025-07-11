@@ -25,6 +25,12 @@ import { useModal } from '@/hooks/useModal';
 import AddToCart from './modal/AddToCart';
 import AddressDisplayCard from './modal/AddressDisplayCard';
 import SecureComponent from '@/core/authentication/SecureComponent';
+import { useRouter } from 'next/navigation';
+import { useGlobalLoader } from '@/context/GlobalLoaderContext';
+import {
+  LOCAL_STORAGE_KEYS,
+  setLocalStorageItem,
+} from '@/utils/localStorageUtils';
 
 interface CartFormProps {
   cart?: IOrder;
@@ -33,6 +39,9 @@ interface CartFormProps {
 }
 
 const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
+  const router = useRouter();
+  const { start } = useGlobalLoader();
+
   const [quantityButtonLoaderIndex, setQuantityButtonLoaderIndex] = useState<
     number | null
   >();
@@ -487,6 +496,11 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
     <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
   );
 
+  const handleGotoProduct = (variantId: string) => {
+    setLocalStorageItem(LOCAL_STORAGE_KEYS.CART_ID, cart?.id || '');
+    start(() => router.push(`/variants/${variantId}`));
+  };
+
   const tableData =
     cart?.lineItems?.map((item, index) => [
       {
@@ -513,7 +527,7 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
           </span>
         ),
         secondaryText: variant(item)?.skuId,
-        onclick: () => alert('clicked'),
+        onclick: () => handleGotoProduct(variant(item)?.id),
       },
       {
         type: TableCellTypes.TextCell,
@@ -584,7 +598,10 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
         text: (
           <SecureComponent permission={permission}>
             <span className='flex'>
-              <span className='me-5 cursor-pointer' onClick={() => handleRemoveLineItem(item.id)}>
+              <span
+                className='me-5 cursor-pointer'
+                onClick={() => handleRemoveLineItem(item.id)}
+              >
                 <TrashBinIcon />
               </span>
             </span>
