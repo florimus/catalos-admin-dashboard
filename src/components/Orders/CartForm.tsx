@@ -10,7 +10,7 @@ import Alert from '../ui/alert/Alert';
 import BasicTableOne from '../tables/BasicTableOne';
 import { TableCellTypes } from '../tables/TableCells';
 import Badge from '../ui/badge/Badge';
-import { TrashBinIcon } from '@/icons';
+import { BoltIcon, TrashBinIcon } from '@/icons';
 import Button from '../ui/button/Button';
 import {
   removeCartLineItem,
@@ -502,6 +502,14 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
     start(() => router.push(`/variants/${variantId}`));
   };
 
+  const handleMinimizeCart = () => {
+    createFloatCart(
+      cart?.id || '',
+      cart?.lineItems?.map((item) => variant(item)?.id) || []
+    );
+    start(() => router.push('/carts'));
+  };
+
   const tableData =
     cart?.lineItems?.map((item, index) => [
       {
@@ -708,14 +716,21 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
         <h1 className='text-lg font-semibold text-gray-800 dark:text-gray-200'>
           Total {cart?.lineItems?.length || 0} Item(s)
         </h1>
-        <SecureComponent permission={permission}>
+        <div className='flex'>
           <Button
-            onClick={openAddToCartModal}
-            className='bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800'
+            type='button'
+            size='xm'
+            className='me-2'
+            onClick={handleMinimizeCart}
           >
-            Add Product
+            <BoltIcon />
           </Button>
-        </SecureComponent>
+          <SecureComponent permission={permission}>
+            <Button type='button' size='xm' onClick={openAddToCartModal}>
+              Add Product
+            </Button>
+          </SecureComponent>
+        </div>
       </div>
       <BasicTableOne
         headingData={headingData}
