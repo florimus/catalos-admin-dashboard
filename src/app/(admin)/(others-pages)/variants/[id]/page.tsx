@@ -85,6 +85,9 @@ export default async function EditVariant(ctx: {
     <>
       <PageBreadcrumb
         pageTitle={`${variant.name} | ${product.name}`}
+        backUrl={
+          variant.productId ? `/products/${variant.productId}` : '/products'
+        }
         items={breadCrumbItems}
       />
       <VariantForm

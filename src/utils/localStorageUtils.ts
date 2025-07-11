@@ -1,5 +1,6 @@
 export const LOCAL_STORAGE_KEYS = {
     CART_ID: 'cartId',
+    CART_ITEMS: 'cartItems',
 };
 
 

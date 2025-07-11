@@ -27,10 +27,7 @@ import AddressDisplayCard from './modal/AddressDisplayCard';
 import SecureComponent from '@/core/authentication/SecureComponent';
 import { useRouter } from 'next/navigation';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
-import {
-  LOCAL_STORAGE_KEYS,
-  setLocalStorageItem,
-} from '@/utils/localStorageUtils';
+import { useFloatingCart } from '@/context/FloatingCartContext';
 
 interface CartFormProps {
   cart?: IOrder;
@@ -41,6 +38,7 @@ interface CartFormProps {
 const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
   const router = useRouter();
   const { start } = useGlobalLoader();
+  const { createFloatCart } = useFloatingCart();
 
   const [quantityButtonLoaderIndex, setQuantityButtonLoaderIndex] = useState<
     number | null
@@ -497,7 +495,10 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
   );
 
   const handleGotoProduct = (variantId: string) => {
-    setLocalStorageItem(LOCAL_STORAGE_KEYS.CART_ID, cart?.id || '');
+    createFloatCart(
+      cart?.id || '',
+      cart?.lineItems?.map((item) => variant(item)?.id) || []
+    );
     start(() => router.push(`/variants/${variantId}`));
   };
 
