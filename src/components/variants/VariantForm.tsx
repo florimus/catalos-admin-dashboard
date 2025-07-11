@@ -14,7 +14,7 @@ import {
   IVariantFormInputs,
   IVariantStatusUpdate,
 } from '@/core/types';
-import { FormFieldType } from '../form/form-elements/DefaultFormFields';
+import { FormFieldType, ITextAreaFormFieldProps } from '../form/form-elements/DefaultFormFields';
 import AttributeForm from '../attributes/AttributeForm';
 import { AttributeTypes } from '@/core/enums';
 import {
@@ -286,10 +286,10 @@ const VariantForm: FC<VariantFormProps> = ({
       hint: 'Please enter valid variant seoTitle',
     },
     {
-      fieldType: FormFieldType.Text,
+      fieldType: FormFieldType.TextArea,
       name: 'seoDescription',
       label: 'Seo Description',
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: React.ChangeEvent<ITextAreaFormFieldProps>) => {
         setVariantFormFields((prev) => ({
           ...prev,
           seoDescription: event.target.value,

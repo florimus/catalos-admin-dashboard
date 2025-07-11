@@ -63,7 +63,10 @@ export const attributesToFormFieldMapper = (
 
       if (attribute.type === 'Text' || attribute.type === 'Number') {
         formFields.push({
-          fieldType: FormFieldType.Text,
+          fieldType:
+            ((attributeStates?.[key]?.value as string) || '')?.length > 100
+              ? FormFieldType.TextArea
+              : FormFieldType.Text,
           name: key,
           label: `Enter ${key}`,
           onChange: (event: React.ChangeEvent<HTMLInputElement>) => {

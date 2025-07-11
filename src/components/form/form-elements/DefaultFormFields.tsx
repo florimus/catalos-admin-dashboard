@@ -7,6 +7,7 @@ import DatePicker from '../date-picker';
 import { DateOption } from 'flatpickr/dist/types/options';
 import MultiSelect, { Option } from '../MultiSelect';
 import Switch from '../switch/Switch';
+import NewTextArea from '../input/NewTextArea';
 
 export interface ITextFormFieldProps {
   name: string;
@@ -38,6 +39,49 @@ export const TextFormField: FC<ITextFormFieldProps> = ({
       <Label>{label}</Label>
       <Input
         type='text'
+        name={name}
+        id={id || name}
+        onChange={onChange}
+        value={value}
+        required={required}
+        disabled={disabled}
+        placeholder={placeholder}
+        error={error}
+        hint={hint}
+      />
+    </div>
+  );
+};
+
+export interface ITextAreaFormFieldProps {
+  name: string;
+  label: string;
+  onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  value: string;
+  placeholder?: string;
+  id?: string;
+  required?: boolean;
+  disabled?: boolean;
+  error?: boolean;
+  hint?: string;
+}
+
+export const TextAreaFormField: FC<ITextAreaFormFieldProps> = ({
+  label,
+  name,
+  onChange,
+  value,
+  id,
+  hint,
+  disabled,
+  error = false,
+  placeholder = '',
+  required = false,
+}) => {
+  return (
+    <div>
+      <Label>{label}</Label>
+      <NewTextArea
         name={name}
         id={id || name}
         onChange={onChange}
@@ -265,13 +309,19 @@ export const SwitchField: FC<ISwitchFieldProps> = ({
 }) => {
   return (
     <div className='relative'>
-      <Switch label={label} defaultChecked={checked} onChange={onChange} disabled={disabled} />
+      <Switch
+        label={label}
+        defaultChecked={checked}
+        onChange={onChange}
+        disabled={disabled}
+      />
     </div>
   );
 };
 
 export enum FormFieldType {
   Text = 'text',
+  TextArea = 'textarea',
   DropDown = 'dropdown',
   DatePicker = 'datepicker',
   TimePicker = 'timepicker',
@@ -282,6 +332,7 @@ export enum FormFieldType {
 
 export const FormFields = {
   TextFormField,
+  TextAreaFormField,
   DropDownFormField,
   DatePickerFormField,
   TimePicker,

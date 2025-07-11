@@ -195,7 +195,7 @@ const CategoryForm: FC<CategoryFormProps> = ({
       hint: 'Please enter valid seoTitle',
     },
     {
-      fieldType: FormFieldType.Text,
+      fieldType: FormFieldType.TextArea,
       name: 'seoDescription',
       label: 'Seo Description',
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {

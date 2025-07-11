@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import FormCard from '@/components/common/FormCard';
 import {
   FormFields,
+  ITextAreaFormFieldProps,
   FormFieldType,
   IDisplayFieldProps,
   IDropDownFormFieldProps,
@@ -38,6 +39,11 @@ const DefaultInputs: FC<IDefaultInputsProps> = ({ heading, cta, fields }) => {
             <FormFields.TextFormField
               key={field.name}
               {...(field as unknown as ITextFormFieldProps)}
+            />
+          ) : field.fieldType === FormFieldType.TextArea ? (
+            <FormFields.TextAreaFormField
+              key={field.name}
+              {...(field as unknown as ITextAreaFormFieldProps)}
             />
           ) : field.fieldType === FormFieldType.MultiSelect ? (
             <FormFields.MultiSelectFormField

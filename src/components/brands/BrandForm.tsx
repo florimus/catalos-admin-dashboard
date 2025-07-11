@@ -152,7 +152,7 @@ const BrandForm: FC<BrandFormProps> = ({
       hint: 'Please enter valid SEO Title',
     },
     {
-      fieldType: FormFieldType.Text,
+      fieldType: FormFieldType.TextArea,
       name: 'seoDescription',
       label: 'SEO Description',
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
