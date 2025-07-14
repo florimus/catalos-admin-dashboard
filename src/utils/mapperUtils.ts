@@ -2,6 +2,7 @@ import { FormFieldType } from '@/components/form/form-elements/DefaultFormFields
 import { CHANNELS } from '@/core/constants';
 import {
   IAttributeListItem,
+  IOrderPaymentOption,
   IAttributeOption,
   IAttributes,
   IBrand,
@@ -226,5 +227,17 @@ export const taxesToSingleSelectMapper = (taxes: ITax[]) => {
   return taxes.map((tax) => ({
     value: tax.id || '',
     label: tax.name,
+  }));
+};
+
+export const paymentOptionToSingleSelectMapper = (
+  options: IOrderPaymentOption[]
+) => {
+  if (!options || !Array.isArray(options)) {
+    return [];
+  }
+  return options.map((option) => ({
+    value: option.id || '',
+    label: option.name,
   }));
 };

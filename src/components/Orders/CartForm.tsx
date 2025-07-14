@@ -1,22 +1,32 @@
 'use client';
 
-import { IAddress, IOrder, IOrderLineItem, IResponse } from '@/core/types';
+import {
+  IAddress,
+  IOrder,
+  IOrderLineItem,
+  IOrderPaymentOption,
+  IResponse,
+} from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { getChannelId } from '@/utils/mapperUtils';
+import {
+  getChannelId,
+  paymentOptionToSingleSelectMapper,
+} from '@/utils/mapperUtils';
 
 import Alert from '../ui/alert/Alert';
 import BasicTableOne from '../tables/BasicTableOne';
 import { TableCellTypes } from '../tables/TableCells';
 import Badge from '../ui/badge/Badge';
-import { BoltIcon, TrashBinIcon } from '@/icons';
+import { BoltIcon, CopyIcon, TrashBinIcon } from '@/icons';
 import Button from '../ui/button/Button';
 import {
   removeCartLineItem,
   updateCartLineItem,
   updateCartLineItems,
   updateOrderAddress,
+  updatePaymentOption,
 } from '@/actions/order';
 import PriceSummary from './modal/PriceSummary';
 import { formatPrice } from '@/utils/stringUtils';
@@ -28,6 +38,7 @@ import SecureComponent from '@/core/authentication/SecureComponent';
 import { useRouter } from 'next/navigation';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import { useFloatingCart } from '@/context/FloatingCartContext';
+import Input from '../form/input/InputField';
 
 interface CartFormProps {
   cart?: IOrder;
@@ -61,6 +72,11 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
     !!!(addresses?.length > 0 || cart?.billingAddress)
   );
 
+  const [isPaymentOptionLoading, setIsPaymentOptionLoading] =
+    useState<boolean>(false);
+
+  const [paymentLink, setPaymentLink] = useState<string | null>(null);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setAlerts([]);
@@ -91,6 +107,9 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
     updatedAt: cart?.updatedAt || '',
   });
 
+  const [selectedPaymentOption, setSelectedPaymentOption] =
+    useState<IOrderPaymentOption | null>(cart?.paymentInfo?.mode || null);
+
   const [billingAddress, setBillingAddress] = useState<IAddress | null>(
     cart?.billingAddress || null
   );
@@ -111,6 +130,35 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
     if (response.success) {
       closeAddToCartModal();
     }
+  };
+
+  const handlePaymentOptionChange = async (paymentId: string) => {
+    const selectedPaymentOption =
+      cart?.paymentOptions?.find((option) => option.id === paymentId) || null;
+    setIsPaymentOptionLoading(true);
+    const response: IResponse<IOrder> = await updatePaymentOption(
+      cart?.id || '',
+      paymentId
+    );
+
+    console.log(response);
+
+    if (response.success && response.data) {
+      const cartData = response.data;
+      setSelectedPaymentOption(selectedPaymentOption);
+      setPaymentLink(cartData?.paymentLink || null);
+      alerts.push({
+        message: response.message || 'Payment option updated successfully',
+        variant: 'success',
+      });
+    } else {
+      setPaymentLink(null);
+      alerts.push({
+        message: response.message || 'Failed to update payment option',
+        variant: 'error',
+      });
+    }
+    setIsPaymentOptionLoading(false);
   };
 
   const currentChannel = useMemo(() => {
@@ -185,6 +233,34 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
       error: false,
     },
   ];
+
+  const paymentOptions = [
+    {
+      fieldType: FormFieldType.DropDown,
+      name: 'payment-method',
+      label: `Payment options`,
+      onChange: handlePaymentOptionChange,
+      options: paymentOptionToSingleSelectMapper(cart?.paymentOptions || []),
+      defaultValue: selectedPaymentOption?.id || '',
+      placeholder: 'Select Payment Method',
+      disabled: cart?.status != 'InProgress',
+      id: 'payment_method-id',
+      required: true,
+    },
+  ];
+
+  const paymentOptionCta = useMemo(() => {
+    return {
+      permission: permission,
+      label: selectedPaymentOption?.external
+        ? 'Generate Link'
+        : 'Confirm Order',
+      onSubmit: () => {
+        console.log('Payment option saved');
+      },
+      loading: isPaymentOptionLoading,
+    };
+  }, [permission, selectedPaymentOption?.external, isPaymentOptionLoading]);
 
   const shippingAddressFields = [
     {
@@ -754,6 +830,7 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
             />
             <AddressDisplayCard
               title='Shipping Address'
+              permission={permission}
               address={cart?.shippingAddress}
               addresses={addresses}
               isEditing={editShippingAddress}
@@ -772,6 +849,7 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
             </AddressDisplayCard>
             <AddressDisplayCard
               title='Billing Address'
+              permission={permission}
               address={cart?.billingAddress}
               addresses={addresses}
               isEditing={editBillingAddress}
@@ -790,8 +868,39 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
             </AddressDisplayCard>
           </div>
         </div>
+
         <div className='grid col-span-1'>
-          <div></div>
+          <div>
+            <DefaultInputs
+              heading='Payment Method'
+              cta={paymentOptionCta}
+              fields={paymentOptions}
+            />
+            {paymentLink && (
+              <div className='grid grid-cols-8 gap-2 items-center'>
+                <div className='sm:col-span-7'>
+                  <Input
+                    type='text'
+                    value={paymentLink || ''}
+                    onChange={() => {}}
+                    disabled
+                    placeholder='Payment Link'
+                  />
+                </div>
+                <Button
+                  type='button'
+                  size='xm'
+                  onClick={() => {
+                    if (paymentLink) {
+                      navigator.clipboard.writeText(paymentLink);
+                    }
+                  }}
+                >
+                  <CopyIcon />
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       {isAddToCartModalOpen && (

@@ -339,10 +339,33 @@ export interface IMiniOrder {
   updatedAt: string;
 }
 
+export interface IOrderPaymentOption {
+  active: true;
+  id: string;
+  name: string;
+  applicableChannels: string[];
+  mode: 'Cod' | 'Online';
+  external: boolean;
+}
+
+export interface IOrderPaymentInfo {
+  mode: IOrderPaymentOption;
+  amount: number;
+  uniqueId?: string;
+  method?: string;
+  paymentId?: string;
+  paymentAt?: string;
+  status: string;
+}
+
 export interface IOrder extends IMiniOrder {
   lineItems: IOrderLineItem[];
   shippingAddress?: IAddress | null;
   billingAddress?: IAddress | null;
+  paymentOptions?: IOrderPaymentOption[];
+  paymentInfo?: IOrderPaymentInfo;
+  paymentLink?: string;
+  guestOrder: boolean;
 }
 
 export interface ICreateCartRequestInputs {

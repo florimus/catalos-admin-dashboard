@@ -10,6 +10,7 @@ interface IAddressDisplayCardProps {
   isEditing: boolean;
   updateAddress: (address: IAddress | null) => Promise<void>;
   setIsEditing: (isEditing: boolean) => void;
+  permission?: string;
   address?: IAddress | null;
   loading?: boolean;
   addresses?: IAddress[];
@@ -24,6 +25,7 @@ const AddressDisplayCard: React.FC<IAddressDisplayCardProps> = ({
   updateAddress,
   addresses = [],
   loading = false,
+  permission,
   children,
 }) => {
   const [selectedAddress, setSelectedAddress] = useState<IAddress | null>(
@@ -52,7 +54,7 @@ const AddressDisplayCard: React.FC<IAddressDisplayCardProps> = ({
           {title}
         </h3>
         {selectedAddress && (
-          <SecureComponent permission="ORD:NN">
+          <SecureComponent permission={permission}>
             <Button size='xm' onClick={() => setSelectedAddress(null)}>
               Edit
               {loading && (
@@ -82,7 +84,7 @@ const AddressDisplayCard: React.FC<IAddressDisplayCardProps> = ({
           </div>
         </div>
       ) : (
-        <SecureComponent permission="ORD:NN">
+        <SecureComponent permission={permission}>
           {addresses?.map((address, index) => (
             <div
               key={index}

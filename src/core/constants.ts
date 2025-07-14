@@ -27,7 +27,8 @@ export const AllModules: string[] = [
   'Stock',
   'Taxes',
   'Orders',
-  'CustomApps'
+  'CustomApps',
+  "ApiKeys",
 ];
 
 export const AllPermissions: string[] = ['READ', 'EDIT', 'DELETE'];

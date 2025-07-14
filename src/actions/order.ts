@@ -236,3 +236,38 @@ export const updateOrderAddress = async (
     };
   });
 };
+
+export const updatePaymentOption = async (
+  orderId: string,
+  paymentOptionId: string
+): Promise<IResponse<IOrder>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/orders/id/${orderId}/option/${paymentOptionId}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath(`/carts/${orderId}`);
+      return {
+        success: true,
+        data: data.data,
+        message: 'Order payment option updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to update order payment option',
+    };
+  });
+};

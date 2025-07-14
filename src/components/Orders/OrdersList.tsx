@@ -37,6 +37,8 @@ const OrderList: React.FC<OrdersListProps> = ({ hits = [], ...rest }) => {
     switch (status) {
       case 'InProgress':
         return <Badge color="warning">In Progress</Badge>;
+      case 'Submitted':
+        return <Badge color="info">Submitted</Badge>;
       default:
         return '';
     }
