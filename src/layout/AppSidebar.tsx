@@ -133,6 +133,12 @@ const othersItems: NavItem[] = [
     path: '/product-types',
     activeUrl: ['/product-types'],
   },
+  {
+    icon: <GridIcon />,
+    name: 'Custom Apps',
+    path: '/custom-apps',
+    activeUrl: ['/custom-apps'],
+  },
   // {
   //   icon: <PieChartIcon />,
   //   name: 'Charts',
