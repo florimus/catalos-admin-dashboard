@@ -16,7 +16,7 @@ interface ApiKeyListProps {
 }
 
 const ApiKeyKList: React.FC<ApiKeyListProps> = ({ hits = [], ...rest }) => {
-  const headingData: string[] = ['Name', 'Role', 'Status', 'Revoke'];
+  const headingData: string[] = ['Name', 'Key ID', 'Role', 'Status', 'Revoke'];
 
   const tableData =
     hits?.map((apiKey) => [
@@ -26,7 +26,7 @@ const ApiKeyKList: React.FC<ApiKeyListProps> = ({ hits = [], ...rest }) => {
       },
       {
         type: TableCellTypes.TextCell,
-        text: apiKey.apiKey.substring(0, 5) + '...',
+        text: '...' + apiKey.apiKey.slice(-5),
       },
       {
         type: TableCellTypes.TextCell,
@@ -39,10 +39,8 @@ const ApiKeyKList: React.FC<ApiKeyListProps> = ({ hits = [], ...rest }) => {
       },
       {
         type: TableCellTypes.TextCell,
-        text: (
-            <TrashBinIcon />
-        ),
-        onclick: () => alert("Revoke API Key: " + apiKey.name),
+        text: <TrashBinIcon />,
+        onclick: () => alert('Revoke API Key: ' + apiKey.name),
       },
     ]) || [];
 

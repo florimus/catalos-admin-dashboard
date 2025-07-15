@@ -7,6 +7,7 @@ import { Modal } from '../ui/modal';
 
 interface ContainerModalProps {
   title?: string;
+  description?: string;
   isOpen: boolean;
   closeModal: () => void;
   hasCloseButton?: boolean;
@@ -19,6 +20,7 @@ interface ContainerModalProps {
 const ContainerModal: React.FC<ContainerModalProps> = ({
   title,
   isOpen,
+  description,
   hasCloseButton,
   hasSaveButton,
   saveButtonText,
@@ -37,6 +39,11 @@ const ContainerModal: React.FC<ContainerModalProps> = ({
           <h4 className='mb-6 text-lg font-medium text-gray-800 dark:text-white/90'>
             {title}
           </h4>
+          {description && (
+            <p className='mb-6 text-sm text-gray-600 dark:text-gray-400'>
+              {description}
+            </p>
+          )}
           {children}
 
           <div className='flex items-center justify-end w-full gap-3 mt-6'>
@@ -46,7 +53,9 @@ const ContainerModal: React.FC<ContainerModalProps> = ({
               </Button>
             )}
             {hasSaveButton && (
-              <Button size='sm' type='button' onClick={handleSave}>{saveButtonText || 'Save'}</Button>
+              <Button size='sm' type='button' onClick={handleSave}>
+                {saveButtonText || 'Save'}
+              </Button>
             )}
           </div>
         </div>

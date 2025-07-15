@@ -2,9 +2,9 @@
 
 import { getAPIKeys } from '@/actions/apiKey';
 import ApiKeyKList from '@/components/api-keys/ApiKeyList';
+import CreateApiModal from '@/components/api-keys/modal/CreateApiKeyModal';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
-import CreateCartModal from '@/components/Orders/modal/CreateCartModal';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IAPIKey, IPage, IResponse, ISearchParams } from '@/core/types';
 import { redirect } from 'next/navigation';
@@ -34,7 +34,7 @@ export default async function ApiKeyListPage(ctx: {
   }
 
   const cta = {
-    custom: <CreateCartModal />,
+    custom: <CreateApiModal />,
   };
 
   return (
