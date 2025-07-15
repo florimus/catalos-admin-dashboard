@@ -386,3 +386,14 @@ export interface IAddress {
   pinCode: string;
 }
 
+export interface IAPIKey {
+  id: string;
+  name: string;
+  apiKey: string;
+  roleId: string;
+  active: boolean;
+}
+
+export interface IAPIKeyWithSecret extends IAPIKey {
+  apiSecret: string;
+}
