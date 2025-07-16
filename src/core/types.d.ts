@@ -397,3 +397,15 @@ export interface IAPIKey {
 export interface IAPIKeyWithSecret extends IAPIKey {
   apiSecret: string;
 }
+
+export interface ICustomApp {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  appType: string;
+  connectionUrl: string;
+  githubUrl: string;
+  applicableChannels: string[];
+  active: boolean;
+}
