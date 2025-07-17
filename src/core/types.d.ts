@@ -409,3 +409,12 @@ export interface ICustomApp {
   applicableChannels: string[];
   active: boolean;
 }
+
+export interface IAppManifest {
+  name: string;
+  logo: string;
+  description: string;
+  appType: string;
+  connectionUrl: string;
+  applicableChannels?: string[];
+}

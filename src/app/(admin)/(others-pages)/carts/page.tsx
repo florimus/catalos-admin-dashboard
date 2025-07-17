@@ -3,7 +3,7 @@
 import { getOrders } from '@/actions/order';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
-import CreateCartModal from '@/components/Orders/modal/CreateCartModal';
+import CreateCartModal from '@/app/(admin)/(others-pages)/carts/CreateCartModal';
 import OrderList from '@/components/Orders/OrdersList';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IMiniOrder, IPage, IResponse, ISearchParams } from '@/core/types';
