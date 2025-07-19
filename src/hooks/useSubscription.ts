@@ -14,6 +14,9 @@ export function useStompSubscription(
   onMessageRef.current = onMessage;
 
   useEffect(() => {
+    if (process.env.ENABLE_SOCKET_CONNECTION !== 'true') {
+      return;
+    }
     const socket = new SockJS(`${process.env.NEXT_PUBLIC_API_BASE_URL}/ws`);
 
     const stompClient = new Client({
