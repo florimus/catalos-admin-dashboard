@@ -39,6 +39,7 @@ import { useRouter } from 'next/navigation';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import { useFloatingCart } from '@/context/FloatingCartContext';
 import Input from '../form/input/InputField';
+import { useStompSubscription } from '@/hooks/useSubscription';
 
 interface CartFormProps {
   cart?: IOrder;
@@ -83,6 +84,12 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
     }, 3000);
     return () => clearTimeout(timer);
   }, [alerts]);
+
+  useStompSubscription('/topic/order/' + cart?.id, (body) => {
+    if (body?.success) {
+      start(() => router.refresh());
+    }
+  });
 
   const [cartFormData, setCartFormData] = useState<IOrder>({
     id: cart?.id || '',
