@@ -5,6 +5,7 @@ import {
   IOrder,
   IOrderLineItem,
   IOrderPaymentOption,
+  IPaymentLink,
   IResponse,
 } from '@/core/types';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
@@ -22,6 +23,7 @@ import Badge from '../ui/badge/Badge';
 import { BoltIcon, CopyIcon, TrashBinIcon } from '@/icons';
 import Button from '../ui/button/Button';
 import {
+  createPaymentLink,
   removeCartLineItem,
   updateCartLineItem,
   updateCartLineItems,
@@ -148,8 +150,6 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
       paymentId
     );
 
-    console.log(response);
-
     if (response.success && response.data) {
       const cartData = response.data;
       setSelectedPaymentOption(selectedPaymentOption);
@@ -226,6 +226,24 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
     }
   };
 
+  const handleCreatePaymentLink = useCallback(async () => {
+    setIsPaymentOptionLoading(true);
+    const response: IResponse<IPaymentLink> = await createPaymentLink(
+      cart?.id || ''
+    );
+    if (response.success && response.data) {
+      setPaymentLink(response.data?.paymentLink || null);
+    } else {
+      setAlerts([
+        {
+          message: response.message || 'Failed to create payment link',
+          variant: 'error',
+        },
+      ]);
+    }
+    setIsPaymentOptionLoading(false);
+  }, [cart?.id]);
+
   const customerDetailsFields = [
     {
       fieldType: FormFieldType.Text,
@@ -263,11 +281,18 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
         ? 'Generate Link'
         : 'Confirm Order',
       onSubmit: () => {
-        console.log('Payment option saved');
+        if (selectedPaymentOption?.external) {
+          handleCreatePaymentLink();
+        }
       },
       loading: isPaymentOptionLoading,
     };
-  }, [permission, selectedPaymentOption?.external, isPaymentOptionLoading]);
+  }, [
+    permission,
+    selectedPaymentOption?.external,
+    isPaymentOptionLoading,
+    handleCreatePaymentLink,
+  ]);
 
   const shippingAddressFields = [
     {

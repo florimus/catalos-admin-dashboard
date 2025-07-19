@@ -1,7 +1,7 @@
 'use server';
 
 import { handleError } from '@/client/httpClient';
-import { IAddress, IMiniOrder, IOrder, IPage, IResponse } from '@/core/types';
+import { IAddress, IMiniOrder, IOrder, IPage, IPaymentLink, IResponse } from '@/core/types';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
@@ -268,6 +268,39 @@ export const updatePaymentOption = async (
     return {
       success: false,
       message: data?.message?.[0] || 'Failed to update order payment option',
+    };
+  });
+};
+
+export const createPaymentLink = async (
+  orderId: string
+): Promise<IResponse<IPaymentLink>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/orders/id/${orderId}/link`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Payment link created successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to create payment link',
     };
   });
 };

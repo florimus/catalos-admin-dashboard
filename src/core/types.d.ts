@@ -418,3 +418,7 @@ export interface IAppManifest {
   connectionUrl: string;
   applicableChannels?: string[];
 }
+
+export interface IPaymentLink {
+  paymentLink?: string;
+}
