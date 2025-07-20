@@ -99,6 +99,12 @@ const navItems: NavItem[] = [
         pro: false,
         activeUrl: ['/carts'],
       },
+      {
+        name: 'Orders',
+        path: '/orders',
+        pro: false,
+        activeUrl: ['/orders'],
+      },
     ],
   },
   // {

@@ -6,6 +6,7 @@ import Button from '../ui/button/Button';
 import { ChevronLeftIcon } from '@/icons';
 import { useRouter } from 'next/navigation';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
+import Badge, { BadgeColor } from '../ui/badge/Badge';
 
 interface IBreadcrumbItem {
   label: string;
@@ -16,12 +17,17 @@ interface IBreadcrumbProps {
   pageTitle: string | React.ReactNode;
   backUrl?: string;
   items?: IBreadcrumbItem[];
+  badge?: {
+    color: BadgeColor;
+    label: string;
+  };
 }
 
 const PageBreadcrumb: React.FC<IBreadcrumbProps> = ({
   pageTitle,
   items,
   backUrl,
+  badge,
 }) => {
   const router = useRouter();
   const { start } = useGlobalLoader();
@@ -44,6 +50,7 @@ const PageBreadcrumb: React.FC<IBreadcrumbProps> = ({
           <ChevronLeftIcon />
         </Button>
         <span className='mx-5 mt-1'>{pageTitle}</span>
+        {badge && <Badge color={badge.color}>{badge.label}</Badge>}
       </h2>
       <nav>
         <ol className='flex items-center gap-1.5'>

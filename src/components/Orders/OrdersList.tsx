@@ -36,33 +36,35 @@ const OrderList: React.FC<OrdersListProps> = ({ hits = [], ...rest }) => {
   const statusBadges = (status: string) => {
     switch (status) {
       case 'InProgress':
-        return <Badge color="warning">In Progress</Badge>;
+        return <Badge color='warning'>In Progress</Badge>;
       case 'Submitted':
-        return <Badge color="info">Submitted</Badge>;
+        return <Badge color='info'>Submitted</Badge>;
       default:
         return '';
     }
-  }
+  };
 
-  const goToOrderDetails = (orderId: string) =>
-    start(() => router.push(`/carts/${orderId}`));
+  const goToCartDetails = (status: string, orderId: string) =>
+    start(() =>
+      router.push(`/${status === 'InProgress' ? 'carts' : 'orders'}/${orderId}`)
+    );
 
   const tableData =
     hits?.map((order) => [
       {
         type: TableCellTypes.TextCell,
         text: order.email || 'Anonymous',
-        onclick: () => goToOrderDetails(order.id),
+        onclick: () => goToCartDetails(order.status, order.id),
       },
       {
         type: TableCellTypes.TextCell,
         text: getChannelId(order.channelId)?.name,
-        onclick: () => goToOrderDetails(order.id),
+        onclick: () => goToCartDetails(order.status, order.id),
       },
       {
         type: TableCellTypes.TextCell,
         text: statusBadges(order.status),
-        onclick: () => goToOrderDetails(order.id),
+        onclick: () => goToCartDetails(order.status, order.id),
       },
       {
         type: TableCellTypes.TextCell,

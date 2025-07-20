@@ -3,14 +3,14 @@
 import { getOrderById } from '@/actions/order';
 import { getUserAddresses } from '@/actions/user';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
-import CartForm from '@/components/Orders/CartForm';
+import OrderForm from '@/components/Orders/OrderForm';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IOrder, IResponse } from '@/core/types';
 import { redirect } from 'next/navigation';
 
 export async function generateMetadata() {
   return {
-    title: 'Carts | Catalos Admin',
+    title: 'Orders | Catalos Admin',
   };
 }
 
@@ -20,32 +20,32 @@ export default async function EditCart(ctx: {
   await validatePermissions('ORD:LS');
   const awaitedParams = await ctx.params;
 
-  const cartResponse: IResponse<IOrder> = await getOrderById(awaitedParams.id);
+  const orderResponse: IResponse<IOrder> = await getOrderById(awaitedParams.id);
 
-  if (cartResponse.success && !cartResponse.data) {
-    console.error(cartResponse.message);
+  if (orderResponse.success && !orderResponse.data) {
+    console.error(orderResponse.message);
     redirect('/404');
   }
 
-  if (cartResponse.data?.status !== 'InProgress') {
-    redirect(`/orders/${awaitedParams.id}`);
+  if (orderResponse.data?.status === 'InProgress') {
+    redirect(`/carts/${awaitedParams.id}`);
   }
 
   const addressResponse = await getUserAddresses(
-    cartResponse.data?.userId || ''
+    orderResponse.data?.userId || ''
   );
 
   const breadCrumbItems = [
-    { label: 'Carts', href: '/carts' },
-    { label: 'Edit Cart', href: '#' },
+    { label: 'Orders', href: '/orders' },
+    { label: 'Manage Order', href: '#' },
   ];
 
-  const isInProgress = cartResponse.data?.status === 'InProgress';
+  const isInProgress = orderResponse.data?.status === 'InProgress';
 
   return (
     <>
       <PageBreadcrumb
-        pageTitle={'Edit Cart'}
+        pageTitle={`Manage Order #${orderResponse?.data?.id}`}
         items={breadCrumbItems}
         backUrl='/carts'
         badge={{
@@ -53,9 +53,9 @@ export default async function EditCart(ctx: {
           label: isInProgress ? 'In Progress' : 'Submitted',
         }}
       />
-      <CartForm
-        permission={isInProgress ? 'ORD:NN' : 'NO:EDITS'}
-        cart={cartResponse?.data}
+      <OrderForm
+        permission={'ORD:NN'}
+        order={orderResponse?.data}
         addresses={addressResponse?.data || []}
       />
     </>

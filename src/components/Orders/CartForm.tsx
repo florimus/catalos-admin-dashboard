@@ -334,12 +334,12 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
       name: 'billing-phone',
       label: 'Phone',
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-        setBillingAddress((prev) => ({
+        setShippingAddress((prev) => ({
           ...(prev || ({} as IAddress)),
           phone: event.target.value || '',
         }));
       },
-      value: billingAddress?.phone || '',
+      value: shippingAddress?.phone || '',
       placeholder: 'Phone number',
       id: 'billing_phone',
       required: true,
