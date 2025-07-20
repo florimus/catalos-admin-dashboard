@@ -11,6 +11,7 @@ import {
   IProductType,
   IRole,
   ITax,
+  IOrderLineItem,
 } from '@/core/types';
 
 export const channelToMultiSelectMapper = (
@@ -240,4 +241,26 @@ export const paymentOptionToSingleSelectMapper = (
     value: option.id || '',
     label: option.name,
   }));
+};
+
+export const getUnitIdsFromLineItems = (
+  lineItems?: IOrderLineItem[]
+): { [lineItemId: string]: string[] } => {
+  return (
+    lineItems?.reduce((acc, lineItem) => {
+      acc[lineItem.id] = lineItem.unitIds || [];
+      return acc;
+    }, {} as { [lineItemId: string]: string[] }) ?? {}
+  );
+};
+
+export const getPackagesIdsFromLineItems = (
+  lineItems?: IOrderLineItem[]
+): { [lineItemId: string]: string[] } => {
+  return (
+    lineItems?.reduce((acc, lineItem) => {
+      acc[lineItem.id] = lineItem.packageIds || [];
+      return acc;
+    }, {} as { [lineItemId: string]: string[] }) ?? {}
+  );
 };

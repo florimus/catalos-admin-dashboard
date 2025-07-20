@@ -322,6 +322,8 @@ export interface IMiniLineItem {
 export interface IOrderLineItem extends IMiniLineItem {
   product: IProduct;
   variant: IVariant;
+  unitIds?: string[];
+  packageIds?: string[];
 }
 
 export interface IMiniOrder {

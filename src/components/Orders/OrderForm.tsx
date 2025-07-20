@@ -10,6 +10,8 @@ import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   getChannelId,
+  getPackagesIdsFromLineItems,
+  getUnitIdsFromLineItems,
   paymentOptionToSingleSelectMapper,
 } from '@/utils/mapperUtils';
 
@@ -71,6 +73,40 @@ const OrderForm: FC<OrderFormProps> = ({ order, addresses, permission }) => {
     createdAt: order?.createdAt || '',
     updatedAt: order?.updatedAt || '',
   });
+
+  const [unitIds, setUnitIds] = useState<{
+    [lineItemId: string]: string[];
+  }>(getUnitIdsFromLineItems(order?.lineItems) ?? {});
+
+  const [packageIds, setPackageIds] = useState<{
+    [lineItemId: string]: string[];
+  }>(getPackagesIdsFromLineItems(order?.lineItems) ?? {});
+
+  const handleChangeUnitId = useCallback(
+    (lineItemId: string, index: number, unitId: string) => {
+      setUnitIds((prev) => {
+        const newUnitIds = { ...prev };
+        newUnitIds[lineItemId][index] = unitId;
+        return newUnitIds;
+      });
+    },
+    [setUnitIds]
+  );
+
+  const handleChangePackageId = useCallback(
+    (lineItemId: string, index: number, packageId: string) => {
+      setPackageIds((prev) => {
+        const newPackageIds = { ...prev };
+        newPackageIds[lineItemId][index] = packageId;
+        return newPackageIds;
+      });
+    },
+    [setPackageIds]
+  );
+
+  const handleSubmitUnitAndShippingIds = () => {
+    console.log({ unitIds, packageIds });
+  };
 
   const currentChannel = useMemo(() => {
     return getChannelId(order?.channelId || '');
@@ -213,11 +249,13 @@ const OrderForm: FC<OrderFormProps> = ({ order, addresses, permission }) => {
             {[...Array(item.quantity).keys()].map((index) => (
               <FormFields.TextFormField
                 key={index}
+                disabled={order?.status !== 'Submitted'}
                 {...({
                   fieldType: FormFieldType.Text,
                   name: `product-unit-id-${index}-${variant(item)?.id}`,
-                  onChange: () => {},
-                  value: '',
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleChangeUnitId(item.id, index, e.target.value),
+                  value: unitIds?.[item.id]?.[index] || '',
                   placeholder: 'Enter product unit id',
                   id: `product-unit-id-${index}-${variant(item)?.id}`,
                   required: true,
@@ -235,11 +273,13 @@ const OrderForm: FC<OrderFormProps> = ({ order, addresses, permission }) => {
             {[...Array(item.quantity).keys()].map((index) => (
               <FormFields.TextFormField
                 key={index}
+                disabled={order?.status !== 'Submitted'}
                 {...({
                   fieldType: FormFieldType.Text,
                   name: `package-unit-id-${index}-${variant(item)?.id}`,
-                  onChange: () => {},
-                  value: '',
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleChangePackageId(item.id, index, e.target.value),
+                  value: packageIds?.[item.id]?.[index] || '',
                   placeholder: 'Enter package id',
                   id: `package-unit-id-${index}-${variant(item)?.id}`,
                   required: true,
@@ -306,6 +346,15 @@ const OrderForm: FC<OrderFormProps> = ({ order, addresses, permission }) => {
           >
             <BoltIcon />
           </Button>
+          <SecureComponent permission={permission}>
+            <Button
+              type='button'
+              size='xm'
+              onClick={handleSubmitUnitAndShippingIds}
+            >
+              Ready for Shipping
+            </Button>
+          </SecureComponent>
         </div>
       </div>
       <BasicTableOne

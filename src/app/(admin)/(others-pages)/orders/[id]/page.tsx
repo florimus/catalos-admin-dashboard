@@ -4,6 +4,7 @@ import { getOrderById } from '@/actions/order';
 import { getUserAddresses } from '@/actions/user';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import OrderForm from '@/components/Orders/OrderForm';
+import { BadgeColor } from '@/components/ui/badge/Badge';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IOrder, IResponse } from '@/core/types';
 import { redirect } from 'next/navigation';
@@ -40,7 +41,30 @@ export default async function EditCart(ctx: {
     { label: 'Manage Order', href: '#' },
   ];
 
-  const isInProgress = orderResponse.data?.status === 'InProgress';
+  const statusBadges = (status: string) => {
+    switch (status) {
+      case 'InProgress':
+        return {
+          color: 'warning' as BadgeColor,
+          label: 'In Progress',
+        };
+      case 'Submitted':
+        return {
+          color: 'info' as BadgeColor,
+          label: 'Submitted',
+        };
+      case 'Fulfilled':
+        return {
+          color: 'success' as BadgeColor,
+          label: 'Fulfilled',
+        };
+      default:
+        return {
+          color: 'primary' as BadgeColor,
+          label: '',
+        };
+    }
+  };
 
   return (
     <>
@@ -48,10 +72,7 @@ export default async function EditCart(ctx: {
         pageTitle={`Manage Order #${orderResponse?.data?.id}`}
         items={breadCrumbItems}
         backUrl='/carts'
-        badge={{
-          color: isInProgress ? 'warning' : 'info',
-          label: isInProgress ? 'In Progress' : 'Submitted',
-        }}
+        badge={statusBadges(orderResponse?.data?.status || '')}
       />
       <OrderForm
         permission={'ORD:NN'}

@@ -39,6 +39,8 @@ const OrderList: React.FC<OrdersListProps> = ({ hits = [], ...rest }) => {
         return <Badge color='warning'>In Progress</Badge>;
       case 'Submitted':
         return <Badge color='info'>Submitted</Badge>;
+      case 'Fulfilled':
+        return <Badge color='success'>Fulfilled</Badge>;
       default:
         return '';
     }
