@@ -1,7 +1,14 @@
 'use server';
 
 import { handleError } from '@/client/httpClient';
-import { IAddress, IMiniOrder, IOrder, IPage, IPaymentLink, IResponse } from '@/core/types';
+import {
+  IAddress,
+  IMiniOrder,
+  IOrder,
+  IPage,
+  IPaymentLink,
+  IResponse,
+} from '@/core/types';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
@@ -301,6 +308,49 @@ export const createPaymentLink = async (
     return {
       success: false,
       message: data?.message?.[0] || 'Failed to create payment link',
+    };
+  });
+};
+
+export const updateOrderUnitAndPackageInfo = async (
+  orderId: string,
+  unitIds: { [lineItemId: string]: string[] },
+  packageIds: { [lineItemId: string]: string[] }
+): Promise<IResponse<IOrder>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/orders/id/${orderId}/packaging`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify({
+      unitIds,
+      packageIds,
+    }),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath(`/orders/${orderId}`);
+      revalidatePath('/carts');
+      revalidatePath('/orders');
+      return {
+        success: true,
+        data: data.data,
+        message: 'Order unit and package info updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message:
+        data?.message?.[0] || 'Failed to update order unit and package info',
     };
   });
 };

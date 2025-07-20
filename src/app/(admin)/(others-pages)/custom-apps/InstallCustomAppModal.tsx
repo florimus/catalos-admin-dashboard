@@ -36,14 +36,24 @@ const InstallCustomAppModal = () => {
   const handleConnect = async () => {
     if (connectionString) {
       setIsLoading(true);
-      const response = await connectToCustomApp(connectionString);
-      setIsLoading(false);
-      if (response.success) {
-        setAppInfo(response.data);
-      } else {
+      try {
+        const response = await connectToCustomApp(connectionString);
+        setIsLoading(false);
+        if (response.success) {
+          setAppInfo(response.data);
+        } else {
+          setAlerts([
+            {
+              message: response.message || 'Failed to connect to custom app',
+              variant: 'error',
+            },
+          ]);
+        }
+      } catch {
+        setIsLoading(false);
         setAlerts([
           {
-            message: response.message || 'Failed to connect to custom app',
+            message: 'Failed to connect to custom app',
             variant: 'error',
           },
         ]);

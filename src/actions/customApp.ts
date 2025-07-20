@@ -89,8 +89,8 @@ export const installCustomApp = async (
 export const connectToCustomApp = async (
   connectionUrl: string
 ): Promise<IResponse<ICustomApp>> => {
-  const url = new URL(`/api/manifest`, connectionUrl);
   try {
+    const url = new URL(`/api/manifest`, connectionUrl);
     const response = await fetch(url, {
       method: 'GET',
       headers: {

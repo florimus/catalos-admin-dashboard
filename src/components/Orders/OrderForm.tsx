@@ -28,6 +28,7 @@ import SecureComponent from '@/core/authentication/SecureComponent';
 import { useRouter } from 'next/navigation';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import { useFloatingCart } from '@/context/FloatingCartContext';
+import { updateOrderUnitAndPackageInfo } from '@/actions/order';
 
 interface OrderFormProps {
   order?: IOrder;
@@ -104,9 +105,32 @@ const OrderForm: FC<OrderFormProps> = ({ order, addresses, permission }) => {
     [setPackageIds]
   );
 
-  const handleSubmitUnitAndShippingIds = () => {
-    console.log({ unitIds, packageIds });
+  const handleSubmitUnitAndShippingIds = async () => {
+    const response = await updateOrderUnitAndPackageInfo(
+      order?.id || '',
+      unitIds,
+      packageIds
+    );
+    if (response.success && response.data) {
+      setAlerts((prev) => [
+        ...prev,
+        {
+          message: 'Order updated successfully',
+          variant: 'success',
+        },
+      ]);
+    } else {
+      setAlerts((prev) => [
+        ...prev,
+        {
+          message: response.message || 'Error updating order',
+          variant: 'error',
+        },
+      ]);
+    }
   };
+
+  const handleProceedToShipping = () => {};
 
   const currentChannel = useMemo(() => {
     return getChannelId(order?.channelId || '');
@@ -346,15 +370,28 @@ const OrderForm: FC<OrderFormProps> = ({ order, addresses, permission }) => {
           >
             <BoltIcon />
           </Button>
-          <SecureComponent permission={permission}>
-            <Button
-              type='button'
-              size='xm'
-              onClick={handleSubmitUnitAndShippingIds}
-            >
-              Ready for Shipping
-            </Button>
-          </SecureComponent>
+          {order?.status === 'Submitted' && (
+            <SecureComponent permission={permission}>
+              <Button
+                type='button'
+                size='xm'
+                onClick={handleSubmitUnitAndShippingIds}
+              >
+                Complete Fulfillment
+              </Button>
+            </SecureComponent>
+          )}
+          {order?.status === 'Fulfilled' && (
+            <SecureComponent permission={permission}>
+              <Button
+                type='button'
+                size='xm'
+                onClick={handleProceedToShipping}
+              >
+                Proceed to Shipping
+              </Button>
+            </SecureComponent>
+          )}
         </div>
       </div>
       <BasicTableOne
