@@ -26,7 +26,10 @@ export default async function OrdersListPage(ctx: {
     searchParams?.query,
     searchParams?.channel,
     searchParams?.page,
-    searchParams?.size
+    searchParams?.size,
+    {
+      statuses: ['InProgress'],
+    }
   );
 
   if (!response.success) {

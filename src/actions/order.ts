@@ -8,6 +8,7 @@ import {
   IPage,
   IPaymentLink,
   IResponse,
+  OrderFilter,
 } from '@/core/types';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
@@ -16,7 +17,8 @@ export const getOrders = async (
   query: string = '',
   channel?: string,
   page: number = 0,
-  size: number = 10
+  size: number = 10,
+  filter?: OrderFilter,
 ): Promise<IResponse<IPage<IMiniOrder>>> => {
   const cookieStore = await cookies();
   const url = new URL('/orders/search', process.env.NEXT_PUBLIC_API_BASE_URL);
@@ -38,11 +40,12 @@ export const getOrders = async (
   }
 
   const response = await fetch(url, {
-    method: 'GET',
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
     },
+    body: JSON.stringify(filter),
   });
 
   return response.json().then((data) => {

@@ -424,3 +424,10 @@ export interface IAppManifest {
 export interface IPaymentLink {
   paymentLink?: string;
 }
+
+export interface OrderFilter {
+  statuses?: string[];
+  fromDate?: string;
+  toDate?: string;
+  excludeStatuses?: boolean;
+}
