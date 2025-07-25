@@ -3,9 +3,11 @@
 import { getOrders } from '@/actions/order';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
+import OrderFiltersModal from '@/components/Orders/modal/OrderFiltersModal';
 import OrderList from '@/components/Orders/OrdersList';
 import { validatePermissions } from '@/core/authentication/roleValidations';
-import { IMiniOrder, IPage, IResponse, ISearchParams } from '@/core/types';
+import { IMiniOrder, IOrderSearchParams, IPage, IResponse } from '@/core/types';
+import { getSelectedStatuses } from '@/utils/urlMapper';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
@@ -16,16 +18,27 @@ export async function generateMetadata() {
 }
 
 export default async function OrdersListPage(ctx: {
-  searchParams?: Promise<ISearchParams | null>;
+  searchParams?: Promise<IOrderSearchParams | null>;
 }) {
   await validatePermissions('ORD:LS');
-  const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
+  const searchParams: IOrderSearchParams | null =
+    (await ctx.searchParams) || {};
 
   const response: IResponse<IPage<IMiniOrder>> = await getOrders(
     searchParams?.query,
     searchParams?.channel,
     searchParams?.page,
-    searchParams?.size
+    searchParams?.size,
+    {
+      statuses: getSelectedStatuses(
+        searchParams?.statuses as unknown as string
+      ),
+      fromDate: searchParams?.fromDate,
+      toDate: searchParams?.toDate,
+      excludeStatuses: Boolean(
+        (searchParams?.excludeStatuses as unknown as string) === 'true'
+      ),
+    }
   );
 
   if (!response.success) {
@@ -43,6 +56,12 @@ export default async function OrdersListPage(ctx: {
         <TableCard
           searchPlaceHolder={'Search orders...'}
           searchParams={searchParams}
+          filters={
+            <OrderFiltersModal
+              key='order-filters'
+              searchParams={searchParams}
+            />
+          }
         >
           <OrderList {...response.data} />
         </TableCard>

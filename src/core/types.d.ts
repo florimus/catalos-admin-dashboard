@@ -62,6 +62,13 @@ export interface ISearchParams {
   parent?: string;
 }
 
+export interface IOrderSearchParams extends ISearchParams {
+  statuses?: string[];
+  fromDate?: string;
+  toDate?: string;
+  excludeStatuses?: boolean;
+}
+
 export interface IAttributeOption {
   label: string;
   value: string;
