@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://github.com/florimus/catalos-admin-dashboard/stargazers">
-    <img src="https://img.shields.io/github/stars/florimus/catalos-admin-dashboard?style=social" alt="GitHub Stars"/>
+    <img src="https://img.shields.io/github/stars/florimus/catalos-admin-dashboard" alt="GitHub Stars"/>
   </a>
   <a href="https://vercel.com/">
     <img src="https://img.shields.io/badge/Deployed%20on-Vercel-black?logo=vercel" alt="Deploy on Vercel"/>
@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License MIT"/>
   </a>
   <a href="https://github.com/florimus/catalos-admin-dashboard/releases">
-  <img src="https://img.shields.io/github/v/release/florimus/catalos-admin-dashboard?label=version" alt="Latest Version"/>
+  <img src="https://img.shields.io/github/v/release/florimus/catalos-admin-dashboard" alt="Latest Version"/>
 </a>
 </p>
 
