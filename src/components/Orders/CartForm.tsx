@@ -126,6 +126,8 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
     cart?.shippingAddress || null
   );
 
+  const [singleAddress, setSingleAddress] = useState<boolean>(true);
+
   const [newProductsSelected, setNewProductsSelected] = useState<
     { variantId: string; quantity: number }[]
   >([]);
@@ -433,11 +435,11 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
     },
     {
       fieldType: FormFieldType.Switch,
-      label: 'Billing address same as shipping address',
+      label: 'Create Separate Billing Address',
       name: 'shipping-billing-same',
       disabled: false,
       checked: false,
-      onChange: () => {},
+      onChange: () => setSingleAddress((prev) => !prev),
     },
   ];
 
@@ -577,14 +579,6 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
       required: true,
       disabled: false,
       error: false,
-    },
-    {
-      fieldType: FormFieldType.Switch,
-      label: 'Shipping address same as billing address',
-      name: 'billing-shipping-same',
-      disabled: false,
-      checked: false,
-      onChange: () => {},
     },
   ];
 
@@ -805,6 +799,16 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
           },
         ]);
       }
+      if (singleAddress) {
+        const billingResponse = await updateOrderAddress(cart?.id || '', {
+          ...address,
+          addressType: 'Billing',
+        });
+        if (billingResponse.success && billingResponse.data) {
+          setEditBillingAddress(false);
+          setCartFormData(billingResponse.data);
+        }
+      }
     }
   };
 
@@ -888,15 +892,17 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
               updateAddress={handleEditBillingAddress}
               setIsEditing={setEditBillingAddress}
             >
-              <DefaultInputs
-                heading='Billing Address'
-                cta={{
-                  permission,
-                  label: 'Save',
-                  onSubmit: () => handleEditBillingAddress(billingAddress),
-                }}
-                fields={billingAddressFields}
-              />
+              {!singleAddress && (
+                <DefaultInputs
+                  heading='Billing Address'
+                  cta={{
+                    permission,
+                    label: 'Save',
+                    onSubmit: () => handleEditBillingAddress(billingAddress),
+                  }}
+                  fields={billingAddressFields}
+                />
+              )}
             </AddressDisplayCard>
           </div>
         </div>
