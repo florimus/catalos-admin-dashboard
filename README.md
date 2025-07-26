@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/florimus/catalos-admin/stargazers">
-    <img src="https://img.shields.io/github/stars/florimus/catalos-admin?style=social" alt="GitHub Stars"/>
+  <a href="https://github.com/florimus/catalos-admin-dashboard/stargazers">
+    <img src="https://img.shields.io/github/stars/florimus/catalos-admin-dashboard?style=social" alt="GitHub Stars"/>
   </a>
   <a href="https://vercel.com/">
     <img src="https://img.shields.io/badge/Deployed%20on-Vercel-black?logo=vercel" alt="Deploy on Vercel"/>
@@ -19,8 +19,8 @@
   <a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License MIT"/>
   </a>
-  <a href="https://github.com/florimus/catalos-admin/releases">
-  <img src="https://img.shields.io/github/v/release/florimus/catalos-admin?label=version" alt="Latest Version"/>
+  <a href="https://github.com/florimus/catalos-admin-dashboard/releases">
+  <img src="https://img.shields.io/github/v/release/florimus/catalos-admin-dashboard?label=version" alt="Latest Version"/>
 </a>
 </p>
 
@@ -59,7 +59,7 @@ A minimal, responsive, and modern user interface designed with Tailwind CSS that
 
 ```bash
 # Clone the repository
-git clone https://github.com/florimus/catalos-admin.git
+git clone https://github.com/florimus/catalos-admin-dashboard.git
 
 # Navigate to project directory
 cd catalos-admin
