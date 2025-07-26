@@ -29,6 +29,7 @@ import { useRouter } from 'next/navigation';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import { useFloatingCart } from '@/context/FloatingCartContext';
 import { updateOrderUnitAndPackageInfo } from '@/actions/order';
+import OrderHistory from './modal/OrderHistory';
 
 interface OrderFormProps {
   order?: IOrder;
@@ -383,17 +384,14 @@ const OrderForm: FC<OrderFormProps> = ({ order, addresses, permission }) => {
           )}
           {order?.status === 'Fulfilled' && (
             <SecureComponent permission={permission}>
-              <Button
-                type='button'
-                size='xm'
-                onClick={handleProceedToShipping}
-              >
+              <Button type='button' size='xm' onClick={handleProceedToShipping}>
                 Proceed to Shipping
               </Button>
             </SecureComponent>
           )}
         </div>
       </div>
+      <OrderHistory events={order?.events} />
       <BasicTableOne
         headingData={headingData}
         tableData={tableData}
