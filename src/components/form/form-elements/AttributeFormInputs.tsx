@@ -258,8 +258,6 @@ const AttributeFormInputs: FC<AttributeFormInputsProps> = ({
   };
 
   const handleTypeChange = (type: string) => {
-    console.log({ type });
-
     setAttribute((prev) => ({
       ...prev,
       type,

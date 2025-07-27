@@ -34,7 +34,7 @@ export default async function EditProduct(ctx: {
   params: Promise<{ id: string }>;
   searchParams?: Promise<ISearchParams | null>;
 }) {
-  await validatePermissions('USR:LS');
+  await validatePermissions('PRD:LS');
   const awaitedParams = await ctx.params;
   const searchParams: ISearchParams | null = (await ctx.searchParams) || {};
   const product: IResponse<IProduct> = await getProductById(awaitedParams.id);

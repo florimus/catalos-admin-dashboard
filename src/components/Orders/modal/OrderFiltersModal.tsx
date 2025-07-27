@@ -67,7 +67,6 @@ const OrderFiltersModal: FC<OrderFiltersModalProps> = ({ searchParams }) => {
 
   const handleDateRangeChange = (from: Date, to: Date) => {
     if (from && to) {
-      console.log(getFormattedDate(from));
       setFilter((prev) => ({
         ...prev,
         fromDate: getFormattedDate(from),
