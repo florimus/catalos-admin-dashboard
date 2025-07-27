@@ -22,6 +22,8 @@ import Radio from '../form/input/Radio';
 import ProductList from '../products/ProductList';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import SecureComponent from '@/core/authentication/SecureComponent';
+import Button from '../ui/button/Button';
+import { ArrowRightIcon } from '@/icons';
 
 interface CategoryFormProps {
   category?: ICategory;
@@ -278,6 +280,19 @@ const CategoryForm: FC<CategoryFormProps> = ({
               heading='Category Status'
               fields={[categoryStatusFields]}
             />
+            <div className='flex justify-end w-full'>
+              <Button
+                size='sm'
+                className='my-1 mb-6 flex w-full'
+                onClick={() =>
+                  start(() =>
+                    router.push(`/categories/${category?.id}/translations`)
+                  )
+                }
+              >
+                Manage Translations <ArrowRightIcon />
+              </Button>
+            </div>
           </div>
         </div>
       </div>

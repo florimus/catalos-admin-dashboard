@@ -1,7 +1,7 @@
 'use server';
 
+import { getCategoryById } from '@/actions/category';
 import { getTranslationByUniqueIdAndLanguage } from '@/actions/translation';
-import { getVariantById } from '@/actions/variant';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TranslationForm from '@/components/translations/TranslationForm';
 import { validatePermissions } from '@/core/authentication/roleValidations';
@@ -12,18 +12,17 @@ import {
 } from '@/core/constants';
 import { ITranslationParams } from '@/core/types';
 import {
-  getTranslationFieldsFromAttributes,
   getTranslationLanguagesOptions,
 } from '@/utils/translationUtils';
 import { redirect } from 'next/navigation';
 
 export async function generateMetadata() {
   return {
-    title: 'Variant Translations | Catalos Admin',
+    title: 'Category Translations | Catalos Admin',
   };
 }
 
-const VariantTranslations = async (ctx: {
+const CategoryTranslations = async (ctx: {
   params: Promise<{ id: string }>;
   searchParams?: Promise<ITranslationParams | null>;
 }) => {
@@ -33,28 +32,24 @@ const VariantTranslations = async (ctx: {
     (await ctx.searchParams) || {};
   const selectedLanguage = searchParams?.code || DEFAULT_TRANSLATION_LANGUAGE;
 
-  const [variant, translations] = await Promise.all([
-    getVariantById(awaitedParams.id),
+  const [category, translations] = await Promise.all([
+    getCategoryById(awaitedParams.id),
     getTranslationByUniqueIdAndLanguage(
       awaitedParams.id || '',
       selectedLanguage
     ),
   ]);
 
-  if (!variant?.success || !variant?.data) {
-    console.error(variant.message);
+  if (!category?.success || !category?.data) {
+    console.error(category.message);
     redirect('/404');
   }
 
   const breadCrumbItems = [
-    { label: 'Products', href: '/products' },
-    { label: 'Variants', href: '/variants' },
+    { label: 'Categories', href: '/categories' },
+    { label: category?.data?.name, href: `/categories/${awaitedParams.id}` },
     { label: 'translations', href: '#' },
   ];
-
-  const attributeFields = getTranslationFieldsFromAttributes(
-    variant.data?.attributes
-  );
 
   const channelTranslations = CHANNELS.map((channel) => channel.translations);
 
@@ -65,14 +60,13 @@ const VariantTranslations = async (ctx: {
   return (
     <>
       <PageBreadcrumb
-        pageTitle={`Translations - ${variant?.data?.name} - ${selectedLanguage}`}
+        pageTitle={`Translations - ${category?.data?.name} - ${selectedLanguage}`}
         items={breadCrumbItems}
-        backUrl={`/variants/${awaitedParams.id}`}
+        backUrl={`/categories/${awaitedParams.id}`}
       />
       <TranslationForm
         permission='VAR:NN'
-        pageTranslationsFields={TRANSLATION_FIELDS.VARIANT}
-        attributeFields={attributeFields}
+        pageTranslationsFields={TRANSLATION_FIELDS.CATEGORY}
         uniqueId={awaitedParams.id}
         translations={translations.data}
         languageOptions={languageOptions}
@@ -82,4 +76,4 @@ const VariantTranslations = async (ctx: {
   );
 };
 
-export default VariantTranslations;
+export default CategoryTranslations;
