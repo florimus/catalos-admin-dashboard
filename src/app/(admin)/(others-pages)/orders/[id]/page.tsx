@@ -71,7 +71,7 @@ export default async function EditCart(ctx: {
       <PageBreadcrumb
         pageTitle={`Manage Order #${orderResponse?.data?.id}`}
         items={breadCrumbItems}
-        backUrl='/carts'
+        backUrl='/orders'
         badge={statusBadges(orderResponse?.data?.status || '')}
       />
       <OrderForm

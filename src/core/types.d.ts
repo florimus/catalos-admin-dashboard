@@ -326,6 +326,16 @@ export interface IMiniLineItem {
   error: null;
 }
 
+export interface IOrderEventItem {
+  at: string;
+  by: string;
+  note: string;
+}
+
+export interface IOrderEvents {
+  [key: string]: IOrderEventItem;
+}
+
 export interface IOrderLineItem extends IMiniLineItem {
   product: IProduct;
   variant: IVariant;
@@ -375,6 +385,7 @@ export interface IOrder extends IMiniOrder {
   paymentInfo?: IOrderPaymentInfo;
   paymentLink?: string;
   guestOrder: boolean;
+  events?: IOrderEvents;
 }
 
 export interface ICreateCartRequestInputs {
