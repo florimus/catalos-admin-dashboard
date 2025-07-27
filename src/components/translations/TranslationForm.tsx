@@ -156,7 +156,7 @@ const TranslationForm: FC<TranslationFormProps> = ({
           />
         ))}
       <div className='grid grid-cols-1 gap-6 xl:grid-cols-3 my-6'>
-        <div className='grid col-span-1 xl:col-span-2'>
+        <div className='grid col-span-1 xl:col-span-2' dir={selectedLanguage === "AR" ? "rtl" : "ltr"}>
           <DefaultInputs
             cta={{
               permission,

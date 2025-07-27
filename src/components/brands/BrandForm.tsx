@@ -19,6 +19,8 @@ import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import TableCard from '../common/TableCard';
 import ProductList from '../products/ProductList';
 import SecureComponent from '@/core/authentication/SecureComponent';
+import Button from '../ui/button/Button';
+import { ArrowRightIcon } from '@/icons';
 
 interface BrandFormProps {
   brand?: IBrand;
@@ -224,6 +226,19 @@ const BrandForm: FC<BrandFormProps> = ({
               heading='Brand Status'
               fields={[categoryStatusFields]}
             />
+            <div className='flex justify-end w-full'>
+              <Button
+                size='sm'
+                className='my-1 mb-6 flex w-full'
+                onClick={() =>
+                  start(() =>
+                    router.push(`/brands/${brand?.id}/translations`)
+                  )
+                }
+              >
+                Manage Translations <ArrowRightIcon />
+              </Button>
+            </div>
             <SecureComponent permission='BRD:NN'>
               <DropzoneComponent
                 loading={imageUploading}

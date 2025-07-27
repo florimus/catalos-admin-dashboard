@@ -70,4 +70,5 @@ export const TRANSLATION_FIELDS = {
   PRODUCT: ['name'],
   VARIANT: ['name', 'seoTitle', 'seoDescription'],
   CATEGORY: ['name', 'seoTitle', 'seoDescription'],
+  BRAND: ['name', 'seoTitle', 'seoDescription'],
 };
