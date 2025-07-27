@@ -24,6 +24,8 @@ import {
   updateProductTypeStatusAPI,
 } from '@/actions/product-type';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
+import Button from '../ui/button/Button';
+import { ArrowRightIcon } from '@/icons';
 
 interface ProductTypeFormProps {
   productType?: IProductType;
@@ -231,6 +233,21 @@ const ProductTypeForm: FC<ProductTypeFormProps> = ({ productType }) => {
               heading='Product Type Status'
               fields={[productTypeStatusFields]}
             />
+            <div className='flex justify-end w-full'>
+              <Button
+                size='sm'
+                className='my-1 flex w-full'
+                onClick={() =>
+                  start(() =>
+                    router.push(
+                      `/product-types/${productType?.id}/translations`
+                    )
+                  )
+                }
+              >
+                Manage Translations <ArrowRightIcon />
+              </Button>
+            </div>
           </div>
         </div>
       </div>

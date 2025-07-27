@@ -62,7 +62,7 @@ const TranslationForm: FC<TranslationFormProps> = ({
           ? FormFieldType.TextArea
           : FormFieldType.Text,
       name: field,
-      label: `Enter ${field}`,
+      label: `Translation for: ${field}`,
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
         setProductTranslations((prev) => ({
           ...prev,
