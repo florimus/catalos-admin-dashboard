@@ -2,27 +2,30 @@
 
 import { FC, useEffect, useState } from 'react';
 import Alert from '../ui/alert/Alert';
-import { TRANSLATION_FIELDS } from '@/core/constants';
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { ITranslation } from '@/core/types';
 import { upsertTranslation } from '@/actions/translation';
 
-interface ProductTranslationFormProps {
-  attributeFields: string[];
-  translations?: ITranslation;
+interface TranslationFormProps {
+  permission: string;
   uniqueId: string;
   languageOptions: {
     value: string;
     label: string;
   }[];
+  pageTranslationsFields: string[];
   selectedLanguage: string;
+  attributeFields?: string[];
+  translations?: ITranslation;
 }
 
-const ProductTranslationForm: FC<ProductTranslationFormProps> = ({
-  attributeFields,
-  translations,
+const TranslationForm: FC<TranslationFormProps> = ({
+  permission,
   uniqueId,
+  attributeFields,
+  pageTranslationsFields,
+  translations,
   languageOptions,
   selectedLanguage,
 }) => {
@@ -50,8 +53,8 @@ const ProductTranslationForm: FC<ProductTranslationFormProps> = ({
   });
 
   const translationFields = [
-    ...TRANSLATION_FIELDS.PRODUCT,
-    ...attributeFields,
+    ...pageTranslationsFields,
+    ...(attributeFields || []),
   ].map((field) => {
     return {
       fieldType:
@@ -134,9 +137,9 @@ const ProductTranslationForm: FC<ProductTranslationFormProps> = ({
     onChange: () => {},
     options: languageOptions,
     defaultValue: selectedLanguage,
-    placeholder: 'Select Payment Method',
+    placeholder: 'Select Language',
     disabled: false,
-    id: 'payment_method-id',
+    id: 'translation-language',
     required: true,
   };
 
@@ -156,7 +159,7 @@ const ProductTranslationForm: FC<ProductTranslationFormProps> = ({
         <div className='grid col-span-1 xl:col-span-2'>
           <DefaultInputs
             cta={{
-              permission: 'PRD:NN',
+              permission,
               label: 'Save Translation',
               loading: loading,
               onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
@@ -185,4 +188,4 @@ const ProductTranslationForm: FC<ProductTranslationFormProps> = ({
   );
 };
 
-export default ProductTranslationForm;
+export default TranslationForm;

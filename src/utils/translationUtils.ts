@@ -1,6 +1,6 @@
 import { IAttributes } from '@/core/types';
 
-export const getTranslationFieldsFromAttributes = (attributes: IAttributes) => {
+export const getTranslationFieldsFromAttributes = (attributes?: IAttributes) => {
   if (attributes) {
     return Object.keys(attributes)?.filter(
       (key) => attributes[key]?.type === 'Text'

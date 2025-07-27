@@ -37,6 +37,8 @@ import { ASPECT_RATIOS } from '@/core/constants';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import dynamic from 'next/dynamic';
 import SecureComponent from '@/core/authentication/SecureComponent';
+import Button from '../ui/button/Button';
+import { ArrowRightIcon } from '@/icons';
 const ModuleView = dynamic(() => import('../modules/ModuleView'), {
   ssr: false,
 });
@@ -370,6 +372,19 @@ const VariantForm: FC<VariantFormProps> = ({
               heading='Variant Status'
               fields={[variantStatusFields]}
             />
+            <div className='flex justify-end w-full'>
+              <Button
+                size='sm'
+                className='my-1 mb-6 flex w-full'
+                onClick={() =>
+                  start(() =>
+                    router.push(`/variants/${variant?.id}/translations`)
+                  )
+                }
+              >
+                Manage Translations <ArrowRightIcon />
+              </Button>
+            </div>
             <SecureComponent permission='VAR:NN'>
               <DropzoneComponent
                 loading={imageUploading}
