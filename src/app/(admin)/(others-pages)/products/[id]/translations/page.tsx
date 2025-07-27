@@ -6,7 +6,7 @@ import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import ProductTranslationForm from '@/components/translations/ProductTranslationForm';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { CHANNELS, DEFAULT_TRANSLATION_LANGUAGE } from '@/core/constants';
-import { IProduct, IResponse, ITranslation, ITranslationParams } from '@/core/types';
+import { ITranslationParams } from '@/core/types';
 import {
   getTranslationFieldsFromAttributes,
   getTranslationLanguagesOptions,
@@ -29,17 +29,19 @@ const ProductTranslations = async (ctx: {
     (await ctx.searchParams) || {};
   const selectedLanguage = searchParams?.code || DEFAULT_TRANSLATION_LANGUAGE;
 
-  const product: IResponse<IProduct> = await getProductById(awaitedParams.id);
+  const [product, translations] = await Promise.all([
+    getProductById(awaitedParams.id),
+    getTranslationByUniqueIdAndLanguage(
+      awaitedParams.id || '',
+      selectedLanguage
+    ),
+  ]);
 
   if (!product?.success || !product?.data) {
     console.error(product.message);
     redirect('/404');
   }
 
-  const translations: IResponse<ITranslation> = await getTranslationByUniqueIdAndLanguage(
-    awaitedParams.id || '',
-    selectedLanguage
-  );
 
   const breadCrumbItems = [
     { label: 'Products', href: '/products' },
