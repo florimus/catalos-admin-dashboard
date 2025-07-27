@@ -1,6 +1,6 @@
 'use server';
 
-import { getProductById } from '@/actions/product';
+import { getProductTypeById } from '@/actions/product-type';
 import { getTranslationByUniqueIdAndLanguage } from '@/actions/translation';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TranslationForm from '@/components/translations/TranslationForm';
@@ -12,48 +12,45 @@ import {
 } from '@/core/constants';
 import { ITranslationParams } from '@/core/types';
 import {
-  getTranslationFieldsFromAttributes,
+  getTranslationFieldsFromProductTypes,
   getTranslationLanguagesOptions,
 } from '@/utils/translationUtils';
 import { redirect } from 'next/navigation';
 
 export async function generateMetadata() {
   return {
-    title: 'Product Translations | Catalos Admin',
+    title: 'Product Type Translations | Catalos Admin',
   };
 }
 
-const ProductTranslations = async (ctx: {
+const ProductTypeTranslations = async (ctx: {
   params: Promise<{ id: string }>;
   searchParams?: Promise<ITranslationParams | null>;
 }) => {
-  await validatePermissions('PRD:LS');
+  await validatePermissions('PTY:LS');
   const awaitedParams = await ctx.params;
   const searchParams: ITranslationParams | null =
     (await ctx.searchParams) || {};
   const selectedLanguage = searchParams?.code || DEFAULT_TRANSLATION_LANGUAGE;
 
-  const [product, translations] = await Promise.all([
-    getProductById(awaitedParams.id),
+  const [productType, translations] = await Promise.all([
+    getProductTypeById(awaitedParams.id),
     getTranslationByUniqueIdAndLanguage(
       awaitedParams.id || '',
       selectedLanguage
     ),
   ]);
 
-  if (!product?.success || !product?.data) {
-    console.error(product.message);
+  if (!productType?.success || !productType?.data) {
+    console.error(productType.message);
     redirect('/404');
   }
 
   const breadCrumbItems = [
-    { label: 'Products', href: '/products' },
+    { label: 'Product Types', href: '/product-types' },
+    { label: productType?.data?.name, href: `/product-types/${awaitedParams.id}` },
     { label: 'translations', href: '#' },
   ];
-
-  const attributeFields = getTranslationFieldsFromAttributes(
-    product.data?.attributes
-  );
 
   const channelTranslations = CHANNELS.map((channel) => channel.translations);
 
@@ -61,17 +58,31 @@ const ProductTranslations = async (ctx: {
     [...channelTranslations].flat()
   );
 
+  const productAttributeFields = getTranslationFieldsFromProductTypes(
+    productType?.data?.productAttributes
+  );
+
+  const variantAttributeFields = getTranslationFieldsFromProductTypes(
+    productType?.data?.variantAttributes
+  );
+
+  const translationFields = [
+    ...(productAttributeFields?.flat() || []),
+    ...(variantAttributeFields?.flat() || []),
+  ] as string[];
+  
+
   return (
     <>
       <PageBreadcrumb
-        pageTitle={`Translations - ${product?.data?.name} - ${selectedLanguage}`}
+        pageTitle={`Translations - ${productType?.data?.name} - ${selectedLanguage}`}
         items={breadCrumbItems}
-        backUrl={`/products/${awaitedParams.id}`}
+        backUrl={`/product-types/${awaitedParams.id}`}
       />
       <TranslationForm
-        permission='PRD:NN'
-        pageTranslationsFields={TRANSLATION_FIELDS.PRODUCT}
-        attributeFields={attributeFields}
+        permission='PTY:NN'
+        pageTranslationsFields={TRANSLATION_FIELDS.PRODUCT_TYPE}
+        attributeFields={translationFields}
         uniqueId={awaitedParams.id}
         translations={translations.data}
         languageOptions={languageOptions}
@@ -81,4 +92,4 @@ const ProductTranslations = async (ctx: {
   );
 };
 
-export default ProductTranslations;
+export default ProductTypeTranslations;

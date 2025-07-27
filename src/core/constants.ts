@@ -68,4 +68,8 @@ export const ORDER_RETURN_EVENTS = [
 
 export const TRANSLATION_FIELDS = {
   PRODUCT: ['name'],
+  VARIANT: ['name', 'seoTitle', 'seoDescription'],
+  CATEGORY: ['name', 'seoTitle', 'seoDescription'],
+  BRAND: ['name', 'seoTitle', 'seoDescription'],
+  PRODUCT_TYPE: ['name'],
 };
