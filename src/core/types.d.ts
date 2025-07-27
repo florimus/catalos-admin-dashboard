@@ -69,6 +69,10 @@ export interface IOrderSearchParams extends ISearchParams {
   excludeStatuses?: boolean;
 }
 
+export interface ITranslationParams {
+  code?: string;
+}
+
 export interface IAttributeOption {
   label: string;
   value: string;
@@ -448,4 +452,13 @@ export interface OrderFilter {
   fromDate?: string;
   toDate?: string;
   excludeStatuses?: boolean;
+}
+
+export interface ITranslation {
+  id: string;
+  uniqueId: string;
+  type: string;
+  translations: Record<string, string>;
+  active: boolean;
+  languageCode: string;
 }

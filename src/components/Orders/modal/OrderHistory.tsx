@@ -10,7 +10,6 @@ interface NodeProps {
 }
 
 const Node: FC<NodeProps> = ({ index, name, eventItem }) => {
-  console.log(eventItem);
   return (
     <div className='flex flex-col items-center text-center relative'>
       <div

@@ -33,6 +33,8 @@ import { useRouter } from 'next/navigation';
 import { getCategories } from '@/actions/category';
 import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import { getBrands } from '@/actions/brand';
+import Button from '../ui/button/Button';
+import { ArrowRightIcon } from '@/icons';
 
 interface ProductFormProps {
   productTypeOptions?: { value: string; label: string }[];
@@ -371,6 +373,19 @@ const ProductForm: FC<ProductFormProps> = ({
               heading='Product Status'
               fields={[productStatusFields]}
             />
+            <div className='flex justify-end w-full'>
+              <Button
+                size='sm'
+                className='my-1 flex w-full'
+                onClick={() =>
+                  start(() =>
+                    router.push(`/products/${product?.id}/translations`)
+                  )
+                }
+              >
+                Manage Translations <ArrowRightIcon />
+              </Button>
+            </div>
           </div>
         </div>
       </div>

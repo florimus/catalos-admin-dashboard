@@ -4,8 +4,16 @@ export const CHANNELS = [
     name: 'Indian Marketplace',
     locale: 'en-in',
     currency: '₹',
+    translations: [
+      {
+        code: 'AR',
+        name: 'Arabic',
+      },
+    ],
   },
 ];
+
+export const DEFAULT_TRANSLATION_LANGUAGE = 'AR';
 
 export const ATTRIBUTE_TYPES = ['Text', 'Number', 'Select', 'Boolean'];
 
@@ -57,3 +65,7 @@ export const ORDER_RETURN_EVENTS = [
   'Refunded',
   'RefundCancelled',
 ];
+
+export const TRANSLATION_FIELDS = {
+  PRODUCT: ['name'],
+};
