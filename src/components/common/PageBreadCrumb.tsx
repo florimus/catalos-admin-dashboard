@@ -49,8 +49,10 @@ const PageBreadcrumb: React.FC<IBreadcrumbProps> = ({
         >
           <ChevronLeftIcon />
         </Button>
-        <span className='mx-5 mt-1'>{pageTitle}</span>
-        {badge && <Badge color={badge.color}>{badge.label}</Badge>}
+        <div>
+          <span className='mx-5 mt-1'>{pageTitle}</span>
+          {badge && <Badge color={badge.color}> {badge.label}</Badge>}
+        </div>
       </h2>
       <nav>
         <ol className='flex items-center gap-1.5'>

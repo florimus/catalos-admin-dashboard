@@ -54,8 +54,8 @@ const OrderHistory: FC<OrderHistoryProps> = ({ events }) => {
     );
   });
   return (
-    <div className='w-full px-4 py-6 bg-white border dark:border-gray-700 dark:bg-gray-800 rounded-xl mb-4 pb-12'>
-      <div className='flex justify-between items-center px-5'>{items}</div>
+    <div className='hidden md:block w-full px-4 py-6 bg-white border dark:border-gray-700 dark:bg-gray-800 rounded-xl mb-4 pb-12'>
+      <div className='flex justify-between items-center px-5 flex-wrap'>{items}</div>
     </div>
   );
 };
