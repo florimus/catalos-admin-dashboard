@@ -255,6 +255,7 @@ export interface IModule {
   id?: string;
   resourceId: string;
   data: string;
+  translations: Record<string, string>;
   active: boolean;
 }
 

@@ -14,7 +14,10 @@ import {
   IVariantFormInputs,
   IVariantStatusUpdate,
 } from '@/core/types';
-import { FormFieldType, ITextAreaFormFieldProps } from '../form/form-elements/DefaultFormFields';
+import {
+  FormFieldType,
+  ITextAreaFormFieldProps,
+} from '../form/form-elements/DefaultFormFields';
 import AttributeForm from '../attributes/AttributeForm';
 import { AttributeTypes } from '@/core/enums';
 import {
@@ -403,6 +406,7 @@ const VariantForm: FC<VariantFormProps> = ({
       {variant?.id && (
         <SecureComponent permission='MOD:LS'>
           <ModuleView
+            translations={contentModule?.translations || {}}
             projectData={contentModule?.data || ''}
             moduleId={variant.id}
           />

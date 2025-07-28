@@ -1,12 +1,17 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import grapesjs from 'grapesjs';
+import grapesjs, { Editor } from 'grapesjs';
 import 'grapesjs/dist/css/grapes.min.css';
 import { IUploadedImage, uploadImage } from '@/utils/imageUtils';
 import Button from '@/components/ui/button/Button';
 import { useParams, useRouter } from 'next/navigation';
 import { updateModule } from '@/actions/module';
+import { useModal } from '@/hooks/useModal';
+import FormInModal from '@/components/modals/FormInModal';
+import { FormFields } from '@/components/form/form-elements/DefaultFormFields';
+import { CHANNELS } from '@/core/constants';
+import { getTranslationLanguagesOptions } from '@/utils/translationUtils';
 
 const GrapesEditor = () => {
   const router = useRouter();
@@ -16,6 +21,23 @@ const GrapesEditor = () => {
 
   const [html, setHtml] = useState<string>('');
   const [css, setCss] = useState<string>('');
+
+  const { isOpen, openModal, closeModal } = useModal();
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('EN');
+  const [translations, setTranslations] = useState<Record<string, string>>();
+
+  useEffect(() => {
+    const initialTranslations = localStorage.getItem('gjsTranslations');
+    if (initialTranslations) {
+      setTranslations(JSON.parse(initialTranslations));
+    }
+  }, []);
+
+  const channelTranslations = CHANNELS.map((channel) => channel.translations);
+
+  const languageOptions = getTranslationLanguagesOptions(
+    [...channelTranslations].flat()
+  );
 
   useEffect(() => {
     if (!editorRef.current) return;
@@ -252,17 +274,39 @@ const GrapesEditor = () => {
     };
   }, []);
 
-  const editor = grapesjs.init({
-    container: document.createElement('div'),
-    storageManager: false,
-  });
+  let editor: Editor;
+  try {
+    editor = grapesjs.init({
+      container: document?.createElement('div'),
+      storageManager: false,
+    });
+  } catch {
+    console.log("GrapesJS couldn't be initialized");
+  }
 
-  const handleGetCode = () => {
+  const translateModule = (data?: string | null, language?: string) => {
+    if (!data) return;
+    const translationData = JSON.parse(
+      translations?.[language || selectedLanguage] || '{}'
+    );
+
+    Object.keys(translationData).forEach((key: string) => {
+      data = data?.replace(`{{${key}}}`, translationData[key]);
+    });
+
+    return data;
+  };
+
+  const handleGetCode = (language?: string) => {
     if (!editorRef.current) return;
-    const projectData = localStorage.getItem('gjsProject');
+    const projectData = translateModule(
+      localStorage.getItem('gjsProject'),
+      language
+    );
     editor.loadProjectData(projectData ? JSON.parse(projectData) : {});
     setHtml(editor.getHtml());
     setCss(editor.getCss() || '');
+    closeModal();
   };
 
   const handleSave = async () => {
@@ -272,10 +316,12 @@ const GrapesEditor = () => {
       const response = await updateModule({
         resourceId: params.id as string,
         data: projectData || '{}',
+        translations: translations || {},
         active: true,
       });
       if (response.success) {
         localStorage.removeItem('gjsProject');
+        localStorage.removeItem('gjsTranslations');
         router.back();
       }
     }
@@ -292,16 +338,76 @@ const GrapesEditor = () => {
         <div ref={editorRef} className='flex-1' />
       </div>
       <div className='flex justify-end'>
-        <Button
-          onClick={handleGetCode}
-          className='bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 mx-2'
-        >
-          Preview
+        <div className='mr-2'>
+          <FormFields.DropDownFormField
+            key='translation-Language-direct'
+            name='translation-Language-direct'
+            onChange={(value) => {
+              setSelectedLanguage(value);
+              handleGetCode(value);
+            }}
+            options={[
+              { label: 'Default (English)', value: 'EN' },
+              ...languageOptions,
+            ]}
+            defaultValue={selectedLanguage}
+            placeholder='Select Language'
+            disabled={false}
+            required
+          />
+        </div>
+        <Button variant='outline' className='mr-2' onClick={openModal}>
+          Edit Translations
         </Button>
         <Button onClick={handleSave}>Save</Button>
       </div>
 
-      <div className='bg-gray-100'>
+      {isOpen && (
+        <FormInModal
+          title='Module Translations'
+          isOpen={isOpen}
+          closeModal={closeModal}
+        >
+          <FormFields.DropDownFormField
+            label='Select Language'
+            key='translation-Language'
+            name='translation-Language'
+            onChange={(value) => {
+              setSelectedLanguage(value);
+            }}
+            options={[
+              { label: 'Default (English)', value: 'EN' },
+              ...languageOptions,
+            ]}
+            defaultValue={selectedLanguage}
+            placeholder='Select Language'
+            disabled={false}
+            required
+          />
+          <FormFields.TextAreaFormField
+            label='Translations'
+            key='translation-textarea'
+            name='translation-textarea'
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+              setTranslations((prev) => ({
+                ...prev,
+                [selectedLanguage]: e.target.value,
+              }));
+            }}
+            value={translations?.[selectedLanguage] || '{}'}
+            placeholder='{}'
+            disabled={false}
+            required
+          />
+          <div className='flex justify-end'>
+            <Button variant='primary' onClick={() => handleGetCode()}>
+              Preview
+            </Button>
+          </div>
+        </FormInModal>
+      )}
+
+      <div className='bg-gray-100' dir={selectedLanguage === "AR" ? "rtl" : "ltr"}>
         <style>{css}</style>
         <div dangerouslySetInnerHTML={{ __html: html }} />
       </div>

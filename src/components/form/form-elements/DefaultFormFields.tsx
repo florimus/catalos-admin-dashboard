@@ -140,7 +140,7 @@ export const DisplayField: FC<IDisplayFieldProps> = ({
 
 export interface IDropDownFormFieldProps {
   name: string;
-  label: string;
+  label?: string;
   required?: boolean;
   disabled?: boolean;
   defaultValue?: string;

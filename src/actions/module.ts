@@ -43,6 +43,9 @@ export const updateModule = async (
   const cookieStore = await cookies();
   const url = new URL(`/modules`, process.env.NEXT_PUBLIC_API_BASE_URL);
 
+  console.log(payload, "payload");
+  
+
   const response = await fetch(url, {
     method: 'POST',
     headers: {
