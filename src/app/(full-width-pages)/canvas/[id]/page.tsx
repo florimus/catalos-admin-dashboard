@@ -12,6 +12,7 @@ import FormInModal from '@/components/modals/FormInModal';
 import { FormFields } from '@/components/form/form-elements/DefaultFormFields';
 import { CHANNELS } from '@/core/constants';
 import { getTranslationLanguagesOptions } from '@/utils/translationUtils';
+const JsonEditor = React.lazy(() => import('@monaco-editor/react'));
 
 const GrapesEditor = () => {
   const router = useRouter();
@@ -384,21 +385,26 @@ const GrapesEditor = () => {
             disabled={false}
             required
           />
-          <FormFields.TextAreaFormField
-            label='Translations'
-            key='translation-textarea'
-            name='translation-textarea'
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-              setTranslations((prev) => ({
-                ...prev,
-                [selectedLanguage]: e.target.value,
-              }));
-            }}
-            value={translations?.[selectedLanguage] || '{}'}
-            placeholder='{}'
-            disabled={false}
-            required
-          />
+          <div className='my-3 rounded'>
+            <JsonEditor
+              height='300px'
+              defaultLanguage='json'
+              theme='vs-dark'
+              value={translations?.[selectedLanguage] || '{}'}
+              onChange={(value) => {
+                setTranslations((prev) => ({
+                  ...prev,
+                  [selectedLanguage]: value || '{}',
+                }));
+              }}
+              options={{
+                minimap: { enabled: false },
+                wordWrap: 'on',
+                formatOnType: true,
+                formatOnPaste: true,
+              }}
+            />
+          </div>
           <div className='flex justify-end'>
             <Button variant='primary' onClick={() => handleGetCode()}>
               Preview
@@ -407,7 +413,10 @@ const GrapesEditor = () => {
         </FormInModal>
       )}
 
-      <div className='bg-gray-100' dir={selectedLanguage === "AR" ? "rtl" : "ltr"}>
+      <div
+        className='bg-gray-100'
+        dir={selectedLanguage === 'AR' ? 'rtl' : 'ltr'}
+      >
         <style>{css}</style>
         <div dangerouslySetInnerHTML={{ __html: html }} />
       </div>
