@@ -18,7 +18,7 @@ export const getOrders = async (
   channel?: string,
   page: number = 0,
   size: number = 10,
-  filter?: OrderFilter,
+  filter?: OrderFilter
 ): Promise<IResponse<IPage<IMiniOrder>>> => {
   const cookieStore = await cookies();
   const url = new URL('/orders/search', process.env.NEXT_PUBLIC_API_BASE_URL);
@@ -28,7 +28,7 @@ export const getOrders = async (
   }
 
   if (channel) {
-    url.searchParams.append('query', channel.trim());
+    url.searchParams.append('channel', channel.trim());
   }
 
   if (page >= 0) {
@@ -311,6 +311,40 @@ export const createPaymentLink = async (
     return {
       success: false,
       message: data?.message?.[0] || 'Failed to create payment link',
+    };
+  });
+};
+
+export const submitOrder = async (
+  orderId: string
+): Promise<IResponse<IOrder>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/orders/id/${orderId}/submit`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath(`/carts/${orderId}`);
+      return {
+        success: true,
+        data: data.data,
+        message: 'order submitted successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to submit order',
     };
   });
 };

@@ -25,6 +25,7 @@ import Button from '../ui/button/Button';
 import {
   createPaymentLink,
   removeCartLineItem,
+  submitOrder,
   updateCartLineItem,
   updateCartLineItems,
   updateOrderAddress,
@@ -246,6 +247,22 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
     setIsPaymentOptionLoading(false);
   }, [cart?.id]);
 
+  const handleSubmitOrder = useCallback(async () => {
+    setIsPaymentOptionLoading(true);
+    const response: IResponse<IPaymentLink> = await submitOrder(cart?.id || '');
+    if (response.success && response.data) {
+      setPaymentLink(response.data?.paymentLink || null);
+    } else {
+      setAlerts([
+        {
+          message: response.message || 'Failed to submit order',
+          variant: 'error',
+        },
+      ]);
+    }
+    setIsPaymentOptionLoading(false);
+  }, [cart?.id]);
+
   const customerDetailsFields = [
     {
       fieldType: FormFieldType.Text,
@@ -286,6 +303,7 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
         if (selectedPaymentOption?.external) {
           handleCreatePaymentLink();
         }
+        handleSubmitOrder();
       },
       loading: isPaymentOptionLoading,
     };
@@ -294,6 +312,7 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
     selectedPaymentOption?.external,
     isPaymentOptionLoading,
     handleCreatePaymentLink,
+    handleSubmitOrder,
   ]);
 
   const shippingAddressFields = [
