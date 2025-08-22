@@ -39,6 +39,7 @@ export const AllModules: string[] = [
   'Orders',
   'CustomApps',
   'ApiKeys',
+  'DashBoard',
 ];
 
 export const AllPermissions: string[] = ['READ', 'EDIT', 'DELETE'];
