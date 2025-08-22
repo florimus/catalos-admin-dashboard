@@ -1,22 +1,24 @@
-"use client";
-import { ApexOptions } from "apexcharts";
-import dynamic from "next/dynamic";
-import { MoreDotIcon } from "@/icons";
-import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import { useState } from "react";
-import { Dropdown } from "../ui/dropdown/Dropdown";
+'use client';
+import { ApexOptions } from 'apexcharts';
+import dynamic from 'next/dynamic';
 
 // Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
 });
 
-export default function MonthlySalesChart() {
+interface MonthlySalesChartProps {
+  monthlySales?: Record<string, number>;
+}
+
+export default function MonthlySalesChart({
+  monthlySales,
+}: MonthlySalesChartProps) {
   const options: ApexOptions = {
-    colors: ["#465fff"],
+    colors: ['#465fff'],
     chart: {
-      fontFamily: "Outfit, sans-serif",
-      type: "bar",
+      fontFamily: 'Outfit, sans-serif',
+      type: 'bar',
       height: 180,
       toolbar: {
         show: false,
@@ -25,9 +27,9 @@ export default function MonthlySalesChart() {
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: "39%",
+        columnWidth: '39%',
         borderRadius: 5,
-        borderRadiusApplication: "end",
+        borderRadiusApplication: 'end',
       },
     },
     dataLabels: {
@@ -36,22 +38,22 @@ export default function MonthlySalesChart() {
     stroke: {
       show: true,
       width: 4,
-      colors: ["transparent"],
+      colors: ['transparent'],
     },
     xaxis: {
       categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
       ],
       axisBorder: {
         show: false,
@@ -62,9 +64,9 @@ export default function MonthlySalesChart() {
     },
     legend: {
       show: true,
-      position: "top",
-      horizontalAlign: "left",
-      fontFamily: "Outfit",
+      position: 'top',
+      horizontalAlign: 'left',
+      fontFamily: 'Outfit',
     },
     yaxis: {
       title: {
@@ -93,58 +95,62 @@ export default function MonthlySalesChart() {
   };
   const series = [
     {
-      name: "Sales",
-      data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
+      name: 'Sales',
+      data: mapToList(monthlySales || {}, 12),
     },
   ];
-  const [isOpen, setIsOpen] = useState(false);
 
-  function toggleDropdown() {
-    setIsOpen(!isOpen);
-  }
+  function mapToList(map: Record<string, number>, size = 12) {
+    const list = Array(size).fill(0);
 
-  function closeDropdown() {
-    setIsOpen(false);
+    for (const [key, value] of Object.entries(map)) {
+      const index = parseInt(key, 10);
+      if (index >= 0 && index < size) {
+        list[index] = value;
+      }
+    }
+
+    return list;
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+    <div className='overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6'>
+      <div className='flex items-center justify-between'>
+        <h3 className='text-lg font-semibold text-gray-800 dark:text-white/90'>
           Monthly Sales
         </h3>
 
-        <div className="relative inline-block">
-          <button onClick={toggleDropdown} className="dropdown-toggle">
-            <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+        {/* <div className='relative inline-block'>
+          <button onClick={toggleDropdown} className='dropdown-toggle'>
+            <MoreDotIcon className='text-gray-400 hover:text-gray-700 dark:hover:text-gray-300' />
           </button>
           <Dropdown
             isOpen={isOpen}
             onClose={closeDropdown}
-            className="w-40 p-2"
+            className='w-40 p-2'
           >
             <DropdownItem
               onItemClick={closeDropdown}
-              className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+              className='flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300'
             >
               View More
             </DropdownItem>
             <DropdownItem
               onItemClick={closeDropdown}
-              className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+              className='flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300'
             >
               Delete
             </DropdownItem>
           </Dropdown>
-        </div>
+        </div> */}
       </div>
 
-      <div className="max-w-full overflow-x-auto custom-scrollbar">
-        <div className="-ml-5 min-w-[650px] xl:min-w-full pl-2">
+      <div className='max-w-full overflow-x-auto custom-scrollbar'>
+        <div className='-ml-5 min-w-[650px] xl:min-w-full pl-2'>
           <ReactApexChart
             options={options}
             series={series}
-            type="bar"
+            type='bar'
             height={180}
           />
         </div>

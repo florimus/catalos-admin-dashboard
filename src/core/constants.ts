@@ -3,6 +3,8 @@ export const CHANNELS = [
     id: '68374ac320d736a89de249a0',
     name: 'Indian Marketplace',
     locale: 'en-in',
+    icon: '/images/country/country-09.webp',
+    country: 'India',
     currency: '₹',
     translations: [
       {

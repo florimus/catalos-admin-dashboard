@@ -463,3 +463,18 @@ export interface ITranslation {
   active: boolean;
   languageCode: string;
 }
+
+export interface IDashboardData {
+  id: string;
+  year: number;
+  initialCustomersCount: number;
+  newCustomersCount: number;
+  initialOrdersCount: number;
+  newOrdersCount: number;
+  monthlyRevenue: number;
+  draftOrderRevenue: number;
+  draftOrderCount: number;
+  monthlySales: Record<string, number>;
+  channelSalesReport: Record<string, number>;
+  active: boolean;
+}
