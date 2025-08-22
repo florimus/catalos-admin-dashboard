@@ -9,6 +9,7 @@ import RecentOrders from '@/components/ecommerce/RecentOrders';
 import DemographicCard from '@/components/ecommerce/DemographicCard';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { getDashboardData } from '@/actions/dashboard';
+import { redirect } from 'next/navigation';
 
 export async function generateMetadata() {
   return {
@@ -18,14 +19,14 @@ export async function generateMetadata() {
 }
 
 export default async function Ecommerce() {
-  await validatePermissions('DAS:LS');
+  if(!await validatePermissions('DAS:LS', true)){
+    redirect('/profile');
+  }
 
   const dashboardInfoResponse = await getDashboardData();
   if (!dashboardInfoResponse.success || !dashboardInfoResponse.data) {
-    return <></>;
+    return <></>
   }
-
-  console.log('dashboardInfoResponse', dashboardInfoResponse);
 
   return (
     <div className='grid grid-cols-12 gap-4 md:gap-6'>
