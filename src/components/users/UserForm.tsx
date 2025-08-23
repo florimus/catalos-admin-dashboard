@@ -299,13 +299,13 @@ const UserForm: FC<UserFormProps> = ({
       </div>
       {isOpen && (
         <FormInModal
-          title='Select Product Type'
+          title='Select Role'
           isOpen={isOpen}
           closeModal={closeModal}
         >
           <Input
             type='text'
-            placeholder='Select ProductType'
+            placeholder='Search Role'
             name='productTypeId'
             onChange={handleRoleSearch}
           />

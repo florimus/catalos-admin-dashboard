@@ -1,8 +1,10 @@
 'use server';
 
+import { getRoles } from '@/actions/role';
 import { getUsers } from '@/actions/user';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TableCard from '@/components/common/TableCard';
+import InviteUserModal from '@/components/users/modal/InviteUserModal';
 import UserList from '@/components/users/userList';
 import { validatePermissions } from '@/core/authentication/roleValidations';
 import { IPage, IResponse, ISearchParams, IUserInfo } from '@/core/types';
@@ -32,6 +34,8 @@ export default async function CustomersListPage(ctx: {
     return <div>Error fetching staffs: {response.message}</div>;
   }
 
+  const roles = await getRoles();
+
   return (
     <>
       <PageBreadcrumb
@@ -42,6 +46,10 @@ export default async function CustomersListPage(ctx: {
         <TableCard
           searchPlaceHolder={'Search staffs...'}
           searchParams={searchParams}
+          cta={{
+            permission: 'USR:NN',
+            custom: <InviteUserModal initialRoles={roles.data} />,
+          }}
         >
           <UserList origin='/staffs' {...response.data} />
         </TableCard>

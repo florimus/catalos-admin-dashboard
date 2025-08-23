@@ -36,7 +36,7 @@ export const fetchUserInfo: () => Promise<IResponse<IUserInfo>> = async () => {
     }
     return {
       success: false,
-      message: data?.message || 'Failed to fetch user info',
+      message: data?.message?.[0] || 'Failed to fetch user info',
     };
   });
 };
@@ -65,7 +65,7 @@ export const getUserInfoById = async (
     }
     return {
       success: false,
-      message: data?.message || 'Failed to fetch user',
+      message: data?.message?.[0] || 'Failed to fetch user',
     };
   });
 };
@@ -95,7 +95,7 @@ export const fetchUserInfoWithoutCookies: () => Promise<
     }
     return {
       success: false,
-      message: data?.message || 'Failed to fetch user info',
+      message: data?.message?.[0] || 'Failed to fetch user info',
     };
   });
 };
@@ -144,7 +144,7 @@ export const updateUserInfo = async (
     }
     return {
       success: false,
-      message: data?.message || 'Failed to update user info',
+      message: data?.message?.[0] || 'Failed to update user info',
     };
   });
 };
@@ -193,7 +193,7 @@ export const getUsers = async (
     }
     return {
       success: false,
-      message: data?.message || 'Failed to fetch Users',
+      message: data?.message?.[0] || 'Failed to fetch Users',
     };
   });
 };
@@ -228,7 +228,7 @@ export const userStatusUpdateApi = async (
     }
     return {
       success: false,
-      message: data?.message || 'Failed to update Customer status',
+      message: data?.message?.[0] || 'Failed to update Customer status',
     };
   });
 };
@@ -261,7 +261,7 @@ export const updateStaffUserInfo = async (
     }
     return {
       success: false,
-      message: data?.message || 'Failed to update staff info',
+      message: data?.message?.[0] || 'Failed to update staff info',
     };
   });
 };
@@ -292,7 +292,40 @@ export const getUserAddresses = async (
     }
     return {
       success: false,
-      message: data?.message || 'Failed to fetch addresses',
+      message: data?.message?.[0] || 'Failed to fetch addresses',
+    };
+  });
+};
+
+export const inviteUser = async (
+  firstName: string,
+  lastName: string,
+  email: string,
+  roleId: string | null = null
+): Promise<IResponse<ICustomerInfo>> => {
+  const cookieStore = await cookies();
+  const url = new URL('/users/invite', process.env.NEXT_PUBLIC_API_BASE_URL);
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify({ firstName, lastName, email, roleId }),
+  });
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath('/staffs');
+      return {
+        success: true,
+        data: data.data,
+        message: 'User invited successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to invite user',
     };
   });
 };
