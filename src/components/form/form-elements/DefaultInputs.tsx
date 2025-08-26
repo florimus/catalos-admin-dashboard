@@ -20,14 +20,21 @@ interface IDefaultInputsProps {
     permission?: string;
     onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   };
+  custom?: React.ReactNode;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fields?: any[];
 }
 
-const DefaultInputs: FC<IDefaultInputsProps> = ({ heading, cta, fields }) => {
+const DefaultInputs: FC<IDefaultInputsProps> = ({
+  heading,
+  cta,
+  custom,
+  fields,
+}) => {
   return (
     <FormCard
       title={heading || 'Default Inputs'}
+      custom={custom}
       ctaLabel={cta?.label}
       loading={cta?.loading}
       onSubmit={cta?.onSubmit}

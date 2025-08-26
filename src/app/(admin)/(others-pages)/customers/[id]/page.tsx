@@ -62,7 +62,11 @@ export default async function EditCustomer(ctx: {
         }`}
         items={breadCrumbItems}
       />
-      <UserForm customer={customer} disableEdits={true} />
+      <UserForm
+        isInvitePendingUser={!customer.grandType}
+        customer={customer}
+        disableEdits={true}
+      />
       <SecureComponent permission='ORD:LS'>
         <p className='text-lg font-semibold text-gray-800 dark:text-white/90 mb-4 mx-4'>
           Orders

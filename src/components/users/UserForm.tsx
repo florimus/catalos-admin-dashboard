@@ -6,7 +6,11 @@ import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useEffect, useState } from 'react';
 
 import Alert from '../ui/alert/Alert';
-import { updateStaffUserInfo, userStatusUpdateApi } from '@/actions/user';
+import {
+  inviteUser,
+  updateStaffUserInfo,
+  userStatusUpdateApi,
+} from '@/actions/user';
 import DropzoneComponent from '../form/form-elements/DropZone';
 import { IUploadedImage, uploadImage } from '@/utils/imageUtils';
 import ImageGallery from '../form/form-elements/ImageGalery';
@@ -19,6 +23,7 @@ import { useModal } from '@/hooks/useModal';
 import Input from '../form/input/InputField';
 import { getRoles } from '@/actions/role';
 import SecureComponent from '@/core/authentication/SecureComponent';
+import Button from '../ui/button/Button';
 // import { useRouter } from 'next/navigation';
 // import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 
@@ -26,11 +31,13 @@ interface UserFormProps {
   customer?: ICustomerInfo;
   disableEdits?: boolean;
   initialRoles?: IPage<IRole>;
+  isInvitePendingUser?: boolean;
 }
 
 const UserForm: FC<UserFormProps> = ({
   customer,
   initialRoles,
+  isInvitePendingUser,
   disableEdits = false,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -227,18 +234,60 @@ const UserForm: FC<UserFormProps> = ({
     <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
   );
 
-  const productStatusFields = {
+  const customerStatusFields = {
     fieldType: FormFieldType.Switch,
     label: statusLoading
       ? statusLoader
       : userFormData.active
       ? 'Online'
       : 'Offline',
-    name: 'product-status',
-    disabled: customer?.id ? false : true,
+    name: 'customer-status',
+    disabled: !customer?.id || isInvitePendingUser ? true : false,
     checked: userFormData.active || false,
     onChange: (checked: boolean) => handleProductStatusUpdate(checked),
   };
+
+  const handleReinviteUser = async () => {
+    setLoading(true);
+    const response = await inviteUser(
+      customer?.firstName || '',
+      customer?.lastName || '',
+      customer?.email || '',
+      customer?.roleId || ''
+    );
+    if (response.success) {
+      setAlerts([
+        {
+          message: response.message || 'Invitation sent successfully',
+          variant: 'success',
+        },
+      ]);
+    } else {
+      setAlerts([
+        {
+          message: response.message || 'Failed to invite staff',
+          variant: 'error',
+        },
+      ]);
+    }
+    setLoading(false);
+  };
+
+  const reInviteUser = () => (
+    <SecureComponent permission='USR:NN'>
+      <Button
+        size='xm'
+        type='button'
+        variant='warning'
+        onClick={handleReinviteUser}
+      >
+        Reinvite User
+        {loading && (
+          <div className='h-4 w-4 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin' />
+        )}
+      </Button>
+    </SecureComponent>
+  );
 
   return (
     <>
@@ -256,7 +305,7 @@ const UserForm: FC<UserFormProps> = ({
         <div className='grid col-span-1 xl:col-span-2'>
           <DefaultInputs
             cta={
-              disableEdits
+              disableEdits || isInvitePendingUser
                 ? undefined
                 : {
                     permission: 'USR:NN',
@@ -268,6 +317,7 @@ const UserForm: FC<UserFormProps> = ({
                     },
                   }
             }
+            custom={isInvitePendingUser && reInviteUser()}
             heading='Customer Form'
             fields={fields}
           />
@@ -276,7 +326,7 @@ const UserForm: FC<UserFormProps> = ({
           <div>
             <DefaultInputs
               heading='Customer Status'
-              fields={[productStatusFields]}
+              fields={[customerStatusFields]}
             />
             {!disableEdits && (
               <SecureComponent permission='USR:NN'>

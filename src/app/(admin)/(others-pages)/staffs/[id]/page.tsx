@@ -70,6 +70,7 @@ export default async function EditCustomer(ctx: {
         customer={customer}
         disableEdits={false}
         initialRoles={initialRoles.data}
+        isInvitePendingUser={!customer.grandType}
       />
       <SecureComponent permission='ORD:LS'>
         <p className='text-lg font-semibold text-gray-800 dark:text-white/90 mb-4 mx-4'>

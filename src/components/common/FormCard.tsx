@@ -12,11 +12,13 @@ interface FormCardProps {
   ctaLabel?: string;
   loading?: boolean;
   permission?: string;
+  custom?: React.ReactNode;
   onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
 }
 
 const FormCard: React.FC<FormCardProps> = ({
   title,
+  custom,
   children,
   ctaLabel,
   permission,
@@ -43,6 +45,7 @@ const FormCard: React.FC<FormCardProps> = ({
               </Button>
             </SecureComponent>
           )}
+          {custom && custom}
         </div>
 
         <div className='p-4 border-t border-gray-100 dark:border-gray-800 sm:p-6'>
