@@ -43,6 +43,7 @@ import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import { useFloatingCart } from '@/context/FloatingCartContext';
 import Input from '../form/input/InputField';
 import { useStompSubscription } from '@/hooks/useSubscription';
+import ToolTip from '../ui/tooltip';
 
 interface CartFormProps {
   cart?: IOrder;
@@ -601,7 +602,13 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
     },
   ];
 
-  const headingData: string[] = ['Products', 'Quantity', 'Price'];
+  const headingData: string[] = [
+    'Products',
+    'Quantity',
+    'Sale Price',
+    'Tax price',
+    'Total Price',
+  ];
 
   const products = (lineItem: IOrderLineItem) => {
     return lineItem?.product;
@@ -641,15 +648,23 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
         primaryText: (
           <span>
             {products(item).name}
-            <span className='opacity-50 me-4'> {variant(item).name}</span>
+            <span className='opacity-50 me-2'> {variant(item).name}</span>
             {item.itemPrice.discountName ? (
               <span>
-                <Badge variant='light' color='success' size='sm'>
-                  {item.itemPrice.discountFlatPrice} OFF
-                </Badge>
-                <Badge variant='light' size='sm'>
-                  {item.itemPrice.discountName}
-                </Badge>
+                <ToolTip
+                  info={`You got ₹${formatPrice(
+                    item.itemPrice.discountedPrice,
+                    'en-IN'
+                  )} discount ${
+                    item?.itemPrice?.discountPercentage
+                      ? `[ ${item?.itemPrice?.discountPercentage}% OFF ]`
+                      : ''
+                  }`}
+                >
+                  <Badge variant='light' size='sm'>
+                    {item.itemPrice.discountName}
+                  </Badge>
+                </ToolTip>
               </span>
             ) : (
               ''
@@ -704,8 +719,26 @@ const CartForm: FC<CartFormProps> = ({ cart, addresses, permission }) => {
       },
       {
         type: TableCellTypes.TextCell,
+        text: (
+          <span>
+            {getChannelId(cart.channelId)?.currency}{' '}
+            {formatPrice(item.itemPrice.salesPrice, 'en-IN')}
+          </span>
+        ),
+      },
+      {
+        type: TableCellTypes.TextCell,
+        text: (
+          <span>
+            {getChannelId(cart.channelId)?.currency}{' '}
+            {formatPrice(item.itemPrice.taxPrice, 'en-IN')}
+          </span>
+        ),
+      },
+      {
+        type: TableCellTypes.TextCell,
         text:
-          item.itemPrice.salesPrice === item.itemPrice.finalPrice ? (
+          item.itemPrice.salesPrice <= item.itemPrice.finalPrice ? (
             <span className='font-semibold'>
               {getChannelId(cart.channelId)?.currency}{' '}
               {formatPrice(item.itemPrice.finalPrice, 'en-IN')}

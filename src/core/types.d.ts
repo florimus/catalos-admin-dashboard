@@ -306,7 +306,9 @@ export interface IOrderItemPrice {
   discountedPrice: number;
   discountPercentage: number;
   discountFlatPrice: number;
+  taxValue: number;
   taxPrice: number;
+  isFixedTax: boolean;
   finalPrice: number;
 }
 
