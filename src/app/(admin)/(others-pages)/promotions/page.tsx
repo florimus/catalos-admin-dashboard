@@ -6,7 +6,12 @@ import TableCard from '@/components/common/TableCard';
 import ProductFiltersModal from '@/components/promotions/modal/PromotionFiltersModal';
 import PromotionList from '@/components/promotions/PromotionList';
 import { validatePermissions } from '@/core/authentication/roleValidations';
-import {  IOrderSearchParams, IPage, IPromotion, IResponse } from '@/core/types';
+import {
+  IPage,
+  IPromotion,
+  IPromotionSearchParams,
+  IResponse,
+} from '@/core/types';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
@@ -17,18 +22,18 @@ export async function generateMetadata() {
 }
 
 export default async function DiscountsListPage(ctx: {
-  searchParams?: Promise<IOrderSearchParams | null>;
+  searchParams?: Promise<IPromotionSearchParams | null>;
 }) {
   await validatePermissions('PRO:LS');
-  const searchParams: IOrderSearchParams | null =
+  const searchParams: IPromotionSearchParams | null =
     (await ctx.searchParams) || {};
 
   const response: IResponse<IPage<IPromotion>> = await getPromotions(
-    searchParams?.query || 's',
+    searchParams?.query,
     searchParams?.channel,
-    {},
+    searchParams,
     searchParams?.page,
-    searchParams?.size,
+    searchParams?.size
   );
 
   if (!response.success) {

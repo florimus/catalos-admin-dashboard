@@ -50,6 +50,8 @@ export const DATE_TIME_FORMAT = 'DD-MM-YYYY hh:mm A';
 
 export const DATE_FORMAT = 'DD-MM-YYYY';
 
+export const UTC_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
+
 export const ORDER_NORMAL_EVENTS = [
   'Created',
   'PaymentInitialised',

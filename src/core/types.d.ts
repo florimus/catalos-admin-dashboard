@@ -69,6 +69,14 @@ export interface IOrderSearchParams extends ISearchParams {
   excludeStatuses?: boolean;
 }
 
+export interface IPromotionSearchParams extends ISearchParams {
+  discountMode?: 'Auto' | 'Coupon';
+  discountType?: 'FlatOFF' | 'PercentageOFF' | 'BuyXGetY';
+  forAllProducts?: boolean; 
+  startDate?: string;
+  expireDate?: string;
+}
+
 export interface ITranslationParams {
   code?: string;
 }

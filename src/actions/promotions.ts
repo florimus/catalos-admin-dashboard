@@ -2,6 +2,7 @@
 
 import { handleError } from '@/client/httpClient';
 import { IPage, IPromotion, IPromotionFiler, IResponse } from '@/core/types';
+import { getUTCDate } from '@/utils/timeUtils';
 import { cookies } from 'next/headers';
 
 export const getPromotions = async (
@@ -41,7 +42,9 @@ export const getPromotions = async (
       Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
     },
     body: JSON.stringify({
-        filter,
+      ...filter,
+      startDate: filter.startDate ? getUTCDate(filter.startDate) : undefined,
+      expireDate: filter.expireDate ? getUTCDate(filter.expireDate) : undefined,
     }),
   });
 

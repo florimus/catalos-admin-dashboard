@@ -1,96 +1,87 @@
 'use client';
 
 import DatePicker from '@/components/form/date-picker';
-import MultiSelect from '@/components/form/MultiSelect';
+import { DropDownFormField } from '@/components/form/form-elements/DefaultFormFields';
 import Switch from '@/components/form/switch/Switch';
 import ContainerModal from '@/components/modals/ContainerModal';
 import Button from '@/components/ui/button/Button';
-import { IOrderSearchParams, OrderFilter } from '@/core/types';
+import { IPromotionFiler, IPromotionSearchParams } from '@/core/types';
 import { useModal } from '@/hooks/useModal';
 import { getFormattedDate } from '@/utils/timeUtils';
-import { getSelectedStatuses } from '@/utils/urlMapper';
 import { useRouter } from 'next/navigation';
 import { FC, useState } from 'react';
 
 interface ProductFiltersModalProps {
-  searchParams: IOrderSearchParams | null;
+  searchParams: IPromotionSearchParams | null;
 }
 
-const multiOptions = [
-  { value: '1', text: 'InProgress', selected: false },
-  { value: '2', text: 'Submitted', selected: false },
-  { value: '3', text: 'Fulfilled', selected: false },
-  { value: '4', text: 'Shipped', selected: false },
-  { value: '5', text: 'Delivered', selected: false },
-  { value: '6', text: 'Returned', selected: false },
-  { value: '7', text: 'Refunded', selected: false },
-  { value: '8', text: 'Cancelled', selected: false },
+const discountModeOptions = [
+  { value: 'Auto', label: 'Auto' },
+  { value: 'Coupon', label: 'Coupon' },
 ];
 
-const ProductFiltersModal: FC<ProductFiltersModalProps> = ({ searchParams }) => {
+const discountTypeOptions = [
+  { value: 'FlatOFF', label: 'FlatOFF' },
+  { value: 'PercentageOFF', label: 'PercentageOFF' },
+  { value: 'BuyXGetY', label: 'BuyXGetY' },
+];
+
+const ProductFiltersModal: FC<ProductFiltersModalProps> = ({
+  searchParams,
+}) => {
   const { isOpen, openModal, closeModal } = useModal();
   const router = useRouter();
 
-  const findSelectedStatusOptions = (statuses: string[]) => {
-    return multiOptions
-      .filter((option) => statuses.includes(option.text))
-      ?.map((option) => option.value);
-  };
-
-  const [filters, setFilter] = useState<OrderFilter | null>({
-    statuses: findSelectedStatusOptions(
-      getSelectedStatuses(searchParams?.statuses as unknown as string)
-    ),
-    fromDate: searchParams?.fromDate,
-    toDate: searchParams?.toDate,
-    excludeStatuses: Boolean(
-      (searchParams?.excludeStatuses as unknown as string) === 'true'
-    ),
+  const [filters, setFilter] = useState<IPromotionFiler | null>({
+    discountMode: searchParams?.discountMode,
+    discountType: searchParams?.discountType,
+    startDate: searchParams?.startDate,
+    expireDate: searchParams?.expireDate,
+    forAllProducts: searchParams?.forAllProducts || false,
   });
 
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
-
-  const findStatusOptions = (statuses: string[]) => {
-    setSelectedValues(statuses);
-    return multiOptions
-      .filter((option) => statuses.includes(option.value))
-      ?.map((option) => option.text);
-  };
-
   const handleSwitchChange = (checked: boolean) => {
-    setFilter((prev) => ({ ...prev, excludeStatuses: checked }));
+    setFilter((prev) => ({ ...prev, forAllProducts: checked }));
   };
 
-  const handleSelectChange = (values: string[]) => {
-    setFilter((prev) => ({ ...prev, statuses: findStatusOptions(values) }));
+  const handleSelectDiscountMode = (mode: 'Auto' | 'Coupon') => {
+    setFilter((prev) => ({ ...prev, discountMode: mode }));
+  };
+
+  const handleSelectDiscountType = (
+    type: 'FlatOFF' | 'PercentageOFF' | 'BuyXGetY'
+  ) => {
+    setFilter((prev) => ({ ...prev, discountType: type }));
   };
 
   const handleDateRangeChange = (from: Date, to: Date) => {
     if (from && to) {
       setFilter((prev) => ({
         ...prev,
-        fromDate: getFormattedDate(from),
-        toDate: getFormattedDate(to),
+        startDate: getFormattedDate(from),
+        expireDate: getFormattedDate(to),
       }));
     }
   };
 
   const handleApplyFilters = () => {
     const url = new URL(window.location.href);
-    if (filters?.statuses) {
-      url.searchParams.set('statuses', filters?.statuses?.join(',') || '');
+    if (filters?.discountMode) {
+      url.searchParams.set('discountMode', filters.discountMode);
     }
-    if (filters?.fromDate) {
-      url.searchParams.set('fromDate', filters?.fromDate || '');
+    if (filters?.discountType) {
+      url.searchParams.set('discountType', filters.discountType);
     }
-    if (filters?.toDate) {
-      url.searchParams.set('toDate', filters?.toDate || '');
+    if (filters?.startDate) {
+      url.searchParams.set('startDate', filters.startDate);
     }
-    if (filters?.excludeStatuses?.toString()) {
-      url.searchParams.set(
-        'excludeStatuses',
-        filters?.excludeStatuses?.toString() || ''
-      );
+    if (filters?.expireDate) {
+      url.searchParams.set('expireDate', filters.expireDate);
+    }
+
+    url.searchParams.set('forAllProducts', filters?.forAllProducts?.toString() || 'false');
+    if (filters?.targetedUserGroup) {
+      url.searchParams.set('targetedUserGroup', filters.targetedUserGroup);
     }
     router.push(url.toString());
     closeModal();
@@ -98,21 +89,20 @@ const ProductFiltersModal: FC<ProductFiltersModalProps> = ({ searchParams }) => 
 
   const handleClearFilters = () => {
     const url = new URL(window.location.href);
-    url.searchParams.delete('statuses');
-    url.searchParams.delete('query');
-    url.searchParams.delete('fromDate');
-    url.searchParams.delete('toDate');
-    url.searchParams.delete('excludeStatuses');
+    url.searchParams.delete('discountMode');
+    url.searchParams.delete('discountType');
+    url.searchParams.delete('startDate');
+    url.searchParams.delete('expireDate');
+    url.searchParams.delete('forAllProducts');
+    url.searchParams.delete('targetedUserGroup');
+    url.searchParams.delete('page');
     router.push(url.toString());
     closeModal();
   };
 
   return (
     <>
-      <Button
-        onClick={openModal}
-        size='sm'
-      >
+      <Button onClick={openModal} size='sm'>
         <svg
           className='stroke-current fill-white dark:fill-gray-800'
           width='20'
@@ -152,7 +142,7 @@ const ProductFiltersModal: FC<ProductFiltersModalProps> = ({ searchParams }) => 
       </Button>
       {isOpen && (
         <ContainerModal
-          title='Order filters'
+          title='Promotion filters'
           isOpen={isOpen}
           closeModal={closeModal}
         >
@@ -164,26 +154,45 @@ const ProductFiltersModal: FC<ProductFiltersModalProps> = ({ searchParams }) => 
               disabled={false}
               label='From Date'
               placeholder='From Date'
-              defaultDate={`${filters?.fromDate} to ${filters?.toDate}`}
+              defaultDate={`${filters?.startDate} to ${filters?.expireDate}`}
               onChange={(dates) =>
                 handleDateRangeChange(dates?.[0], dates?.[1])
               }
             />
           </div>
           <div className='relative my-6'>
-            <MultiSelect
-              label='Order Statuses'
-              options={multiOptions}
-              defaultSelected={filters?.statuses || []}
-              onChange={(values) => handleSelectChange(values)}
+            <DropDownFormField
+              name='discountMode'
+              label='Discount Mode'
+              required={false}
+              disabled={false}
+              options={discountModeOptions}
+              defaultValue={filters?.discountMode}
+              placeholder='Select an option'
+              onChange={(values) =>
+                handleSelectDiscountMode(values as 'Auto' | 'Coupon')
+              }
             />
-            <p className='sr-only'>
-              Selected Values: {selectedValues.join(', ')}
-            </p>
+          </div>
+          <div className='relative my-6'>
+            <DropDownFormField
+              name='discountType'
+              label='Discount Type'
+              required={false}
+              disabled={false}
+              options={discountTypeOptions}
+              defaultValue={filters?.discountType}
+              placeholder='Select an option'
+              onChange={(values) =>
+                handleSelectDiscountType(
+                  values as 'FlatOFF' | 'PercentageOFF' | 'BuyXGetY'
+                )
+              }
+            />
           </div>
           <Switch
-            label='Exclude Statuses'
-            defaultChecked={filters?.excludeStatuses}
+            label='Apply to all products'
+            defaultChecked={filters?.forAllProducts}
             onChange={handleSwitchChange}
           />
           <div className='flex items-center justify-end w-full gap-3 mt-6'>
