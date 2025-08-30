@@ -13,7 +13,7 @@ const ToolTip: React.FC<IToolTipProps> = ({ children, info }) => {
       <div
         id='tt-1'
         role='tooltip'
-        className='pointer-events-none absolute p-2 left-1/2 -translate-x-1/2 translate-y-2 font-light text-sm opacity-0 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 transition-all duration-150
+        className='pointer-events-none absolute z-999 p-2 left-1/2 -translate-x-1/2 translate-y-2 font-light text-sm opacity-0 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 transition-all duration-150
                mt-2 w-max max-w-xs rounded-lg bg-white text-gray-900 shadow-lg dark:bg-gray-600 dark:text-white'
       >
         {info}

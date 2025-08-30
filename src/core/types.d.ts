@@ -480,3 +480,34 @@ export interface IDashboardData {
   channelSalesReport: Record<string, number>;
   active: boolean;
 }
+
+export interface IPromotion {
+  id: string;
+  name: string;
+  discountMode: 'Auto' | 'Coupon';
+  discountType: 'FlatOFF' | 'PercentageOFF' | 'BuyXGetY';
+  discountValue: number;
+  maxDiscountPrice: number;
+  discountedProducts: string[];
+  minItemQuantity: number;
+  forAllProducts: boolean;
+  targetedProductIds: string[];
+  targetedVariantIds: string[];
+  targetedCategories: string[];
+  targetedBrands: string[];
+  targetedCollections: string[];
+  targetedUserGroup: string;
+  startDate: string;
+  expireDate: string;
+  availableChannel: string;
+  active: boolean;
+}
+
+export interface IPromotionFiler {
+  startDate?: string;
+  expireDate?: string;
+  discountMode?: 'Auto' | 'Coupon';
+  discountType?: 'FlatOFF' | 'PercentageOFF' | 'BuyXGetY';
+  targetedUserGroup?: string;
+  forAllProducts?: boolean;
+}

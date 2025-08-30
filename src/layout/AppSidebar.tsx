@@ -19,6 +19,7 @@ import {
   UserCircleIcon,
   ShootingStarIcon,
   PaperPlaneIcon,
+  BoxIcon,
 } from '../icons/index';
 // import SidebarWidget from './SidebarWidget';
 
@@ -70,6 +71,11 @@ const navItems: NavItem[] = [
         activeUrl: ['/brands'],
       },
     ],
+  },
+  {
+    icon: <BoxIcon />,
+    name: 'Promotions',
+    path: '/promotions',
   },
   {
     icon: <UserCircleIcon />,
