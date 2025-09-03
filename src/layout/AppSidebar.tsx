@@ -76,6 +76,7 @@ const navItems: NavItem[] = [
     icon: <BoxIcon />,
     name: 'Promotions',
     path: '/promotions',
+    activeUrl: ['/promotions'],
   },
   {
     icon: <UserCircleIcon />,
@@ -233,12 +234,14 @@ const AppSidebar: React.FC = () => {
               <Link
                 href={nav.path}
                 className={`menu-item group ${
-                  isActive(nav.path) ? 'menu-item-active' : 'menu-item-inactive'
+                  isActive(nav.path, nav.activeUrl)
+                    ? 'menu-item-active'
+                    : 'menu-item-inactive'
                 }`}
               >
                 <span
                   className={`${
-                    isActive(nav.path)
+                    isActive(nav.path, nav.activeUrl)
                       ? 'menu-item-icon-active'
                       : 'menu-item-icon-inactive'
                   }`}

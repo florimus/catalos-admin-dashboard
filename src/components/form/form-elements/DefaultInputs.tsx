@@ -10,6 +10,7 @@ import {
   IMultiSelectFormFieldProps,
   ISwitchFieldProps,
   ITextFormFieldProps,
+  IDatePickerFormFieldProps,
 } from './DefaultFormFields';
 
 interface IDefaultInputsProps {
@@ -66,6 +67,11 @@ const DefaultInputs: FC<IDefaultInputsProps> = ({
             <FormFields.DisplayField
               key={field.name}
               {...(field as unknown as IDisplayFieldProps)}
+            />
+          ) : field.fieldType === FormFieldType.DatePicker ? (
+            <FormFields.DatePickerFormField
+              key={field.name}
+              {...(field as unknown as IDatePickerFormFieldProps)}
             />
           ) : field.fieldType === FormFieldType.Switch ? (
             <FormFields.SwitchField

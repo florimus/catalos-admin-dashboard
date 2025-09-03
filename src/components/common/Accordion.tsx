@@ -18,7 +18,7 @@ const Accordion: React.FC<AccordionProps> = ({ title, content }) => {
     <div className='accordion border rounded-md dark:border-gray-700 border-gray-300'>
       <button
         onClick={toggleAccordion}
-        className='accordion-header w-full flex justify-between items-center text-left px-4 py-2 dark:bg-gray-800 bg-gray-200 dark:hover:bg-gray-700 hover:bg-gray-300 dark:text-white text-black font-medium rounded-t-md'
+        className='accordion-header w-full flex justify-between items-center text-left px-4 py-5 dark:bg-gray-800 bg-gray-200 dark:hover:bg-gray-700 hover:bg-gray-300 dark:text-white text-black font-medium rounded-t-md'
       >
         <span>{title}</span>
         <span className={`chevron ${isOpen ? 'rotate-180' : ''}`}>

@@ -1,7 +1,13 @@
 'use server';
 
 import { handleError } from '@/client/httpClient';
-import { IPage, IPromotion, IPromotionFiler, IResponse } from '@/core/types';
+import {
+  IPage,
+  IPromotion,
+  IPromotionFiler,
+  IPromotionSearchProduct,
+  IResponse,
+} from '@/core/types';
 import { getUTCDate } from '@/utils/timeUtils';
 import { cookies } from 'next/headers';
 
@@ -60,6 +66,79 @@ export const getPromotions = async (
     return {
       success: false,
       message: data?.message?.[0] || 'Failed to fetch Promotions',
+    };
+  });
+};
+
+export const getPromotionById = async (
+  id: string
+): Promise<IResponse<IPromotion>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/promotions/id/${id}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Promotions fetched successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to fetch promotions',
+    };
+  });
+};
+
+export const getPromotionProducts = async (
+  productIds: string[],
+  variantIds: string[],
+  channel: string
+): Promise<IResponse<IPromotionSearchProduct[]>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    '/products/product-variants',
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify({
+      productIds,
+      variantIds,
+      channel,
+    }),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Promotions fetched successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to fetch promotions',
     };
   });
 };

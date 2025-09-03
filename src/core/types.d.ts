@@ -72,7 +72,7 @@ export interface IOrderSearchParams extends ISearchParams {
 export interface IPromotionSearchParams extends ISearchParams {
   discountMode?: 'Auto' | 'Coupon';
   discountType?: 'FlatOFF' | 'PercentageOFF' | 'BuyXGetY';
-  forAllProducts?: boolean; 
+  forAllProducts?: boolean;
   startDate?: string;
   expireDate?: string;
 }
@@ -518,4 +518,18 @@ export interface IPromotionFiler {
   discountType?: 'FlatOFF' | 'PercentageOFF' | 'BuyXGetY';
   targetedUserGroup?: string;
   forAllProducts?: boolean;
+}
+
+export interface IPromotionSearchProductVariants {
+  id: string;
+  name: string;
+  thumbnail: string;
+  sku: string;
+  status: 'Selected' | 'UnSelected';
+}
+
+export interface IPromotionSearchProduct {
+  productId: string;
+  productName: string;
+  variants: IPromotionSearchProductVariants[];
 }
