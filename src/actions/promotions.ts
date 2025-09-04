@@ -142,3 +142,56 @@ export const getPromotionProducts = async (
     };
   });
 };
+
+export const searchPromotionProducts = async (
+  query: string,
+  productIds: string[],
+  variantIds: string[],
+  channel: string
+): Promise<IResponse<IPromotionSearchProduct[]>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    '/products/product-variants/search',
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+
+  if (query) {
+    query = query.trim();
+    url.searchParams.append('query', query);
+  }
+
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify({
+      productIds,
+      variantIds,
+      channel,
+    }),
+  });
+
+  console.log(url, {
+    productIds,
+    variantIds,
+    channel,
+  });
+  
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'Promotions fetched successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to fetch promotions',
+    };
+  });
+};

@@ -30,7 +30,9 @@ import Button from '../ui/button/Button';
 import { ArrowRightIcon } from '@/icons';
 import { getFormattedDate } from '@/utils/timeUtils';
 import Radio from '../form/input/Radio';
-import AssociatedProducts from './associations/Products';
+import AssociatedProducts from './associations/AssociatedProducts';
+import Avatar from '../ui/avatar/Avatar';
+import { searchPromotionProducts } from '@/actions/promotions';
 
 interface PromotionFormProps {
   productTypeOptions?: { value: string; label: string }[];
@@ -60,7 +62,11 @@ const PromotionForm: FC<PromotionFormProps> = ({
   initialBrands,
   permission,
 }) => {
-  const { isOpen, openModal, closeModal } = useModal();
+  const {
+    isOpen: isProductPromotionModalOpen,
+    openModal: productPromotionModal,
+    closeModal: closeProductPromotionModal,
+  } = useModal();
 
   const [tab, setTab] = useState<'PRODUCT' | 'CATEGORY' | 'BRAND'>('PRODUCT');
 
@@ -103,9 +109,9 @@ const PromotionForm: FC<PromotionFormProps> = ({
     promotionProducts: promotionProducts || [],
   });
 
-  const [productTypes, setProductTypes] = useState<
-    { value: string; label: string }[]
-  >(productTypeOptions || []);
+  const [searchedProducts, setSearchedProducts] = useState<
+    IPromotionSearchProduct[]
+  >([]);
 
   const [categories, setCategories] = useState<
     { value: string; label: string }[]
@@ -133,6 +139,26 @@ const PromotionForm: FC<PromotionFormProps> = ({
       productId: isAllVariantSelected ? promotionProduct?.productId : null,
       variants: !isAllVariantSelected ? variantIds : null,
     };
+  };
+
+  const handleAddNewProductCriteriaFromSearch = (
+    product: IPromotionSearchProduct
+  ) => {
+    setPromotionCriteria((prev) => {
+      return {
+        ...prev,
+        promotionProducts: [
+          ...prev?.promotionProducts,
+          {
+            ...product,
+            variants: product?.variants?.map((each) => ({
+              ...each,
+              status: 'Selected',
+            })),
+          },
+        ],
+      };
+    });
   };
 
   const handleProductCriteria = () => {
@@ -206,14 +232,6 @@ const PromotionForm: FC<PromotionFormProps> = ({
     }
   };
 
-  const handleProductTypeSelect = (value: string) => {
-    setPromotionForm((prev) => ({
-      ...prev,
-      productTypeId: value,
-    }));
-    closeModal();
-  };
-
   const handleCategorySelect = (value: string) => {
     setPromotionForm((prev) => ({
       ...prev,
@@ -262,12 +280,20 @@ const PromotionForm: FC<PromotionFormProps> = ({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.value.trim() === '') {
-      setProductTypes(productTypeOptions || []);
+      setSearchedProducts([]);
       return;
     }
-    const response = await getProductTypeList(event.target.value);
-    if (response.success && response.data?.hits) {
-      setProductTypes(productTypesToSingleSelectMapper(response.data.hits));
+    const response = await searchPromotionProducts(
+      event.target.value,
+      promotion?.targetedProductIds || [],
+      promotion?.targetedVariantIds || [],
+      promotion?.availableChannel || ''
+    );
+
+    console.log(response);
+
+    if (response.success && Array.isArray(response.data)) {
+      setSearchedProducts(response.data);
     }
   };
 
@@ -514,6 +540,7 @@ const PromotionForm: FC<PromotionFormProps> = ({
                     promotionId={promotion?.id}
                     promotionProducts={promotionCriteria.promotionProducts}
                     setPromotionCriteria={setPromotionCriteria}
+                    productPromotionModal={productPromotionModal}
                   />
                 )}
                 {/* {tab === 'CATEGORY' && <CategoriesList {...associatedCategories} />}
@@ -548,28 +575,92 @@ const PromotionForm: FC<PromotionFormProps> = ({
           </div>
         </div>
       </div>
-      {isOpen && (
+      {isProductPromotionModalOpen && (
         <FormInModal
-          title='Select Product Type'
-          isOpen={isOpen}
-          closeModal={closeModal}
+          title='Select Promotion Products'
+          isOpen={isProductPromotionModalOpen}
+          closeModal={closeProductPromotionModal}
+          size='wide'
         >
           <Input
             type='text'
-            placeholder='Select ProductType'
+            placeholder='Search Products'
             name='productTypeId'
             onChange={handleProductTypeSearch}
           />
           <ul>
-            {productTypes.map((type) => (
-              <li
-                key={type.value}
-                className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
-                onClick={() => handleProductTypeSelect(type.value)}
-              >
-                {type.label}
-              </li>
-            ))}
+            {searchedProducts.map((each) => {
+              const selectedProducts =
+                promotionCriteria?.promotionProducts?.map(
+                  (each) => each?.productId
+                );
+              const isSelected =
+                each?.variants?.some((each) => each.status === 'Selected') ||
+                selectedProducts?.includes(each?.productId);
+              return (
+                <li
+                  key={each.productId}
+                  className='hover:bg-gray-100 dark:hover:bg-gray-800 p-3 mt-2.5 text-gray-800 dark:text-white rounded-md py-5 flex'
+                >
+                  <div className='w-full'>
+                    <div className='flex items-center justify-between'>
+                      <div className='flex items-center gap-3'>
+                        {isSelected ? (
+                          <p className='muted border border-dashed border-gray-400 dark:border-gray-600 p-2 px-4 rounded text-gray-400 dark:text-gray-600 flex justify-between items-center gap-4'>
+                            <svg
+                              width='16px'
+                              height='16px'
+                              className='fill-gray-500 dark:fill-gray-400'
+                              viewBox='0 0 16 16'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+                              <g
+                                id='SVGRepo_tracerCarrier'
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                stroke='#CCCCCC'
+                                strokeWidth='0.192'
+                              ></g>
+                              <g id='SVGRepo_iconCarrier'>
+                                <path
+                                  d='M2 0H14V16H12L8 12L4 16H2V0Z'
+                                  fill=''
+                                ></path>
+                              </g>
+                            </svg>
+                            Saved
+                          </p>
+                        ) : (
+                          <Button
+                            size='sm'
+                            variant='outline'
+                            onClick={() =>
+                              handleAddNewProductCriteriaFromSearch(each)
+                            }
+                          >
+                            Select
+                          </Button>
+                        )}
+                        <p
+                          className={`font-semibold ${
+                            isSelected && 'text-gray-400 dark:text-gray-600'
+                          }`}
+                        >
+                          {each?.productName}
+                        </p>
+                      </div>
+                      <div className='flex gap-1 relative'>
+                        {each?.variants?.map((variant) => (
+                          <Avatar key={variant?.id} src={variant?.thumbnail} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </FormInModal>
       )}

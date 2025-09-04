@@ -53,6 +53,7 @@ import MoreDotIcon from "./more-dot.svg";
 import BellIcon from "./bell.svg";
 import CartIcon from "./cart.svg";
 import GitHubIcon from "./github.svg";
+import SaveIcon from "./save.svg";
 
 export {
   DownloadIcon,
@@ -110,4 +111,5 @@ export {
   ChatIcon,
   CartIcon,
   GitHubIcon,
+  SaveIcon
 };

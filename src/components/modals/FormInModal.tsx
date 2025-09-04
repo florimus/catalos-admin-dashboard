@@ -15,7 +15,19 @@ interface FormInModalProps {
   children: React.ReactNode;
   saveButtonText?: string;
   handleSave?: () => void;
+  size?: 'normal' | 'wide';
 }
+
+const getSizeClass = (size: 'normal' | 'wide') => {
+  switch (size) {
+    case 'normal':
+      return 'max-w-[584px]';
+    case 'wide':
+      return 'max-w-[1080px]';
+    default:
+      return 'max-w-[584px]';
+  }
+};
 
 const FormInModal: React.FC<FormInModalProps> = ({
   title,
@@ -26,13 +38,14 @@ const FormInModal: React.FC<FormInModalProps> = ({
   closeModal,
   children,
   handleSave,
+  size = 'normal',
 }) => {
   return (
     <ComponentCard title='Form In Modal'>
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
-        className='max-w-[584px] p-5 lg:p-10'
+        className={`${getSizeClass(size)} p-5 lg:p-10`}
       >
         <Form onSubmit={() => handleSave && handleSave()} className=''>
           <h4 className='mb-6 text-lg font-medium text-gray-800 dark:text-white/90'>
@@ -47,7 +60,9 @@ const FormInModal: React.FC<FormInModalProps> = ({
               </Button>
             )}
             {hasSaveButton && (
-              <Button size='sm' type='submit'>{saveButtonText || 'Save'}</Button>
+              <Button size='sm' type='submit'>
+                {saveButtonText || 'Save'}
+              </Button>
             )}
           </div>
         </Form>

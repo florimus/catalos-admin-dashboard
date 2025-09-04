@@ -52,7 +52,7 @@ const Avatar: React.FC<AvatarProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`relative  rounded-full ${sizeClasses[size]} overflow-hidden object-center`}
+      className={`relative  rounded-full ${sizeClasses[size]} overflow-hidden object-center border`}
     >
       {/* Avatar Image */}
       <Image
