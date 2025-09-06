@@ -26,7 +26,11 @@ import { getFormattedDate } from '@/utils/timeUtils';
 import Radio from '../form/input/Radio';
 import AssociatedProducts from './associations/AssociatedProducts';
 import Avatar from '../ui/avatar/Avatar';
-import { searchPromotionProducts } from '@/actions/promotions';
+import {
+  createPromotionAPI,
+  searchPromotionProducts,
+  updatePromotionAPI,
+} from '@/actions/promotions';
 import AssociatedCategories from './associations/AssociatedCategories';
 import AssociatedBrands from './associations/AssociatedBrands';
 
@@ -210,28 +214,27 @@ const PromotionForm: FC<PromotionFormProps> = ({
 
   const handleSave = async () => {
     const productCriteria = handleProductCriteria();
-    console.log({ ...promotion, ...productCriteria });
 
-    // const method = promotion?.id ? updateProductApi : createProductAPI;
-    // const response = await method({
-    //   id: promotion?.id || '',
-    //   ...promotionForm,
-    //   attributes: formatAttributeValues(productAttributes),
-    // });
-    // setLoading(false);
-    // setAlerts([
-    //   {
-    //     message:
-    //       response.message ||
-    //       (response.success
-    //         ? 'Product saved successfully'
-    //         : 'Failed to save product'),
-    //     variant: response.success ? 'success' : 'error',
-    //   },
-    // ]);
-    // if (!promotion?.id && response.success) {
-    //   start(() => router.push(`/products/${response.data?.id}`));
-    // }
+    const method = promotion?.id ? updatePromotionAPI : createPromotionAPI;
+    const response = await method({
+      ...promotionForm,
+      ...productCriteria,
+      id: promotion?.id || '',
+    });
+    setLoading(false);
+    setAlerts([
+      {
+        message:
+          response.message ||
+          (response.success
+            ? 'Promotion saved successfully'
+            : 'Failed to save Promotion'),
+        variant: response.success ? 'success' : 'error',
+      },
+    ]);
+    if (!promotion?.id && response.success) {
+      start(() => router.push(`/promotions/${response.data?.id}`));
+    }
   };
 
   const handleProductStatusUpdate = async (active: boolean) => {
@@ -430,6 +433,19 @@ const PromotionForm: FC<PromotionFormProps> = ({
         }));
       },
     },
+    {
+      fieldType: FormFieldType.Switch,
+      label: 'Apply For All Products',
+      disabled: false,
+      name: 'forAllProducts',
+      checked: promotionForm?.forAllProducts,
+      onChange: (checked: boolean) => {
+        setPromotionForm((prev) => ({
+          ...prev,
+          forAllProducts: checked,
+        }));
+      },
+    },
   ];
 
   const statusLoader = (
@@ -509,7 +525,7 @@ const PromotionForm: FC<PromotionFormProps> = ({
             heading='Promotion Form'
             fields={fields}
           />
-          {promotion?.id && (
+          {promotion?.id && !promotionForm?.forAllProducts && (
             <>
               <div
                 className={`rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] mb-5 p-3`}

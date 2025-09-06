@@ -9,6 +9,7 @@ import {
   IResponse,
 } from '@/core/types';
 import { getUTCDate } from '@/utils/timeUtils';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 export const getPromotions = async (
@@ -178,7 +179,6 @@ export const searchPromotionProducts = async (
     variantIds,
     channel,
   });
-  
 
   return response.json().then((data) => {
     handleError(data);
@@ -192,6 +192,71 @@ export const searchPromotionProducts = async (
     return {
       success: false,
       message: data?.message || 'Failed to fetch promotions',
+    };
+  });
+};
+
+export const createPromotionAPI = async (
+  promotion: IPromotion
+): Promise<IResponse<IPromotion>> => {
+  const cookieStore = await cookies();
+  const url = new URL('/promotions', process.env.NEXT_PUBLIC_API_BASE_URL);
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify(promotion),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath(`/promotions/${promotion.id}`);
+      return {
+        success: true,
+        data: data.data,
+        message: 'Promotion created successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to create promotion',
+    };
+  });
+};
+
+export const updatePromotionAPI = async (
+  promotion: IPromotion
+): Promise<IResponse<IPromotion>> => {
+  const cookieStore = await cookies();
+  const url = new URL(
+    `/promotions/id/${promotion.id}`,
+    process.env.NEXT_PUBLIC_API_BASE_URL
+  );
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify(promotion),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      revalidatePath(`/promotions/${promotion.id}`);
+      return {
+        success: true,
+        data: data.data,
+        message: 'Promotion updated successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message?.[0] || 'Failed to update promotion',
     };
   });
 };

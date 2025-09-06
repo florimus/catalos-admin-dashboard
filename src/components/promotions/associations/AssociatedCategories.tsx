@@ -74,7 +74,7 @@ const AssociatedCategories: FC<AssociatedProductsProps> = ({
               <div className='flex justify-between items-center w-full gap-2 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded'>
                 <div>
                   <p className='font-semibold'>{category?.name}</p>
-                  <p className='opacity-60'>SKU : {category?.id}</p>
+                  <p className='opacity-60'>ID : {category?.id}</p>
                 </div>
                 <Button
                   size='sm'
