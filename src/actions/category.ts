@@ -54,6 +54,36 @@ export const getCategories = async (
   });
 };
 
+export const listCategoriesByIds = async (
+  ids: string[]
+): Promise<IResponse<ICategory[]>> => {
+  const cookieStore = await cookies();
+  const url = new URL('/category/list', process.env.NEXT_PUBLIC_API_BASE_URL);
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${cookieStore.get('accessToken')?.value}`,
+    },
+    body: JSON.stringify({ ids }),
+  });
+
+  return response.json().then((data) => {
+    handleError(data);
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data,
+        message: 'categories fetched successfully',
+      };
+    }
+    return {
+      success: false,
+      message: data?.message || 'Failed to fetch categories',
+    };
+  });
+}
+
 export const createCategoryAPI = async (
   category: ICategory
 ): Promise<IResponse<ICategory>> => {

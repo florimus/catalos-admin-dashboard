@@ -33,11 +33,13 @@ import Radio from '../form/input/Radio';
 import AssociatedProducts from './associations/AssociatedProducts';
 import Avatar from '../ui/avatar/Avatar';
 import { searchPromotionProducts } from '@/actions/promotions';
+import AssociatedCategories from './associations/AssociatedCategories';
 
 interface PromotionFormProps {
   productTypeOptions?: { value: string; label: string }[];
   promotion?: IPromotion;
   promotionProducts?: IPromotionSearchProduct[];
+  promotionCategories?: ICategory[];
   initialCategories?: ICategory[];
   initialBrands?: IBrand[];
   permission?: string;
@@ -58,6 +60,7 @@ const PromotionForm: FC<PromotionFormProps> = ({
   productTypeOptions,
   promotion,
   promotionProducts,
+  promotionCategories,
   initialCategories,
   initialBrands,
   permission,
@@ -105,8 +108,10 @@ const PromotionForm: FC<PromotionFormProps> = ({
 
   const [promotionCriteria, setPromotionCriteria] = useState<{
     promotionProducts: IPromotionSearchProduct[];
+    promotionCategories: ICategory[];
   }>({
     promotionProducts: promotionProducts || [],
+    promotionCategories: promotionCategories || [],
   });
 
   const [searchedProducts, setSearchedProducts] = useState<
@@ -539,6 +544,14 @@ const PromotionForm: FC<PromotionFormProps> = ({
                   <AssociatedProducts
                     promotionId={promotion?.id}
                     promotionProducts={promotionCriteria.promotionProducts}
+                    setPromotionCriteria={setPromotionCriteria}
+                    productPromotionModal={productPromotionModal}
+                  />
+                )}
+                {tab === 'CATEGORY' && (
+                  <AssociatedCategories
+                    promotionId={promotion?.id}
+                    promotionCategories={promotionCriteria.promotionCategories}
                     setPromotionCriteria={setPromotionCriteria}
                     productPromotionModal={productPromotionModal}
                   />

@@ -73,12 +73,6 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    icon: <BoxIcon />,
-    name: 'Promotions',
-    path: '/promotions',
-    activeUrl: ['/promotions'],
-  },
-  {
     icon: <UserCircleIcon />,
     name: 'Users',
     subItems: [
@@ -139,6 +133,12 @@ const othersItems: NavItem[] = [
     icon: <ShootingStarIcon />,
     name: 'Channels',
     path: '/channels',
+  },
+  {
+    icon: <BoxIcon />,
+    name: 'Promotions',
+    path: '/promotions',
+    activeUrl: ['/promotions'],
   },
   {
     icon: <ListIcon />,

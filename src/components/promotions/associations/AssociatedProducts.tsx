@@ -4,7 +4,7 @@ import Accordion from '@/components/common/Accordion';
 import Checkbox from '@/components/form/input/Checkbox';
 import Avatar from '@/components/ui/avatar/Avatar';
 import SecureComponent from '@/core/authentication/SecureComponent';
-import { IPromotionSearchProduct } from '@/core/types';
+import { ICategory, IPromotionSearchProduct } from '@/core/types';
 import { Dispatch, FC, SetStateAction } from 'react';
 
 interface AssociatedProductsProps {
@@ -13,6 +13,7 @@ interface AssociatedProductsProps {
   productPromotionModal: () => void;
   setPromotionCriteria: Dispatch<
     SetStateAction<{
+      promotionCategories: ICategory[];
       promotionProducts: IPromotionSearchProduct[];
     }>
   >;
@@ -55,7 +56,7 @@ const AssociatedProducts: FC<AssociatedProductsProps> = ({
     <div>
       <div className='flex justify-between items-center'>
         <p className='text-gray-800 dark:text-gray-200 m-3 my-5'>
-          Associated products with variants
+          Associated Products with Variants
         </p>
         <SecureComponent permission='PRD:NN'>
           <span className='cursor-pointer mx-4' onClick={productPromotionModal}>
@@ -83,6 +84,7 @@ const AssociatedProducts: FC<AssociatedProductsProps> = ({
               <Accordion
                 key={`promotion_product_id_${product.productId}_index_${index}`}
                 title={product?.productName}
+                isDefaultOpen={index === 0}
                 content={product?.variants?.map((variant, variant_index) => (
                   <span
                     key={`${product.productId}_${variant_index}_${variant?.id}`}
@@ -99,7 +101,7 @@ const AssociatedProducts: FC<AssociatedProductsProps> = ({
                       }}
                       label={
                         <div className='flex items-center gap-2 mx-3'>
-                          <Avatar src={variant?.thumbnail} />
+                          <Avatar size='xlarge' src={variant?.thumbnail} />
                           <div>
                             <p className='font-semibold'>{variant?.name}</p>
                             <p className='opacity-60'>SKU : {variant?.sku}</p>

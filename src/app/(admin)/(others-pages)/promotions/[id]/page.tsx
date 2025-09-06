@@ -1,7 +1,7 @@
 'use server';
 
 import { getBrands } from '@/actions/brand';
-import { getCategories } from '@/actions/category';
+import { getCategories, listCategoriesByIds } from '@/actions/category';
 import { getProductTypeList } from '@/actions/product-type';
 import { getPromotionById, getPromotionProducts } from '@/actions/promotions';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
@@ -47,15 +47,18 @@ export default async function EditPromotion(ctx: {
     { label: promotion?.data?.name, href: '#' },
   ];
 
-  const promotionProductsPromise: Promise<IResponse<IPromotionSearchProduct[]>> =
-    getPromotionProducts(
-      promotion.data?.targetedProductIds || [],
-      promotion.data?.targetedVariantIds || [],
-      promotion.data?.availableChannel
-    );
+  const promotionProductsPromise: Promise<
+    IResponse<IPromotionSearchProduct[]>
+  > = getPromotionProducts(
+    promotion.data?.targetedProductIds || [],
+    promotion.data?.targetedVariantIds || [],
+    promotion.data?.availableChannel
+  );
 
-  const [promotionProducts] =
-    await Promise.all([promotionProductsPromise]);
+  const promotionCategoriesPromise: Promise<IResponse<ICategory[]>> =
+    listCategoriesByIds(promotion.data?.targetedCategories || []);
+
+  const [promotionProducts, promotionCategories] = await Promise.all([promotionProductsPromise, promotionCategoriesPromise]);
 
   const productTypes: IResponse<IPage<IProductType>> =
     await getProductTypeList();
@@ -76,6 +79,7 @@ export default async function EditPromotion(ctx: {
           productTypes?.data?.hits
         )}
         promotionProducts={promotionProducts?.data}
+        promotionCategories={promotionCategories?.data}
         promotion={promotion.data}
         initialCategories={initialCategories?.data?.hits || []}
         initialBrands={initialBrands?.data?.hits || []}
