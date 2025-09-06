@@ -9,10 +9,7 @@ import {
 import { FormFieldType } from '../form/form-elements/DefaultFormFields';
 import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useEffect, useState } from 'react';
-import {
-  brandToSingleSelectMapper,
-  channelToSingleSelectMapper,
-} from '@/utils/mapperUtils';
+import { channelToSingleSelectMapper } from '@/utils/mapperUtils';
 import { CHANNELS } from '@/core/constants';
 import FormInModal from '../modals/FormInModal';
 import { useModal } from '@/hooks/useModal';
@@ -31,12 +28,14 @@ import AssociatedProducts from './associations/AssociatedProducts';
 import Avatar from '../ui/avatar/Avatar';
 import { searchPromotionProducts } from '@/actions/promotions';
 import AssociatedCategories from './associations/AssociatedCategories';
+import AssociatedBrands from './associations/AssociatedBrands';
 
 interface PromotionFormProps {
   productTypeOptions?: { value: string; label: string }[];
   promotion?: IPromotion;
   promotionProducts?: IPromotionSearchProduct[];
   promotionCategories?: ICategory[];
+  promotionBrands?: IBrand[];
   initialCategories?: ICategory[];
   initialBrands?: IBrand[];
   permission?: string;
@@ -50,14 +49,14 @@ const discountModeOptions = [
 const discountTypeOptions = [
   { value: 'FlatOFF', label: 'Flat OFF' },
   { value: 'PercentageOFF', label: 'Percentage OFF' },
-  { value: 'BuyXGetY', label: 'Buy X Get Y' },
+  // { value: 'BuyXGetY', label: 'Buy X Get Y' },
 ];
 
 const PromotionForm: FC<PromotionFormProps> = ({
   promotion,
   promotionProducts,
   promotionCategories,
-  initialBrands,
+  promotionBrands,
   permission,
 }) => {
   const {
@@ -104,9 +103,11 @@ const PromotionForm: FC<PromotionFormProps> = ({
   const [promotionCriteria, setPromotionCriteria] = useState<{
     promotionProducts: IPromotionSearchProduct[];
     promotionCategories: ICategory[];
+    promotionBrands: IBrand[];
   }>({
     promotionProducts: promotionProducts || [],
     promotionCategories: promotionCategories || [],
+    promotionBrands: promotionBrands || [],
   });
 
   const [searchedProducts, setSearchedProducts] = useState<
@@ -115,9 +116,7 @@ const PromotionForm: FC<PromotionFormProps> = ({
 
   const [categories, setCategories] = useState<ICategory[]>([]);
 
-  const [brands, setBrands] = useState<{ value: string; label: string }[]>(
-    initialBrands ? brandToSingleSelectMapper(initialBrands) : []
-  );
+  const [brands, setBrands] = useState<IBrand[]>([]);
 
   const handleFilterProductVariants = (
     promotionProduct: IPromotionSearchProduct
@@ -168,13 +167,26 @@ const PromotionForm: FC<PromotionFormProps> = ({
     });
   };
 
+  const handleAddNewBrandCriteriaFromSearch = (category: IBrand) => {
+    setPromotionCriteria((prev) => {
+      return {
+        ...prev,
+        promotionBrands: [...prev?.promotionBrands, category],
+      };
+    });
+  };
+
   const handleProductCriteria = () => {
     const requestCriteria: {
       targetedProductIds: string[];
       targetedVariantIds: string[];
+      targetedCategories: string[];
+      targetedBrands: string[];
     } = {
       targetedProductIds: [],
       targetedVariantIds: [],
+      targetedCategories: [],
+      targetedBrands: [],
     };
     promotionCriteria?.promotionProducts?.map((product) => {
       const productFilter = handleFilterProductVariants(product);
@@ -184,6 +196,14 @@ const PromotionForm: FC<PromotionFormProps> = ({
       if (productFilter?.variants) {
         requestCriteria.targetedVariantIds.push(...productFilter.variants);
       }
+    });
+
+    promotionCriteria?.promotionCategories?.map((category) => {
+      requestCriteria.targetedCategories.push(category?.id || '');
+    });
+
+    promotionCriteria?.promotionBrands?.map((brand) => {
+      requestCriteria.targetedBrands.push(brand?.id || '');
     });
     return requestCriteria;
   };
@@ -239,22 +259,6 @@ const PromotionForm: FC<PromotionFormProps> = ({
     }
   };
 
-  const handleCategorySelect = (value: string) => {
-    setPromotionForm((prev) => ({
-      ...prev,
-      categoryId: value,
-    }));
-    closeCategoryModal();
-  };
-
-  const handleBrandSelect = (value: string) => {
-    setPromotionForm((prev) => ({
-      ...prev,
-      brandId: value,
-    }));
-    closeBrandModal();
-  };
-
   const handleCategorySearch = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -272,12 +276,12 @@ const PromotionForm: FC<PromotionFormProps> = ({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.value.trim() === '') {
-      setBrands(initialBrands ? brandToSingleSelectMapper(initialBrands) : []);
+      setBrands([]);
       return;
     }
     const response = await getBrands(event.target.value);
     if (response.success && response.data?.hits) {
-      setBrands(brandToSingleSelectMapper(response.data.hits));
+      setBrands(response.data?.hits);
     }
   };
 
@@ -556,8 +560,14 @@ const PromotionForm: FC<PromotionFormProps> = ({
                     openCategoryModal={openCategoryModal}
                   />
                 )}
-                {/* {tab === 'CATEGORY' && <CategoriesList {...associatedCategories} />}
-            {tab === 'BRAND' && <BrandsList {...associatedBrands} />} */}
+                {tab === 'BRAND' && (
+                  <AssociatedBrands
+                    promotionId={promotion?.id}
+                    promotionBrands={promotionCriteria.promotionBrands}
+                    setPromotionCriteria={setPromotionCriteria}
+                    openCategoryModal={openBrandModal}
+                  />
+                )}
               </div>
             </>
           )}
@@ -769,15 +779,70 @@ const PromotionForm: FC<PromotionFormProps> = ({
             onChange={handleBrandSearch}
           />
           <ul>
-            {brands.map((type, index) => (
-              <li
-                key={`brand_${type.value}_${index}`}
-                className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
-                onClick={() => handleBrandSelect(type.value)}
-              >
-                {type.label}
-              </li>
-            ))}
+            {brands.map((brand) => {
+              const selectedBrands = promotionCriteria?.promotionBrands?.map(
+                (each) => each?.id
+              );
+              const isSelected = selectedBrands?.includes(brand?.id);
+              return (
+                <li
+                  key={brand.id}
+                  className='hover:bg-gray-100 dark:hover:bg-gray-800 p-3 mt-2.5 text-gray-800 dark:text-white rounded-md py-5 flex'
+                >
+                  <div className='w-full'>
+                    <div className='flex items-center justify-between'>
+                      <div className='flex items-center gap-3'>
+                        {isSelected ? (
+                          <p className='muted border border-dashed border-gray-400 dark:border-gray-600 p-2 px-4 rounded text-gray-400 dark:text-gray-600 flex justify-between items-center gap-4'>
+                            <svg
+                              width='16px'
+                              height='16px'
+                              className='fill-gray-500 dark:fill-gray-400'
+                              viewBox='0 0 16 16'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+                              <g
+                                id='SVGRepo_tracerCarrier'
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                stroke='#CCCCCC'
+                                strokeWidth='0.192'
+                              ></g>
+                              <g id='SVGRepo_iconCarrier'>
+                                <path
+                                  d='M2 0H14V16H12L8 12L4 16H2V0Z'
+                                  fill=''
+                                ></path>
+                              </g>
+                            </svg>
+                            Saved
+                          </p>
+                        ) : (
+                          <Button
+                            size='sm'
+                            variant='outline'
+                            onClick={() =>
+                              handleAddNewBrandCriteriaFromSearch(brand)
+                            }
+                          >
+                            Select
+                          </Button>
+                        )}
+                        <p
+                          className={`font-semibold ${
+                            isSelected && 'text-gray-400 dark:text-gray-600'
+                          }`}
+                        >
+                          {brand?.name}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </FormInModal>
       )}

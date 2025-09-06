@@ -1,6 +1,6 @@
 'use server';
 
-import { getBrands } from '@/actions/brand';
+import { getBrands, listBrandByIds } from '@/actions/brand';
 import { getCategories, listCategoriesByIds } from '@/actions/category';
 import { getProductTypeList } from '@/actions/product-type';
 import { getPromotionById, getPromotionProducts } from '@/actions/promotions';
@@ -58,7 +58,15 @@ export default async function EditPromotion(ctx: {
   const promotionCategoriesPromise: Promise<IResponse<ICategory[]>> =
     listCategoriesByIds(promotion.data?.targetedCategories || []);
 
-  const [promotionProducts, promotionCategories] = await Promise.all([promotionProductsPromise, promotionCategoriesPromise]);
+  const promotionBrandsPromise: Promise<IResponse<IBrand[]>> = listBrandByIds(
+    promotion.data?.targetedBrands || []
+  );
+
+  const [promotionProducts, promotionCategories, promotionBrands] = await Promise.all([
+    promotionProductsPromise,
+    promotionCategoriesPromise,
+    promotionBrandsPromise,
+  ]);
 
   const productTypes: IResponse<IPage<IProductType>> =
     await getProductTypeList();
@@ -80,6 +88,7 @@ export default async function EditPromotion(ctx: {
         )}
         promotionProducts={promotionProducts?.data}
         promotionCategories={promotionCategories?.data}
+        promotionBrands={promotionBrands?.data}
         promotion={promotion.data}
         initialCategories={initialCategories?.data?.hits || []}
         initialBrands={initialBrands?.data?.hits || []}

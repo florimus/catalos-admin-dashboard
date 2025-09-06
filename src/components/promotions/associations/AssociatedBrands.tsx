@@ -6,9 +6,9 @@ import { IBrand, ICategory, IPromotionSearchProduct } from '@/core/types';
 import { TrashBinIcon } from '@/icons';
 import { Dispatch, FC, SetStateAction } from 'react';
 
-interface AssociatedProductsProps {
+interface AssociatedBrandsProps {
   promotionId: string;
-  promotionCategories: ICategory[];
+  promotionBrands: IBrand[];
   openCategoryModal: () => void;
   setPromotionCriteria: Dispatch<
     SetStateAction<{
@@ -18,22 +18,22 @@ interface AssociatedProductsProps {
     }>
   >;
 }
-const AssociatedCategories: FC<AssociatedProductsProps> = ({
-  promotionCategories,
+const AssociatedBrands: FC<AssociatedBrandsProps> = ({
+  promotionBrands,
   setPromotionCriteria,
   openCategoryModal,
 }) => {
   const handleVariantSelectionClick = (
-    promotionCategory: ICategory,
+    promotionBrand: IBrand,
     isSelecting: boolean
   ) => {
     setPromotionCriteria((prev) => {
       return {
         ...prev,
-        promotionCategories: isSelecting
-          ? [...prev?.promotionCategories, promotionCategory]
-          : prev?.promotionCategories?.filter(
-              (category) => category?.id !== promotionCategory?.id
+        promotionBrands: isSelecting
+          ? [...prev?.promotionBrands, promotionBrand]
+          : prev?.promotionBrands?.filter(
+              (brand) => brand?.id !== promotionBrand?.id
             ),
       };
     });
@@ -43,7 +43,7 @@ const AssociatedCategories: FC<AssociatedProductsProps> = ({
     <div>
       <div className='flex justify-between items-center'>
         <p className='text-gray-800 dark:text-gray-200 m-3 my-5'>
-          Associated Categories
+          Associated Brands
         </p>
         <SecureComponent permission='PRD:NN'>
           <span className='cursor-pointer mx-4' onClick={openCategoryModal}>
@@ -65,20 +65,20 @@ const AssociatedCategories: FC<AssociatedProductsProps> = ({
           </span>
         </SecureComponent>
       </div>
-      {Array.isArray(promotionCategories) && promotionCategories.length > 0
-        ? promotionCategories.map((category: ICategory, index: number) => (
+      {Array.isArray(promotionBrands) && promotionBrands.length > 0
+        ? promotionBrands.map((brand: IBrand, index: number) => (
             <span
-              key={`${category.id}_${index}_category_list_key`}
+              key={`${brand.id}_${index}_category_list_key`}
               className='gap-2 gap-y-5 flex flex-col my-10'
             >
               <div className='flex justify-between items-center w-full gap-2 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded'>
                 <div>
-                  <p className='font-semibold'>{category?.name}</p>
-                  <p className='opacity-60'>SKU : {category?.id}</p>
+                  <p className='font-semibold'>{brand?.name}</p>
+                  <p className='opacity-60'>ID : {brand?.id}</p>
                 </div>
                 <Button
                   size='sm'
-                  onClick={() => handleVariantSelectionClick(category, false)}
+                  onClick={() => handleVariantSelectionClick(brand, false)}
                   className='cursor-pointer'
                 >
                   Remove
@@ -92,4 +92,4 @@ const AssociatedCategories: FC<AssociatedProductsProps> = ({
   );
 };
 
-export default AssociatedCategories;
+export default AssociatedBrands;

@@ -4,7 +4,7 @@ import Accordion from '@/components/common/Accordion';
 import Checkbox from '@/components/form/input/Checkbox';
 import Avatar from '@/components/ui/avatar/Avatar';
 import SecureComponent from '@/core/authentication/SecureComponent';
-import { ICategory, IPromotionSearchProduct } from '@/core/types';
+import { IBrand, ICategory, IPromotionSearchProduct } from '@/core/types';
 import { Dispatch, FC, SetStateAction } from 'react';
 
 interface AssociatedProductsProps {
@@ -13,6 +13,7 @@ interface AssociatedProductsProps {
   productPromotionModal: () => void;
   setPromotionCriteria: Dispatch<
     SetStateAction<{
+      promotionBrands: IBrand[];
       promotionCategories: ICategory[];
       promotionProducts: IPromotionSearchProduct[];
     }>
