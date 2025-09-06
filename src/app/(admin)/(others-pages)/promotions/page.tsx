@@ -41,6 +41,12 @@ export default async function DiscountsListPage(ctx: {
     redirect('/404');
   }
 
+  const createPromotionCta = {
+    permission: 'PRO:LS',
+    label: 'New Promotion',
+    href: '/promotions/create',
+  };
+
   return (
     <>
       <PageBreadcrumb
@@ -51,6 +57,7 @@ export default async function DiscountsListPage(ctx: {
         <TableCard
           searchPlaceHolder={'Search promotions...'}
           searchParams={searchParams}
+          cta={createPromotionCta}
           filters={
             <ProductFiltersModal
               key='promotion-filters'

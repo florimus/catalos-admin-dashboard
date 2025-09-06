@@ -102,7 +102,7 @@ const ProductFiltersModal: FC<ProductFiltersModalProps> = ({
 
   return (
     <>
-      <Button onClick={openModal} size='sm'>
+      <Button variant='outline' onClick={openModal} size='sm'>
         <svg
           className='stroke-current fill-white dark:fill-gray-800'
           width='20'

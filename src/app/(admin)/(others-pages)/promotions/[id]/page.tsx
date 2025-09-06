@@ -2,7 +2,6 @@
 
 import { getBrands, listBrandByIds } from '@/actions/brand';
 import { getCategories, listCategoriesByIds } from '@/actions/category';
-import { getProductTypeList } from '@/actions/product-type';
 import { getPromotionById, getPromotionProducts } from '@/actions/promotions';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import PromotionForm from '@/components/promotions/PromotionForm';
@@ -11,13 +10,11 @@ import {
   IBrand,
   ICategory,
   IPage,
-  IProductType,
   IPromotion,
   IPromotionSearchProduct,
   IResponse,
   ISearchParams,
 } from '@/core/types';
-import { productTypesToSingleSelectMapper } from '@/utils/mapperUtils';
 import { redirect } from 'next/navigation';
 
 export async function generateMetadata() {
@@ -68,9 +65,6 @@ export default async function EditPromotion(ctx: {
     promotionBrandsPromise,
   ]);
 
-  const productTypes: IResponse<IPage<IProductType>> =
-    await getProductTypeList();
-
   const initialCategories: IResponse<IPage<ICategory>> = await getCategories();
   const initialBrands: IResponse<IPage<IBrand>> = await getBrands();
 
@@ -83,9 +77,6 @@ export default async function EditPromotion(ctx: {
       />
       <PromotionForm
         permission='PRO:NN'
-        productTypeOptions={productTypesToSingleSelectMapper(
-          productTypes?.data?.hits
-        )}
         promotionProducts={promotionProducts?.data}
         promotionCategories={promotionCategories?.data}
         promotionBrands={promotionBrands?.data}

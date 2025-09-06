@@ -35,7 +35,6 @@ import AssociatedCategories from './associations/AssociatedCategories';
 import AssociatedBrands from './associations/AssociatedBrands';
 
 interface PromotionFormProps {
-  productTypeOptions?: { value: string; label: string }[];
   promotion?: IPromotion;
   promotionProducts?: IPromotionSearchProduct[];
   promotionCategories?: ICategory[];
@@ -102,7 +101,7 @@ const PromotionForm: FC<PromotionFormProps> = ({
   }, [alerts]);
 
   const [promotionForm, setPromotionForm] = useState<IPromotion>(
-    promotion as IPromotion
+    promotion as IPromotion || {}
   );
 
   const [promotionCriteria, setPromotionCriteria] = useState<{
