@@ -11,15 +11,12 @@ import DefaultInputs from '../form/form-elements/DefaultInputs';
 import { FC, useEffect, useState } from 'react';
 import {
   brandToSingleSelectMapper,
-  categoryToSingleSelectMapper,
   channelToSingleSelectMapper,
-  productTypesToSingleSelectMapper,
 } from '@/utils/mapperUtils';
 import { CHANNELS } from '@/core/constants';
 import FormInModal from '../modals/FormInModal';
 import { useModal } from '@/hooks/useModal';
 import Input from '../form/input/InputField';
-import { getProductTypeList } from '@/actions/product-type';
 import { productStatusUpdateApi } from '@/actions/product';
 import Alert from '../ui/alert/Alert';
 import { useRouter } from 'next/navigation';
@@ -57,11 +54,9 @@ const discountTypeOptions = [
 ];
 
 const PromotionForm: FC<PromotionFormProps> = ({
-  productTypeOptions,
   promotion,
   promotionProducts,
   promotionCategories,
-  initialCategories,
   initialBrands,
   permission,
 }) => {
@@ -118,9 +113,7 @@ const PromotionForm: FC<PromotionFormProps> = ({
     IPromotionSearchProduct[]
   >([]);
 
-  const [categories, setCategories] = useState<
-    { value: string; label: string }[]
-  >(initialCategories ? categoryToSingleSelectMapper(initialCategories) : []);
+  const [categories, setCategories] = useState<ICategory[]>([]);
 
   const [brands, setBrands] = useState<{ value: string; label: string }[]>(
     initialBrands ? brandToSingleSelectMapper(initialBrands) : []
@@ -162,6 +155,15 @@ const PromotionForm: FC<PromotionFormProps> = ({
             })),
           },
         ],
+      };
+    });
+  };
+
+  const handleAddNewCategoryCriteriaFromSearch = (category: ICategory) => {
+    setPromotionCriteria((prev) => {
+      return {
+        ...prev,
+        promotionCategories: [...prev?.promotionCategories, category],
       };
     });
   };
@@ -257,14 +259,12 @@ const PromotionForm: FC<PromotionFormProps> = ({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.value.trim() === '') {
-      setCategories(
-        initialCategories ? categoryToSingleSelectMapper(initialCategories) : []
-      );
+      setCategories([]);
       return;
     }
     const response = await getCategories(event.target.value);
     if (response.success && response.data?.hits) {
-      setCategories(categoryToSingleSelectMapper(response.data.hits));
+      setCategories(response.data.hits);
     }
   };
 
@@ -553,7 +553,7 @@ const PromotionForm: FC<PromotionFormProps> = ({
                     promotionId={promotion?.id}
                     promotionCategories={promotionCriteria.promotionCategories}
                     setPromotionCriteria={setPromotionCriteria}
-                    productPromotionModal={productPromotionModal}
+                    openCategoryModal={openCategoryModal}
                   />
                 )}
                 {/* {tab === 'CATEGORY' && <CategoriesList {...associatedCategories} />}
@@ -690,15 +690,69 @@ const PromotionForm: FC<PromotionFormProps> = ({
             onChange={handleCategorySearch}
           />
           <ul>
-            {categories.map((type, index) => (
-              <li
-                key={`category_${type.value}_${index}`}
-                className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 mt-2.5 text-gray-800 dark:text-white rounded-md'
-                onClick={() => handleCategorySelect(type.value)}
-              >
-                {type.label}
-              </li>
-            ))}
+            {categories.map((category) => {
+              const selectedCategories =
+                promotionCriteria?.promotionCategories?.map((each) => each?.id);
+              const isSelected = selectedCategories?.includes(category?.id);
+              return (
+                <li
+                  key={category.id}
+                  className='hover:bg-gray-100 dark:hover:bg-gray-800 p-3 mt-2.5 text-gray-800 dark:text-white rounded-md py-5 flex'
+                >
+                  <div className='w-full'>
+                    <div className='flex items-center justify-between'>
+                      <div className='flex items-center gap-3'>
+                        {isSelected ? (
+                          <p className='muted border border-dashed border-gray-400 dark:border-gray-600 p-2 px-4 rounded text-gray-400 dark:text-gray-600 flex justify-between items-center gap-4'>
+                            <svg
+                              width='16px'
+                              height='16px'
+                              className='fill-gray-500 dark:fill-gray-400'
+                              viewBox='0 0 16 16'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+                              <g
+                                id='SVGRepo_tracerCarrier'
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                stroke='#CCCCCC'
+                                strokeWidth='0.192'
+                              ></g>
+                              <g id='SVGRepo_iconCarrier'>
+                                <path
+                                  d='M2 0H14V16H12L8 12L4 16H2V0Z'
+                                  fill=''
+                                ></path>
+                              </g>
+                            </svg>
+                            Saved
+                          </p>
+                        ) : (
+                          <Button
+                            size='sm'
+                            variant='outline'
+                            onClick={() =>
+                              handleAddNewCategoryCriteriaFromSearch(category)
+                            }
+                          >
+                            Select
+                          </Button>
+                        )}
+                        <p
+                          className={`font-semibold ${
+                            isSelected && 'text-gray-400 dark:text-gray-600'
+                          }`}
+                        >
+                          {category?.name}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </FormInModal>
       )}

@@ -9,7 +9,7 @@ import { Dispatch, FC, SetStateAction } from 'react';
 interface AssociatedProductsProps {
   promotionId: string;
   promotionCategories: ICategory[];
-  productPromotionModal: () => void;
+  openCategoryModal: () => void;
   setPromotionCriteria: Dispatch<
     SetStateAction<{
       promotionCategories: ICategory[];
@@ -20,7 +20,7 @@ interface AssociatedProductsProps {
 const AssociatedCategories: FC<AssociatedProductsProps> = ({
   promotionCategories,
   setPromotionCriteria,
-  productPromotionModal,
+  openCategoryModal,
 }) => {
   const handleVariantSelectionClick = (
     promotionCategory: ICategory,
@@ -45,7 +45,7 @@ const AssociatedCategories: FC<AssociatedProductsProps> = ({
           Associated Categories
         </p>
         <SecureComponent permission='PRD:NN'>
-          <span className='cursor-pointer mx-4' onClick={productPromotionModal}>
+          <span className='cursor-pointer mx-4' onClick={openCategoryModal}>
             <svg
               className='fill-gray-500 dark:fill-gray-400'
               width='20'
