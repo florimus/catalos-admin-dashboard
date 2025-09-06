@@ -22,7 +22,7 @@ import { useGlobalLoader } from '@/context/GlobalLoaderContext';
 import { getBrands } from '@/actions/brand';
 import Button from '../ui/button/Button';
 import { ArrowRightIcon } from '@/icons';
-import { getFormattedDate } from '@/utils/timeUtils';
+import { getFormattedDate, getUTCDateTime } from '@/utils/timeUtils';
 import Radio from '../form/input/Radio';
 import AssociatedProducts from './associations/AssociatedProducts';
 import Avatar from '../ui/avatar/Avatar';
@@ -94,6 +94,7 @@ const PromotionForm: FC<PromotionFormProps> = ({
   );
 
   useEffect(() => {
+    if (alerts.length === 0) return;
     const timer = setTimeout(() => {
       setAlerts([]);
     }, 3000);
@@ -219,6 +220,8 @@ const PromotionForm: FC<PromotionFormProps> = ({
     const response = await method({
       ...promotionForm,
       ...productCriteria,
+      startDate: getUTCDateTime(promotionForm?.startDate),
+      expireDate: getUTCDateTime(promotionForm?.expireDate),
       id: promotion?.id || '',
     });
     setLoading(false);
@@ -477,7 +480,7 @@ const PromotionForm: FC<PromotionFormProps> = ({
       onChange: (dates: { dates: Date[]; currentDateString: string }) => {
         setPromotionForm((prev) => ({
           ...prev,
-          startDate: dates?.currentDateString,
+          startDate: getFormattedDate(dates?.currentDateString),
         }));
       },
     },
@@ -492,7 +495,7 @@ const PromotionForm: FC<PromotionFormProps> = ({
       onChange: (dates: { dates: Date[]; currentDateString: string }) => {
         setPromotionForm((prev) => ({
           ...prev,
-          expireDate: dates?.currentDateString,
+          expireDate: getFormattedDate(dates?.currentDateString),
         }));
       },
     },

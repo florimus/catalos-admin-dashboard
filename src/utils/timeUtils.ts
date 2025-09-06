@@ -6,10 +6,15 @@ dayjs.extend(customParseFormat);
 import {
   DATE_FORMAT,
   DATE_TIME_FORMAT,
+  UTC_DATE_FORMAT,
 } from '@/core/constants';
 
 export const getFormattedDateTime = (date: Date | string) => {
   return dayjs(date).format(DATE_TIME_FORMAT);
+};
+
+export const getUTCDateTime = (date: Date | string) => {
+  return dayjs(date).format(UTC_DATE_FORMAT);
 };
 
 export const getFormattedDate = (date: Date | string) => {
