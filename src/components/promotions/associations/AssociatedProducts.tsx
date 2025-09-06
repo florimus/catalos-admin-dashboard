@@ -1,6 +1,7 @@
 'use client';
 
 import Accordion from '@/components/common/Accordion';
+import EmptySection from '@/components/example/EmptySection';
 import Checkbox from '@/components/form/input/Checkbox';
 import Avatar from '@/components/ui/avatar/Avatar';
 import SecureComponent from '@/core/authentication/SecureComponent';
@@ -79,44 +80,49 @@ const AssociatedProducts: FC<AssociatedProductsProps> = ({
           </span>
         </SecureComponent>
       </div>
-      {Array.isArray(promotionProducts) && promotionProducts.length
-        ? promotionProducts.map(
-            (product: IPromotionSearchProduct, index: number) => (
-              <Accordion
-                key={`promotion_product_id_${product.productId}_index_${index}`}
-                title={product?.productName}
-                isDefaultOpen={index === 0}
-                content={product?.variants?.map((variant, variant_index) => (
-                  <span
-                    key={`${product.productId}_${variant_index}_${variant?.id}`}
-                    className='items-start gap-2 gap-y-5 flex flex-col my-10 mx-12'
-                  >
-                    <Checkbox
-                      checked={variant?.status === 'Selected'}
-                      onChange={() => {
-                        handleVariantSelectionClick(
-                          variant?.id,
-                          product,
-                          variant?.status === 'UnSelected'
-                        );
-                      }}
-                      label={
-                        <div className='flex items-center gap-2 mx-3'>
-                          <Avatar size='xlarge' src={variant?.thumbnail} />
-                          <div>
-                            <p className='font-semibold'>{variant?.name}</p>
-                            <p className='opacity-60'>SKU : {variant?.sku}</p>
-                            <p className='opacity-30 flex'>ID: {variant?.id}</p>
-                          </div>
+      {Array.isArray(promotionProducts) && promotionProducts.length ? (
+        promotionProducts.map(
+          (product: IPromotionSearchProduct, index: number) => (
+            <Accordion
+              key={`promotion_product_id_${product.productId}_index_${index}`}
+              title={product?.productName}
+              isDefaultOpen={index === 0}
+              content={product?.variants?.map((variant, variant_index) => (
+                <span
+                  key={`${product.productId}_${variant_index}_${variant?.id}`}
+                  className='items-start gap-2 gap-y-5 flex flex-col my-10 mx-12'
+                >
+                  <Checkbox
+                    checked={variant?.status === 'Selected'}
+                    onChange={() => {
+                      handleVariantSelectionClick(
+                        variant?.id,
+                        product,
+                        variant?.status === 'UnSelected'
+                      );
+                    }}
+                    label={
+                      <div className='flex items-center gap-2 mx-3'>
+                        <Avatar size='xlarge' src={variant?.thumbnail} />
+                        <div>
+                          <p className='font-semibold'>{variant?.name}</p>
+                          <p className='opacity-60'>SKU : {variant?.sku}</p>
+                          <p className='opacity-30 flex'>ID: {variant?.id}</p>
                         </div>
-                      }
-                    />
-                  </span>
-                ))}
-              />
-            )
+                      </div>
+                    }
+                  />
+                </span>
+              ))}
+            />
           )
-        : 'NonProducts'}
+        )
+      ) : (
+        <EmptySection
+          heading='No Associated Products'
+          description='There is no products directly associated with this promotion'
+        />
+      )}
     </div>
   );
 };

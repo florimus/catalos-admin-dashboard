@@ -1,5 +1,6 @@
 'use client';
 
+import EmptySection from '@/components/example/EmptySection';
 import Button from '@/components/ui/button/Button';
 import SecureComponent from '@/core/authentication/SecureComponent';
 import { IBrand, ICategory, IPromotionSearchProduct } from '@/core/types';
@@ -65,29 +66,34 @@ const AssociatedCategories: FC<AssociatedProductsProps> = ({
           </span>
         </SecureComponent>
       </div>
-      {Array.isArray(promotionCategories) && promotionCategories.length > 0
-        ? promotionCategories.map((category: ICategory, index: number) => (
-            <span
-              key={`${category.id}_${index}_category_list_key`}
-              className='gap-2 gap-y-5 flex flex-col my-10'
-            >
-              <div className='flex justify-between items-center w-full gap-2 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded'>
-                <div>
-                  <p className='font-semibold'>{category?.name}</p>
-                  <p className='opacity-60'>ID : {category?.id}</p>
-                </div>
-                <Button
-                  size='sm'
-                  onClick={() => handleVariantSelectionClick(category, false)}
-                  className='cursor-pointer'
-                >
-                  Remove
-                  <TrashBinIcon />
-                </Button>
+      {Array.isArray(promotionCategories) && promotionCategories.length > 0 ? (
+        promotionCategories.map((category: ICategory, index: number) => (
+          <span
+            key={`${category.id}_${index}_category_list_key`}
+            className='gap-2 gap-y-5 flex flex-col my-10'
+          >
+            <div className='flex justify-between items-center w-full gap-2 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded'>
+              <div>
+                <p className='font-semibold'>{category?.name}</p>
+                <p className='opacity-60'>ID : {category?.id}</p>
               </div>
-            </span>
-          ))
-        : ''}
+              <Button
+                size='sm'
+                onClick={() => handleVariantSelectionClick(category, false)}
+                className='cursor-pointer'
+              >
+                Remove
+                <TrashBinIcon />
+              </Button>
+            </div>
+          </span>
+        ))
+      ) : (
+        <EmptySection
+          heading='No Associated Categories'
+          description='There is no categories directly associated with this promotion'
+        />
+      )}
     </div>
   );
 };

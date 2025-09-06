@@ -1,5 +1,6 @@
 'use client';
 
+import EmptySection from '@/components/example/EmptySection';
 import Button from '@/components/ui/button/Button';
 import SecureComponent from '@/core/authentication/SecureComponent';
 import { IBrand, ICategory, IPromotionSearchProduct } from '@/core/types';
@@ -87,7 +88,12 @@ const AssociatedBrands: FC<AssociatedBrandsProps> = ({
               </div>
             </span>
           ))
-        : ''}
+        : (
+          <EmptySection
+            heading='No Associated Brands'
+            description='There is no brands directly associated with this promotion'
+          />
+        )}
     </div>
   );
 };

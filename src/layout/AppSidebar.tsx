@@ -130,11 +130,6 @@ const navItems: NavItem[] = [
 
 const othersItems: NavItem[] = [
   {
-    icon: <ShootingStarIcon />,
-    name: 'Channels',
-    path: '/channels',
-  },
-  {
     icon: <BoxIcon />,
     name: 'Promotions',
     path: '/promotions',
@@ -145,6 +140,11 @@ const othersItems: NavItem[] = [
     name: 'Product Types',
     path: '/product-types',
     activeUrl: ['/product-types'],
+  },
+  {
+    icon: <ShootingStarIcon />,
+    name: 'Channels',
+    path: '/channels',
   },
   {
     icon: <GridIcon />,
